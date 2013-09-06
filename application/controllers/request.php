@@ -274,8 +274,38 @@ class Request extends CI_Controller
 				$upd['kp'] = 5;
 				
 				$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
-				
-			// Руководство отправило на доработку
+
+			// Менеджер отправил на доработку проектировщикам
+            } elseif($type == 'optopr') {
+
+                $insert1 = array(
+                    'name' => 'dt11',
+                    'date' => time(),
+                    'rid' => $id
+                );
+
+                $this->db->insert('history', $insert1);
+
+                $upd['kp'] = 11;
+
+                $this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена проектировщикам.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+            // проектировщик доработал
+            } elseif($type == 'prtoop') {
+
+                $insert1 = array(
+                    'name' => 'dt12',
+                    'date' => time(),
+                    'rid' => $id
+                );
+
+                $this->db->insert('history', $insert1);
+
+                $upd['kp'] = 12;
+
+                $this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+            // Руководство отправило на доработку
 			} elseif($type == 'rtodor') {
 				
 				$insert1 = array(
@@ -303,7 +333,7 @@ class Request extends CI_Controller
 				
 				$upd['kp'] = 10;
 				
-				$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+				$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена руководству.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 				
 			//заявка отправляется заказчику
 			} elseif($type == 'optoz') {

@@ -61,7 +61,7 @@ $config['sort'] = array(
                             array('name' => 'Без ответа', 'uri' => 'mNoAns', 'allow' => '3', 'logic' => 'kp:6?date:259200?mid:usr'),
                             array('name' => 'Отказ', 'uri' => 'nFail', 'allow' => '3', 'logic' => 'kp:7?mid:usr'),
                         // Проектный отдел - id = 4
-                            array('name' => 'Все', 'uri' => 'pAll', 'allow' => '4', 'logic' => 'uid:0?kp:1,uid:usr?kp:1,uid:usr?kp:3,uid:usr?kp:4,uid:usr?kp:5,uid:usr?kp:6,uid:usr?kp:7,uid:usr?kp:8,uid:usr?kp:9,uid:usr?kp:10', 'default' => '1'),
+                            array('name' => 'Все', 'uri' => 'pAll', 'allow' => '4', 'logic' => 'uid:0?kp:1,uid:usr?kp:1,uid:usr?kp:3,uid:usr?kp:4,uid:usr?kp:5,uid:usr?kp:6,uid:usr?kp:7,uid:usr?kp:8,uid:usr?kp:9,uid:usr?kp:10,uid:usr?kp:11,uid:usr?kp:12', 'default' => '1'),
                             array('name' => 'Новые', 'uri' => 'pNew', 'allow' => '4', 'logic' => 'uid:0?kp:1'),
                             array('name' => 'В работе', 'uri' => 'pInWork', 'allow' => '4', 'logic' => 'uid:usr?kp:1'),
                             array('name' => 'Завершённые', 'uri' => 'pCompleted', 'allow' => '4', 'logic' => 'uid:usr?kp:3,uid:usr?kp:4,uid:usr?kp:5,uid:usr?kp:6,uid:usr?kp:7'),
@@ -107,16 +107,19 @@ $config['status'] = array(
                                 array('name' => 'Отправить руководству', 'fullname' => 'Отправить заявку руководству для согласование стоимости', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:2,ikp:3', 'uri' => '/request/send/optor/'),
                                 array('name' => 'Согласовывается', 'fullname' => 'Заявка у руководства', 'class' => 'success', 'allow' => '3', 'logic' => 'ikp:4'),
                                 array('name' => 'Отправить заказчику', 'fullname' => 'Нажмите чтобы отправить заявку заказчику', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:5', 'uri' => '/request/send/optoz/'),
-                                array('name' => 'Отказ', 'fullname' => 'Нажмите если заказчик отказался', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:6', 'uri' => '/request/send/otkaz/'),
-                                array('name' => 'В работу', 'fullname' => 'Нажмите если заказчик согласился с кп', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:6', 'uri' => '/request/send/inwork/'),
+                                array('name' => 'Отказался', 'fullname' => 'Нажмите если заказчик отказался', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:6', 'uri' => '/request/send/otkaz/'),
+                                array('name' => 'Согласился', 'fullname' => 'Нажмите если заказчик согласился', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:6', 'uri' => '/request/send/inwork/'),
                                 array('name' => 'Отказано', 'fullname' => 'Заказчик отказался', 'class' => 'important', 'allow' => '3', 'logic' => 'ikp:7'),
                                 array('name' => 'В работе', 'fullname' => 'Заказчик согласился', 'class' => 'success', 'allow' => '3', 'logic' => 'ikp:8'),
-                                array('name' => 'Отправить повторно', 'fullname' => 'Отправить повторно на согласование', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:9', 'uri' => '/request/send/optordor/'),
-                                array('name' => 'Согласовывается', 'fullname' => 'Заявка у руководства согласовывается после доработки', 'class' => 'success', 'allow' => '3', 'logic' => 'ikp:10'),
+                                array('name' => 'Отправить', 'fullname' => 'Отправить повторно на согласование', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:9,ikp:12', 'uri' => '/request/send/optordor/'),
+                                array('name' => 'Доработка', 'fullname' => 'Отправить на доработку проектировщикам', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:9', 'uri' => '/request/send/optopr/'),
+                                array('name' => 'Согласовывается', 'fullname' => 'Заявка у руководства согласовывается после доработки', 'class' => 'info', 'allow' => '3', 'logic' => 'ikp:10'),
+                                array('name' => 'Дорабатывается', 'fullname' => 'Проектировщики дорабатывают', 'class' => 'info', 'allow' => '3', 'logic' => 'ikp:11'),
                             // Проектный отдел - id = 4
                                 array('name' => 'Забрать заявку', 'fullname' => 'Нажмите чтобы забрать заявку', 'class' => 'warning', 'allow' => '4', 'logic' => 'uid:0', 'uri' => '/request/send/pstop/'),
                                 array('name' => 'Завершить работу', 'fullname' => 'Завершить работу над заявкой', 'class' => 'info', 'allow' => '4', 'logic' => 'ikp:1?uid:usr', 'uri' => '/request/send/ptoop/'),
-                                array('name' => 'Завершено', 'fullname' => 'Работа над заявкой завершена', 'class' => 'success', 'allow' => '4', 'logic' => 'ikp:2,ikp:3,ikp:4,ikp:5,ikp:6,ikp:7,ikp:8,ikp:9,ikp:10'),
+                                array('name' => 'Завершить доработку', 'fullname' => 'Доработка завершена', 'class' => 'info', 'allow' => '4', 'logic' => 'ikp:11?uid:usr', 'uri' => '/request/send/prtoop/'),
+                                array('name' => 'Завершено', 'fullname' => 'Работа над заявкой завершена', 'class' => 'success', 'allow' => '4', 'logic' => 'ikp:2,ikp:3,ikp:4,ikp:5,ikp:6,ikp:7,ikp:8,ikp:9,ikp:10,ikp:12'),
                             // Руководство - id = 6
                                 //array('name' => 'Не выбран', 'fullname' => 'Менеджер не выбран', 'class' => 'important', 'allow' => '2,6', 'logic' => 'mid:0'),
                                 array('name' => 'Менеджер', 'fullname' => 'Заявка в данный момент у менеджера', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:0'),
@@ -124,13 +127,15 @@ $config['status'] = array(
                                 array('name' => 'Менеджер', 'fullname' => 'Заявка в данный момент у менеджера составление стоимости', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:2,ikp:3'),
                                 array('name' => 'Согласовать', 'fullname' => 'Нажмите если стоимость согласована', 'class' => 'warning', 'allow' => '2,6', 'logic' => 'ikp:4', 'uri' => '/request/send/rtoop/'),
                                 array('name' => 'Доработка', 'fullname' => 'Нажмите чтобы отправить на доработку', 'class' => 'important', 'allow' => '2,6', 'logic' => 'ikp:4', 'uri' => '/request/send/rtodor/'),
-                                array('name' => 'Менеджер', 'fullname' => 'Дорабатывается менеджером', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:9'),
                                 array('name' => 'Менеджер', 'fullname' => 'Заявка в данный момент у менеджера отправка КП заказчику', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:5'),
                                 array('name' => 'Заказчик', 'fullname' => 'Заявка отправлена заказчику', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:6'),
                                 array('name' => 'Отказ', 'fullname' => 'Заказчик отказался', 'class' => 'important', 'allow' => '2,6', 'logic' => 'ikp:7'),
                                 array('name' => 'В работе', 'fullname' => 'Заказчик согласился', 'class' => 'success', 'allow' => '2,6', 'logic' => 'ikp:8'),
+                                array('name' => 'Менеджер', 'fullname' => 'Дорабатывается менеджером', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:9'),
                                 array('name' => 'Согласовать', 'fullname' => 'Нажмите если стоимость согласована после доработки', 'class' => 'warning', 'allow' => '2,6', 'logic' => 'ikp:10', 'uri' => '/request/send/rtoop/'),
                                 array('name' => 'Доработка', 'fullname' => 'Нажмите чтобы отправить на доработку ещё раз', 'class' => 'important', 'allow' => '2,6', 'logic' => 'ikp:10', 'uri' => '/request/send/rtodor/'),
+                                array('name' => 'Проектный отдел', 'fullname' => 'Дорабатывается проектировщиком', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:11'),
+                                array('name' => 'Менеджер', 'fullname' => 'Дорабатывается менеджером', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:12'),
                           );
 
 /*
@@ -154,6 +159,8 @@ $config['kpstatus'] = array(
                         array('name' => 'В работе', 'dbname' => 'dt8'),
                         array('name' => 'Руководство отправило на доработку', 'dbname' => 'dt9'),
                         array('name' => 'Менеджер прислал с доработки', 'dbname' => 'dt10'),
+                        array('name' => 'Менеджер отправил на доработку проектировщикам', 'dbname' => 'dt11'),
+                        array('name' => 'Проектный отдел вернул с доработки', 'dbname' => 'dt12'),
                      );
 /*
 |--------------------------------------------------------------------------
