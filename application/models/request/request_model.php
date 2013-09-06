@@ -1,13 +1,22 @@
 <?php
 
+/**
+ * Class request_model
+ */
 class request_model extends CI_Model
 {
-	function __construct()
+    /**
+     *
+     */
+    function __construct()
 	{
 		parent::__construct();	
 	}
 
-	function create_request() {
+    /**
+     * @return bool
+     */
+    function create_request() {
 	   
 		$suc = 0;
 
@@ -61,8 +70,11 @@ class request_model extends CI_Model
       
 		return $suc == 3 ? true : false;
 	}
-	
-	function add_docs() {
+
+    /**
+     * @return mixed
+     */
+    function add_docs() {
       
 		$id = $this->input->post('id');
 	      
@@ -138,12 +150,14 @@ class request_model extends CI_Model
    	
 		return $data;
 	}
-	
-	function update_request($id) {
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    function update_request($id) {
 
         $data = $this->db->get_where('request', array('id' => $id))->row_array();
-		
-		//$data = $query->row_array();
 		
 		$form = $this->config->item('access');
 		
@@ -207,8 +221,14 @@ class request_model extends CI_Model
 
 		//return $this->db->update('request', $update, array('id' => $id));
 	}
-	
-	function get_request($id = null, $view = 'FormTable', $sort = 'all')
+
+    /**
+     * @param null $id
+     * @param string $view
+     * @param string $sort
+     * @return array|string
+     */
+    function get_request($id = null, $view = 'FormTable', $sort = 'all')
 	{		
 		$res = array(
 				'kpstatus' => $this->config->item('kpstatus'),
@@ -222,8 +242,8 @@ class request_model extends CI_Model
 			//GetData
 			$query = $this->db->get_where('request', array('id' => $id))->row_array();
 			
-			$query1 = $this->db->get_where('cCard', array('id' => $query['cid']))->row_array();
-			
+            (!empty($query)) ? $query1 = $this->db->get_where('cCard', array('id' => $query['cid']))->row_array() : redirect("/request");;
+
 			$data['result'] = array_merge($query1, $query);
 			//end GetData
 			
@@ -267,8 +287,6 @@ class request_model extends CI_Model
 					
 					if(isset($razd[$k])) $data['result']['razd'][$i] = $razd[$k];
 				}
-				
-				//var_dump($data['result']['razd']);
 			}
 			
 		} else {
@@ -288,16 +306,10 @@ class request_model extends CI_Model
 			$data['result'] = req_parse_data($query, $res);
 			//end GetData
 			
-			$access = $this->dx_auth->check_permissions('request');
-			
-			if($this->dx_auth->is_admin() == 1) $access = 'is_admin';
-			
 			$alldata = $this->dx_auth->get_all_data();
 			
 			$source = req_perm_in_view($this->config->item('access'), $type = 'view', $alldata);
-			
-			//$status = req_get_status($this->config->item('status'), $alldata);
-			
+
 			$alldata['status'] = $this->config->item('status');
 			
 			$data['result'] = req_arr_to_table($data['result'], $source, $alldata);

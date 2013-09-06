@@ -1,7 +1,13 @@
 <?php
+/**
+ * Class Request
+ */
 class Request extends CI_Controller
 {
-	function __construct()
+    /**
+     *
+     */
+    function __construct()
 	{
 		parent::__construct();
 
@@ -14,8 +20,11 @@ class Request extends CI_Controller
         //load request config
 		$this->config->load('request');
 	}
-	
-	function index()
+
+    /**
+     *
+     */
+    function index()
 	{
 		$data = array();
 		
@@ -87,10 +96,13 @@ class Request extends CI_Controller
 		
 		echo $this->twig->render('request/main.html', $data);
 	}
-	
-	function add()
+
+    /**
+     *
+     */
+    function add()
 	{
-		$id = $this->uri->segment(3);
+		$id = intval($this->uri->segment(3));
 		
 		$docs = array();
 		
@@ -172,12 +184,15 @@ class Request extends CI_Controller
 			redirect("/request");
 		}
 	}
-	
-	function send() {
+
+    /**
+     *
+     */
+    function send() {
 		
 		$type = $this->uri->segment(3);
 		
-		$id = $this->uri->segment(4);
+		$id = intval($this->uri->segment(4));
 		
 		if(!empty($id)) {
 			
@@ -382,14 +397,17 @@ class Request extends CI_Controller
 		
 		redirect("/request");
 	}
-	
-	function edit()
+
+    /**
+     *
+     */
+    function edit()
 	{
 		$data = array();
 		
 		$data['region'] = $this->config->item('region');
 		
-		$id = $this->uri->segment(3);
+		$id = intval($this->uri->segment(3));
 		
 		if(!empty($id) && $this->dx_auth->check_permissions('edit') == 1) {
 			
@@ -407,14 +425,17 @@ class Request extends CI_Controller
 			redirect("/request");
 		}
 	}
-	
-	function prints() {
+
+    /**
+     *
+     */
+    function prints() {
 		
 		$data = array();
 		
 		$data['region'] = $this->config->item('region');
 		
-		$id = $this->uri->segment(3);
+		$id = intval($this->uri->segment(3));
 		
 		if(!empty($id) && $this->dx_auth->check_permissions('print') == 1) {
 			
@@ -433,10 +454,13 @@ class Request extends CI_Controller
 			redirect("/request/");
 		}
 	}
-	
-	function delete()
+
+    /**
+     *
+     */
+    function delete()
 	{
-		$id = $this->uri->segment(3);
+		$id = intval($this->uri->segment(3));
 	   
 		if(!empty($id) && $this->dx_auth->check_permissions('delete') == 1) {
          
