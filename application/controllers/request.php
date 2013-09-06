@@ -81,10 +81,6 @@ class Request extends CI_Controller
 		
 		$formdata['ztype'] = $ntype;
 		
-		$access = $this->dx_auth->check_permissions('request');
-		
-		if($this->dx_auth->is_admin() == 1) $access = 'is_admin';
-		
 		$source = req_perm_in_view($this->config->item('access'), $type = 'form', $this->dx_auth->get_all_data());
 		
 		if($this->dx_auth->check_permissions('add')) $data['add'] = req_arr_to_form($source, $formdata);
@@ -122,10 +118,7 @@ class Request extends CI_Controller
 			} else {
 				
 				foreach($docs as $i) {
-					
-					//<input type="file" name="'.$i['id'].'" />
-					//<span id="edt" onClick="alert(1)" data-fid="'.$i['id'].'" data-toggle="tooltip" data-original-title="Нажмите чтобы изменить название" data-placement="right">'.$i['name'].'</span>
-					
+
 					echo '<blockquote><table class="table table-hover" style="margin-bottom: 0px;"><tr><td style="width: 100%; vertical-align: top;">
 							<input class="inline-input" placeholder="Название файла" name="name'.$i['id'].'" value="'.$i['name'].'" type="text">
 							<input id="inp'.$i['id'].'" type="file" name="doc'.$i['id'].'" style="display:none; margin-top: 15px;" />
@@ -459,11 +452,6 @@ class Request extends CI_Controller
 		}
 
 		redirect("/request");
-	}
-	
-	public function test() {
-		
-		return "fd";
 	}
 }
 ?>
