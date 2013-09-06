@@ -10,7 +10,8 @@ class request_model extends CI_Model
 	function create_request() {
 	   
 		$suc = 0;
-		
+
+        //Карточка клиента
 		$form = $this->config->item('access');
 		
 		foreach($form as $i) {
@@ -24,20 +25,6 @@ class request_model extends CI_Model
 		$insert1['razd'] = '';
 		
 		$insert1['instance'] = '';
-		
-		//Карточка клиента
-		//$insert1 = array(
-		//	'fname' => $this->input->post('fname'),
-		//	'phone' => $this->input->post('phone'),
-		//	'email' => $this->input->post('email'),
-		//	'region' => $this->input->post('region'),
-		//	'address' => $this->input->post('address'),
-		//	'ptype' => $this->input->post('ptype'),
-		//	'rtype' => $this->input->post('rtype'),
-		//	'footage' => $this->input->post('footage'),
-		//	'hear' => $this->input->post('hear'),
-		//	'more' => $this->input->post('more')
-		//);
 
 		if($this->db->insert('cCard', $insert1)) $suc+=1;
 		//end карточка клиента
@@ -91,10 +78,10 @@ class request_model extends CI_Model
 		$data['success'] = '';
 		
 		$docs1 = array();
-		
-		$query = $this->db->get_where('request', array('id' => $id));
-     
-		$row = $query->row_array();
+
+        $row = $this->db->get_where('request', array('id' => $id))->row_array();
+
+		//$row = $query->row_array();
      
 		$docs = unserialize($row['docs']);
 		
@@ -114,7 +101,7 @@ class request_model extends CI_Model
 				
 				$q['author'] = $author;
 				
-				$data['success'] .= "Документ номер <b>$q[id]</b> с именем <b>$q[name]</b> успешно обновлён.\n";
+				$data['success'] .= "Документ номер <b>$q[id]</b> с именем <b>$q[name]</b> успешно обновлён.<br>";
 			}
 			
 			$docs1[] = $q;
@@ -128,7 +115,7 @@ class request_model extends CI_Model
 				
 				$name = $this->input->post('name'.$i);
 				
-				$data['success'] .= "Документ номер $i с именем $name успешно загружен.\n";
+				$data['success'] .= "Документ номер $i с именем $name успешно загружен.<br>";
 			      
 				$dt = $this->upload->data();
 				
@@ -153,10 +140,10 @@ class request_model extends CI_Model
 	}
 	
 	function update_request($id) {
+
+        $data = $this->db->get_where('request', array('id' => $id))->row_array();
 		
-		$query = $this->db->get_where('request', array('id' => $id));
-		
-		$data = $query->row_array();
+		//$data = $query->row_array();
 		
 		$form = $this->config->item('access');
 		
