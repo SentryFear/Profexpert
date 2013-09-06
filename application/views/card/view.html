@@ -1,0 +1,30 @@
+{% extends "_main.html" %}
+{% set active = 'card' %}
+{% block content %}
+{% if success|length > 0 %}
+<div class="alert alert-success">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>{{ success }}</strong>
+</div>
+{% endif %}
+{% if error|length > 0 %}
+<div class="alert alert-error">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>{{ error }}</strong>
+</div>
+{% endif %}
+ФИО - {{ result.fname }}<br>
+Телефон - {{ result.phone }}<br>
+Email - {{ result.email }}<br>
+Район - {{ result.region }}<br>
+Адрес - {{ result.address }}<br>
+Тип помещения - {{ result.ptype }}<br>
+Тип работ - {{ result.rtype }}<br>
+Метраж - {{ result.footage }}<br>
+Откуда узнали? - {{ result.hear }}<br>
+Дополнительная информация - {{ result.mpre }}<br>
+
+{% for row in result.history %}
+  {{ row.name }} - {% if row.date|length > 0 %}{{ row.date|date("d.m.Y H:i") }}{% else %}Не менялся статус{% endif %}<br>
+{% endfor %}
+{% endblock %}

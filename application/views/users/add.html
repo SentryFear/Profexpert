@@ -1,0 +1,46 @@
+{% extends "_main.html" %}
+{% set active = 'ausr' %}
+{% block content %}
+{% if success|length > 0 %}
+<div class="alert alert-success">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>{{ success }}</strong>
+</div>
+{% endif %}
+{% if error|length > 0 %}
+<div class="alert alert-error">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>{{ error }}</strong>
+</div>
+{% endif %}
+<form class="form-horizontal" method="POST">
+  <div class="control-group">
+    <label class="control-label" for="username">Логин</label>
+    <div class="controls">
+      <input type="text" id="username" name="username" placeholder="Логин">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="name">ФИО</label>
+    <div class="controls">
+      <input type="text" id="name" name="name" placeholder="ФИО">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="email">Email</label>
+    <div class="controls">
+      <input type="text" id="email" name="email" placeholder="Email">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="role">Отдел</label>
+    <div class="controls">
+      <input type="text" id="role" name="role" placeholder="Отдел">
+    </div>
+  </div>
+  <div class="form-actions">
+    <input type="submit" class="btn" name="add" value="Добавить"/>
+  </div>
+</form>
+
+{% endblock %}

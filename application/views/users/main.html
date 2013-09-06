@@ -1,0 +1,97 @@
+{% extends "_main.html" %}
+{% set active = 'usr' %}
+{% block content %}
+  <div class="table-wrapper products-table section">
+
+    <div class="row-fluid">
+      <!-- Table -->
+      <form method="POST">
+	<table class="table table-hover">
+	  <thead>
+	     <tr>
+	      <th width="2%"><input type="checkbox" name="chec"></th>
+	      <th width="2%"><span class="line"></span>#</th>
+	      <th><span class="line"></span>Логин</th>
+	      <th><span class="line"></span>ФИО</th>
+	      <th><span class="line"></span>Email</th>
+	      <th><span class="line"></span>Отдел</th>
+	      <th><span class="line"></span>IP адрес</th>
+	      <th><span class="line"></span>Последняя авторизация</th>
+	      <th><span class="line"></span>Создан</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    {% for row in users %}
+	      <tr>
+		<td><input type="checkbox" name="checkbox_{{ row.id }}" value="{{ row.id }}"></td>
+		<td>{{ loop.index }}</td>
+		<td>{{ row.username }}</td>
+		<td>{{ row.name }}</td>
+		<td>{{ row.email }}</td>
+		<td>{{ row.role_name }}</td>
+		<td>{{ row.last_ip }}</td>
+		<td>{{ row.last_login }}</td>
+		<td>{{ row.created }}</td>
+		{#<td><div class="btn-group"><a href="/request/edit/{{ row.id }}/" class="btn btn-mini">Изменить</a><a href="/request/delete/{{ row.id }}/" class="btn btn-mini btn-danger">Удалить</a></div></td>#}
+	      </tr>
+	    {% endfor %}
+	  </tbody>
+	</table>
+	<div class="form-actions">
+	  <input type="submit" name="delete" class="btn btn-danger" value="Удалить выделенне"/>
+	</div>
+	</form>
+      <!-- EndTable -->
+    </div>
+  </div>
+<div id="add" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Добавить пользователя</h3>
+  </div>
+  <form class="form-horizontal" method="POST" enctype="multipart/form-data" autocomplete="off">
+    <div class="modal-body">
+        <div class="control-group">
+	  <label class="control-label" for="user">Логин</label>
+	  <div class="controls">
+	    <input type="text" id="user" name="user" placeholder="Логин для входа в панель">
+	  </div>
+	</div>
+	<div class="control-group">
+	  <label class="control-label" for="pass">Пароль</label>
+	  <div class="controls">
+	    <input type="password" id="pass" name="pass" placeholder="Пароль для входа в панель">
+	  </div>
+	</div>
+	<div class="control-group">
+	  <label class="control-label" for="name">ФИО</label>
+	  <div class="controls">
+	    <input type="text" id="name" name="name" placeholder="Фамилия Имя Отчество">
+	  </div>
+	</div>
+	<div class="control-group">
+	  <label class="control-label" for="email">Email</label>
+	  <div class="controls">
+	    <input type="text" id="email" name="email" placeholder="Электронный адрес">
+	  </div>
+	</div>
+	<div class="control-group">
+	  <label class="control-label" for="role">Отдел</label>
+	  <div class="controls">
+	    <select id="role" name="role">
+		{% for role in roles %}
+		  <option value="{{ role.id }}">{{ role.name }}</option>
+		{% endfor %}
+	    </select>
+	  </div>
+	</div>
+    </div>
+    <div class="modal-footer">
+      <div class="btn-group">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <input type="submit" class="btn btn-primary" name="add" value="Добавить" />
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
