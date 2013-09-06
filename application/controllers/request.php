@@ -4,11 +4,14 @@ class Request extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-		
+
+        //load helpers
 		$this->load->helper(array('form', 'url'));
-		
+
+        //load request model
 		$this->load->model('request/request_model');
-		
+
+        //load request config
 		$this->config->load('request');
 	}
 	
