@@ -193,206 +193,102 @@ class Request extends CI_Controller
 		$type = $this->uri->segment(3);
 		
 		$id = intval($this->uri->segment(4));
-		
+
+        $this->load->library('history');
+
 		if(!empty($id)) {
-			
-			//Отдел продаж отправляет проектировщикам
-			if($type == 'optop') {
-				
-				$row = $this->db->get_where('request', array('id' => $id))->row_array();
-				
-				if($row['kp'] == 0) {
-				       
-					$kpstatus = $this->config->item('kpstatus');
-					
-					$insert2 = array(
-						'name' => $kpstatus[1]['dbname'],
-						'date' => time(),
-						'rid' => $row['id']
-					);
-					
-					$this->db->insert('history', $insert2);
-					
-					$insert3 = array(
-						'name' => 'dt20',
-						'date' => time(),
-						'rid' => $row['id']
-					);
-					
-					$this->db->insert('history', $insert3);
-					
-					$upd['kp'] = 1;
-					
-					$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена проектировщикам.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
-				}
-				
-			//Проектировщик выбирает заявку как свою
-			} elseif($type == 'pstop') {
-				
-				$insert1 = array(
-					'name' => 'dt21',
-					'date' => time(),
-					'rid' => $id
-				);
-				
-				$this->db->insert('history', $insert1);
-				
-				$upd['uid'] = $this->dx_auth->get_user_id();
-				
-				$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно принята.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
-				
-			//Проектировщик завершил работу и отправляет отделу продаж обратно
-			} elseif($type == 'ptoop') {
-				
-				$insert1 = array(
-					'name' => 'dt22',
-					'date' => time(),
-					'rid' => $id
-				);
-				
-				$this->db->insert('history', $insert1);
-				
-				$upd['kp'] = 3;
-				
-				$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
-				
-			// Отдел продаж завершил работу и отправляет заявку руководству на согласование сроков
-			} elseif($type == 'optor') {
-				
-				$insert1 = array(
-					'name' => 'dt4',
-					'date' => time(),
-					'rid' => $id
-				);
-				
-				$this->db->insert('history', $insert1);
-				
-				$upd['kp'] = 4;
-				
-				$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена руководству.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
-				
-			// Руководство согласовало сроки и отправляет заявку отделу продаж на отправку кп заказчикам
-			} elseif($type == 'rtoop') {
-				
-				$insert1 = array(
-					'name' => 'dt5',
-					'date' => time(),
-					'rid' => $id
-				);
-				
-				$this->db->insert('history', $insert1);
-				
-				$upd['kp'] = 5;
-				
-				$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
-			// Менеджер отправил на доработку проектировщикам
-            } elseif($type == 'optopr') {
+            $row = $this->db->get_where('request', array('id' => $id))->row_array();
 
-                $insert1 = array(
-                    'name' => 'dt11',
-                    'date' => time(),
-                    'rid' => $id
-                );
+            if(!empty($row)) {
 
-                $this->db->insert('history', $insert1);
+                //Отдел продаж отправляет проектировщикам
+                if($type == 'optop') {
 
-                $upd['kp'] = 11;
+                    $this->history->setHistory('dt1', $id);
 
-                $this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена проектировщикам.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+                    $this->history->setHistory('dt20', $id);
 
-            // проектировщик доработал
-            } elseif($type == 'prtoop') {
+                    $this->db->update('request', array('kp' => 1), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена проектировщикам.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
-                $insert1 = array(
-                    'name' => 'dt12',
-                    'date' => time(),
-                    'rid' => $id
-                );
+                //Проектировщик выбирает заявку как свою
+                } elseif($type == 'pstop') {
 
-                $this->db->insert('history', $insert1);
+                    $this->history->setHistory('dt21', $id);
 
-                $upd['kp'] = 12;
+                    $this->db->update('request', array('uid' => $this->dx_auth->get_user_id()), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно принята.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
-                $this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+                //Проектировщик завершил работу и отправляет отделу продаж обратно
+                } elseif($type == 'ptoop') {
 
-            // Руководство отправило на доработку
-			} elseif($type == 'rtodor') {
-				
-				$insert1 = array(
-					'name' => 'dt9',
-					'date' => time(),
-					'rid' => $id
-				);
-				
-				$this->db->insert('history', $insert1);
-				
-				$upd['kp'] = 9;
-				
-				$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
-				
-			// Менеджер прислал с доработки
-			} elseif($type == 'optordor') {
-				
-				$insert1 = array(
-					'name' => 'dt10',
-					'date' => time(),
-					'rid' => $id
-				);
-				
-				$this->db->insert('history', $insert1);
-				
-				$upd['kp'] = 10;
-				
-				$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена руководству.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
-				
-			//заявка отправляется заказчику
-			} elseif($type == 'optoz') {
-				
-				$insert1 = array(
-					'name' => 'dt6',
-					'date' => time(),
-					'rid' => $id
-				);
-				
-				$this->db->insert('history', $insert1);
-				
-				$upd['kp'] = 6;
-				
-				$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена заказчику.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
-				
-			//Заказчик отказался
-			} elseif($type == 'otkaz') {
-				
-				$insert1 = array(
-					'name' => 'dt7',
-					'date' => time(),
-					'rid' => $id
-				);
-				
-				$this->db->insert('history', $insert1);
-				
-				$upd['kp'] = 7;
-				
-				$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отбработана.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
-				
-			//Заказчик согласился
-			} elseif($type == 'inwork') {
-				
-				$insert1 = array(
-					'name' => 'dt8',
-					'date' => time(),
-					'rid' => $id
-				);
-				
-				$this->db->insert('history', $insert1);
-				
-				$upd['kp'] = 8;
-				
-				$this->db->update('request', $upd, array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отбработана.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
-				
-			}
-			
+                    $this->history->setHistory('dt22', $id);
+
+                    $this->db->update('request', array('kp' => 3), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+                // Отдел продаж завершил работу и отправляет заявку руководству на согласование сроков
+                } elseif($type == 'optor') {
+
+                    $this->history->setHistory('dt4', $id);
+
+                    $this->db->update('request', array('kp' => 4), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена руководству.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+                // Руководство согласовало сроки и отправляет заявку отделу продаж на отправку кп заказчикам
+                } elseif($type == 'rtoop') {
+
+                    $this->history->setHistory('dt5', $id);
+
+                    $this->db->update('request', array('kp' => 5), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+                //заявка отправляется заказчику
+                } elseif($type == 'optoz') {
+
+                    $this->history->setHistory('dt6', $id);
+
+                    $this->db->update('request', array('kp' => 6), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена заказчику.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+                //Заказчик отказался
+                } elseif($type == 'otkaz') {
+
+                    $this->history->setHistory('dt7', $id);
+
+                    $this->db->update('request', array('kp' => 7), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отбработана.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+                //Заказчик согласился
+                } elseif($type == 'inwork') {
+
+                    $this->history->setHistory('dt8', $id);
+
+                    $this->db->update('request', array('kp' => 8), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отбработана.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+                // Руководство отправило на доработку
+                } elseif($type == 'rtodor') {
+
+                    $this->history->setHistory('dt9', $id);
+
+                    $this->db->update('request', array('kp' => 9), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+                // Менеджер прислал с доработки
+                } elseif($type == 'optordor') {
+
+                    $this->history->setHistory('dt10', $id);
+
+                    $this->db->update('request', array('kp' => 10), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена руководству.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+                // Менеджер отправил на доработку проектировщикам
+                } elseif($type == 'optopr') {
+
+                    $this->history->setHistory('dt11', $id);
+
+                    $this->db->update('request', array('kp' => 11), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена проектировщикам.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+                // проектировщик доработал
+                } elseif($type == 'prtoop') {
+
+                    $this->history->setHistory('dt12', $id);
+
+                    $this->db->update('request', array('kp' => 12), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+                }
+            }
 		}
 		
 		redirect("/request");

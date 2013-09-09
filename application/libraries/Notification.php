@@ -1,39 +1,82 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+/**
+ * Class Notification
+ */
 class Notification {
-    
+
+    /**
+     * Заголовок уведомления
+     *
+     * @var string
+     */
     var $name;
-    
+
+    /**
+     * Ссылка уведомления
+     *
+     * @var string
+     */
     var $uri;
-    
+
+    /**
+     * Тело уведомления
+     *
+     * @var string
+     */
     var $text;
-    
+
+    /**
+     * Время уведомления
+     *
+     * @var int
+     */
     var $time;
-    
+
+    /**
+     * Отложено ли уведомление
+     *
+     * @var bool
+     */
     var $lock;
-    
-    function init() {
-        
-        
-    }
-    
-    function setNotification() {
-        
+
+    /**
+     * Инициализация уведомлений
+     */
+    function __construct()
+    {
         
     }
-    
-    function getNotification() {
-        
-        
+
+    /**
+     * Добавить уведомление
+     */
+    function setNotification()
+    {
+
     }
-    
-    function lockNotification() {
-        
-        
+
+    /**
+     * Выбрать все уведомления
+     */
+    function getNotification()
+    {
+
     }
-    
-    function setTimeNotification() {
-        
-        
+
+    /**
+     * Отложить уведомление
+     */
+    function lockNotification()
+    {
+
+    }
+
+    /**
+     * Установить время через которое уведомление отправится
+     */
+    function setTimeNotification()
+    {
+
     }
 }
-?>
