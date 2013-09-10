@@ -1,28 +1,32 @@
 {% extends "_main.html" %}
-{% set active = 'urp' %}
+
 {% block content %}
-<form method="POST" class="form-horizontal">
-    <div class="control-group">
-        <label class="control-label" for="allowed_uris">Выберите отдел</label>
-        <div class="controls">
-            <div class="input-append">{{request.post('role')}}
-                <select name="role">
-                    {% for role in roles %}
-                        <option value="{{ role.id }}" {% if trole == role.id %}selected{% endif %}>{{ role.name }}</option>
-                    {% endfor %}
-                </select>
-                <input type="submit" name="show" class="btn" value="Показать разрешения отдела">
+    <div id="pad-wrapper">
+        <form method="POST" class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="allowed_uris">Выберите отдел</label>
+                <div class="controls">
+                    <div class="input-append">{{request.post('role')}}
+                        <div class="ui-select" style="width: auto; margin-right: 15px;">
+                            <select name="role" id="allowed_uris">
+                                {% for role in roles %}
+                                <option value="{{ role.id }}" {% if trole == role.id %}selected{% endif %}>{{ role.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <input type="submit" name="show" class="btn-flat success new-product" style="padding: 5px; font-size: 12px;" value="Показать разрешения отдела">
+                    </div>
+                </div>
             </div>
-        </div>
+            <div class="control-group">
+                <label class="control-label" for="allowed_uris">Разрешеня</label>
+                <div class="controls">
+                    <textarea cols="40" rows="10" name="allowed_uris" id="allowed_uris">{{ allowed_uris|join('\n') }}</textarea>
+                </div>
+            </div>
+            <div class="form-actions">
+                <input type="submit" name="save" value="Сохранить" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
-    <div class="control-group">
-        <label class="control-label" for="allowed_uris">Разрешеня</label>
-        <div class="controls">
-            <textarea cols="40" rows="10" name="allowed_uris" id="allowed_uris">{{ allowed_uris|join('\n') }}</textarea>
-        </div>
-    </div>
-    <div class="form-actions">
-        <input type="submit" name="save" value="Сохранить" class="btn btn-primary" />
-    </div>
-</form>
 {% endblock %}
