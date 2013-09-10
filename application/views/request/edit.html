@@ -1,11 +1,12 @@
 {% extends "_main.html" %}
-{% set active = 'req' %}
+
+{% block title %}Редактирование заявки{% endblock %}
+
 {% block content %}
-<div id="pad-wrapper">
-  {{ result|raw }}
-</div>
-  <!-- Modal Add -->
-    {# add|raw #}
-  <!-- EndModal Add -->
-  
+    <div id="pad-wrapper">
+      {{ result|raw }}
+    </div>
+    <!-- Modal Add -->
+      {# add|raw #}
+    <!-- EndModal Add -->
 {% endblock %}

@@ -1,7 +1,16 @@
 <?php
+
+/**
+ * Управление пользователями
+ *
+ * Class Users
+ */
 class Users extends CI_Controller
 {
-	function __construct()
+    /**
+     * Инициализация
+     */
+    function __construct()
 	{
 		parent::__construct();
 		
@@ -12,13 +21,19 @@ class Users extends CI_Controller
 		$this->load->helper('form');
 		$this->load->helper('url');
 	}
-	
-	function index()
+
+    /**
+     * Стартовая страница
+     */
+    function index()
 	{
 		$this->users();
 	}
-	
-	function users()
+
+    /**
+     * Список пользователей
+     */
+    function users()
 	{
 		$this->load->model('dx_auth/users_model', 'users_model');			
 		
@@ -118,8 +133,11 @@ class Users extends CI_Controller
 		//$this->load->view('backend/users', $data);
 		echo $this->twig->render('users/main.html', $data);
 	}
-	
-	function unactivated_users()
+
+    /**
+     * Список не активированных пользователей
+     */
+    function unactivated_users()
 	{
 		$this->load->model('dx_auth/user_temp', 'user_temp');
 		
@@ -169,8 +187,11 @@ class Users extends CI_Controller
 		// Load view
 		$this->load->view('backend/unactivated_users', $data);
 	}
-	
-	function roles()
+
+    /**
+     * Список отделов
+     */
+    function roles()
 	{		
 		$this->load->model('dx_auth/roles', 'roles');
 		
@@ -206,8 +227,11 @@ class Users extends CI_Controller
 		// Load view
 		//$this->load->view('backend/roles', $data);
 	}
-	
-	function uri_permissions()
+
+    /**
+     * Доступы по uri
+     */
+    function uri_permissions()
 	{
 		function trim_value(&$value) 
 		{ 
@@ -248,8 +272,11 @@ class Users extends CI_Controller
 		echo $this->twig->render('users/uri_permissions.html', $data);
 		//$this->load->view('backend/uri_permissions', $data);
 	}
-	
-	function custom_permissions()
+
+    /**
+     * Пользовательские разрешения
+     */
+    function custom_permissions()
 	{
 		// Load models
 		$this->load->model('dx_auth/roles', 'roles');

@@ -1,11 +1,13 @@
 <?php
 /**
  * Class Request
+ *
+ * Заявки
  */
 class Request extends CI_Controller
 {
     /**
-     *
+     * Инифиализация
      */
     function __construct()
 	{
@@ -22,7 +24,7 @@ class Request extends CI_Controller
 	}
 
     /**
-     *
+     * Стартовая страница
      */
     function index()
 	{
@@ -98,7 +100,7 @@ class Request extends CI_Controller
 	}
 
     /**
-     *
+     * Добавление файлов открывается с помощью AJAX
      */
     function add()
 	{
@@ -186,7 +188,7 @@ class Request extends CI_Controller
 	}
 
     /**
-     *
+     * Изменение статуса заявки (отправление от отдела к отделу)
      */
     function send() {
 		
@@ -295,7 +297,7 @@ class Request extends CI_Controller
 	}
 
     /**
-     *
+     * РЕдактирование заявки
      */
     function edit()
 	{
@@ -323,7 +325,9 @@ class Request extends CI_Controller
 	}
 
     /**
+     * Печать заявки
      *
+     * TO DO; дописать печать кп
      */
     function prints() {
 		
@@ -352,7 +356,7 @@ class Request extends CI_Controller
 	}
 
     /**
-     *
+     * Удаление заявки
      */
     function delete()
 	{
