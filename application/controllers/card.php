@@ -1,4 +1,5 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 class Card extends CI_Controller
 {
    
@@ -78,7 +79,7 @@ class Card extends CI_Controller
 	   
 		if(!empty($add)) {
 
-			$this->request_model->create_request() ? $data['success'] = "Заявка успешно добавлена!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+			$this->request_model->create_request() ? $data['success'] = "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!" : $data['error'] = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.";
 		}
 		
 		echo $this->twig->render('request/add.html', $data);
@@ -98,7 +99,7 @@ class Card extends CI_Controller
          
 			if(!empty($add)) {
 
-				$this->request_model->update_request($id) ? $data['success'] = "Заявка успешно изменена!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+				$this->request_model->update_request($id) ? $data['success'] = "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!" : $data['error'] = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.";
 			}
          
 			$data['result'] = $this->request_model->get_request($id);
@@ -117,7 +118,7 @@ class Card extends CI_Controller
 	   
 		if(!empty($id)) {
          
-			$this->db->delete('request', array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно удалена.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+			$this->db->delete('request', array('id' => $id)) ? $this->session->set_flashdata('success', 'пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.') : $this->session->set_flashdata('error', 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.');
 		}
 
 		redirect("/request");

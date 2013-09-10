@@ -1,4 +1,4 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
  * Управление пользователями
@@ -260,8 +260,8 @@ class Users extends CI_Controller
 		// Default role_id that will be showed
 		$role_id = $this->input->post('role');
 		
-		if(empty($role_id)) $role_id = $this->uri->segment('3') ? $this->uri->segment('3') : 1; 
-		
+		if(empty($role_id)) $role_id = $this->uri->segment('3') ? $this->uri->segment('3') : 1;
+
 		$data['trole'] = $role_id;
 		// Get all role from database
 		$data['roles'] = $this->roles->get_all()->result();
@@ -315,19 +315,24 @@ class Users extends CI_Controller
 		/* Showing page to user */		
 		
 		// Default role_id that will be showed
-		$role_id = $this->input->post('role') ? $this->input->post('role') : 1;
-		
+		$role_id = $this->input->post('role');
+
+        if(empty($role_id)) $role_id = $this->uri->segment('3') ? $this->uri->segment('3') : 1;
+
 		// Get all role from database
 		$data['roles'] = $this->roles->get_all()->result();
+
+        $data['trole'] = $role_id;
 		// Get edit and delete permissions
 		$data['add'] = $this->permissions->get_permission_value($role_id, 'add');
 		$data['edit'] = $this->permissions->get_permission_value($role_id, 'edit');
 		$data['delete'] = $this->permissions->get_permission_value($role_id, 'delete');
 		$data['print'] = $this->permissions->get_permission_value($role_id, 'print');
 		$data['request'] = $this->permissions->get_permission_value($role_id, 'request');
-		
+
 		// Load view
-		$this->load->view('backend/custom_permissions', $data);
+        echo $this->twig->render('users/custom_permissions.html', $data);
+		//$this->load->view('backend/custom_permissions', $data);
 	}
 }
 ?>

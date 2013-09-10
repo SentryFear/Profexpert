@@ -1,4 +1,5 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 /**
  * Class Request
  *
@@ -297,7 +298,7 @@ class Request extends CI_Controller
 	}
 
     /**
-     * РЕдактирование заявки
+     * Редактирование заявки
      */
     function edit()
 	{
@@ -327,7 +328,7 @@ class Request extends CI_Controller
     /**
      * Печать заявки
      *
-     * TO DO; дописать печать кп
+     * TODO; Дописать печать кп
      */
     function prints() {
 		

@@ -296,7 +296,7 @@ if (!function_exists('req_arr_to_form')) {
 
                             $val1 = $value[$i['name']]['hours'];
 
-                            $val2 = $value[$i['name']]['price'];
+                            if(!empty($value[$i['name']]['price'])) $val2 = $value[$i['name']]['price'];
 
                             $all += $val1;
 
@@ -315,7 +315,7 @@ if (!function_exists('req_arr_to_form')) {
 					</td>
 				    </tr>';
 
-                        } elseif ($extra['user_info']['role_id'] != 6) {
+                        } elseif ($extra['user_info']['role_id'] != 6 && $extra['user_info']['role_id'] != 3 && $extra['user_info']['role_id'] != 2 ) {
 
                             $inp .= '<tr>
 				    <td>

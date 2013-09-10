@@ -1,0 +1,50 @@
+{% extends "_main.html" %}
+{% set active = 'urp' %}
+{% block content %}
+        <div id="pad-wrapper">
+            <form method="POST" class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="allowed_uris">Выберите отдел</label>
+                    <div class="controls">
+                        <div class="input-append">{{request.post('role')}}
+                            <div class="ui-select" style="width: auto; margin-right: 15px;">
+                                <select name="role" id="allowed_uris">
+                                    {% for role in roles %}
+                                    <option value="{{ role.id }}" {% if trole == role.id %}selected{% endif %}>{{ role.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <input type="submit" name="show" class="btn-flat success new-product" style="padding: 5px; font-size: 12px;" value="Показать разрешения отдела">
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="add">Разрешить добавление</label>
+                    <div class="controls">
+                        <input type="checkbox" name="add" value="1" id="add" {% if add == 1 %}checked{% endif %}>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="edit">Разрешить изменение</label>
+                    <div class="controls">
+                        <input type="checkbox" name="edit" value="1" id="edit" {% if edit == 1 %}checked{% endif %}>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="delete">Разрешить удаление</label>
+                    <div class="controls">
+                        <input type="checkbox" name="delete" value="1" id="delete" {% if delete == 1 %}checked{% endif %}>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="print">Разрешить печать</label>
+                    <div class="controls">
+                        <input type="checkbox" name="print" value="1" id="print" {% if print == 1 %}checked{% endif %}>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <input type="submit" name="save" value="Сохранить" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+{% endblock %}

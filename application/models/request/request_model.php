@@ -1,4 +1,4 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
  * Class request_model
@@ -6,7 +6,7 @@
 class request_model extends CI_Model
 {
     /**
-     *
+     * Инициализация
      */
     function __construct()
 	{
@@ -14,6 +14,8 @@ class request_model extends CI_Model
 	}
 
     /**
+     * Добаление заявки
+     *
      * @return bool
      */
     function create_request() {
@@ -72,6 +74,8 @@ class request_model extends CI_Model
 	}
 
     /**
+     * Добавление документов
+     *
      * @return mixed
      */
     function add_docs() {
@@ -152,6 +156,8 @@ class request_model extends CI_Model
 	}
 
     /**
+     * Изменение заявки
+     *
      * @param $id
      * @return mixed
      */
@@ -223,6 +229,8 @@ class request_model extends CI_Model
 	}
 
     /**
+     * Получить все заявки
+     *
      * @param null $id
      * @param string $view
      * @param string $sort
@@ -265,9 +273,9 @@ class request_model extends CI_Model
 				
 				$formdata['user_info'] = $this->dx_auth->get_all_data();
 				
-				$access = $this->dx_auth->check_permissions('request');
+				//$access = $this->dx_auth->check_permissions('request');
 				
-				if($this->dx_auth->is_admin() == 1) $access = 'is_admin';
+				//if($this->dx_auth->is_admin() == 1) $access = 'is_admin';
 				
 				$source = req_perm_in_view($this->config->item('access'), $type = 'form', $this->dx_auth->get_all_data());
 				

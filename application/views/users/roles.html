@@ -7,9 +7,9 @@
 	<table class="table table-hover">
 	  <thead>
 	    <tr>
-	      <th width="2%">#</th>
-	      <th width="2%"><span class="line"></span>ID</th>
-	      <th width="90%"><span class="line"></span>Название</th>
+	      <th class="span2">#</th>
+	      <th class="span2"><span class="line"></span>ID</th>
+	      <th class="span10"><span class="line"></span>Название</th>
 	      <th><span class="line"></span>Родительский ID</th>
 	      <th><span class="line"></span>Действия</th>
 	    </tr>
@@ -21,7 +21,12 @@
 		    <td>{{ row.id }}</td>
 		    <td>{{ row.name }}</td>
 		    <td>{{ row.parent_id }}</td>
-		    <td><a href="/users/uri_permissions/{{ row.id }}/" class="btn btn-mini">Разрешения</a></td>
+		    <td>
+                <ul class="actions" style="float: left;">
+                    <li><a href="/users/uri_permissions/{{ row.id }}/">URI</a></li>
+                    <li><a href="/users/custom_permissions/{{ row.id }}/">Custom</a></li>
+                </ul>
+            </td>
 		    {#<td><div class="btn-group"><a href="/request/edit/{{ row.id }}/" class="btn btn-mini">Изменить</a><a href="/request/delete/{{ row.id }}/" class="btn btn-mini btn-danger">Удалить</a></div></td>#}
 		  </tr>
 		{% endfor %}
