@@ -201,22 +201,25 @@ $config['ntype'] = array('Не выбрано', 'жилое', 'нежилое');
 |  rname = string
 |    - Название на русском
 |
+|  sname = string
+|    - Короткое название на русском
+|
 |  price = string
 |    - Цена по умолчанию, если есть за кв\м
 |
 */
 $config['razd'] = array(
-                        array('name' => 'ar', 'rname' => 'Архитектурный Раздел', 'price' => '150'),
-                        array('name' => 'vk', 'rname' => 'Водоснабжение и Канализация', 'price' => '70'),
-                        array('name' => 'km', 'rname' => 'Конструкции Металлические', 'price' => '100'),
-                        array('name' => 'ov', 'rname' => 'Отопление Вентиляция', 'price' => '50'),
-                        array('name' => 'eo', 'rname' => 'Электрическое Оборудование', 'price' => '70'),
-                        array('name' => 'to', 'rname' => 'ТехОбследование', 'price' => '60'),
-                        array('name' => 'th', 'rname' => 'ТеХнология', 'price' => '120'),
-                        array('name' => 'tz', 'rname' => 'Техническое Заключение', 'price' => '50'),
-                        array('name' => 'apz', 'rname' => 'Архитектурно-Планировочное Задание', 'price' => '150'),
-                        array('name' => 'aro', 'rname' => 'Архитектурный Раздел Отдельный Вход', 'price' => '150'),
-                        array('name' => 'arop', 'rname' => 'Архитектурный Раздел Отдельного Входа с Приямком', 'price' => '150'),
+                        array('name' => 'ar', 'rname' => 'Архитектурный Раздел', 'sname' => 'АР', 'price' => '150'),
+                        array('name' => 'vk', 'rname' => 'Водоснабжение и Канализация', 'sname' => 'ВК', 'price' => '70'),
+                        array('name' => 'km', 'rname' => 'Конструкции Металлические', 'sname' => 'КМ', 'price' => '100'),
+                        array('name' => 'ov', 'rname' => 'Отопление Вентиляция', 'sname' => 'ОВ', 'price' => '50'),
+                        array('name' => 'eo', 'rname' => 'Электрическое Оборудование', 'sname' => 'ЭО', 'price' => '70'),
+                        array('name' => 'to', 'rname' => 'ТехОбследование', 'sname' => 'ТО', 'price' => '60'),
+                        array('name' => 'th', 'rname' => 'ТеХнология', 'sname' => 'ТХ', 'price' => '120'),
+                        array('name' => 'tz', 'rname' => 'Техническое Заключение', 'sname' => 'ТЗ', 'price' => '50'),
+                        array('name' => 'apz', 'rname' => 'Архитектурно-Планировочное Задание', 'sname' => 'АПЗ', 'price' => '150'),
+                        array('name' => 'aro', 'rname' => 'Архитектурный Раздел Отдельный Вход', 'sname' => 'АРОВ', 'price' => '150'),
+                        array('name' => 'arop', 'rname' => 'Архитектурный Раздел Отдельного Входа с Приямком', 'sname' => 'АРОВП', 'price' => '150'),
                         array('name' => 'visit', 'rname' => 'Выезд на объект', 'price' => '0'),
                         );
 
@@ -320,24 +323,28 @@ $config['instance'] = array(
 $config['access'] = array(
     array('name' => 'Номер',                          'value' => 'loop.index',    'allow' => '2,3,4,6', 'self' => 'class="span2"', 'form' => 0),
     array('name' => 'Дата',                           'value' => 'date',          'allow' => '2,3,4,6', 'date-format' => 'd.m.Y в H:i', 'self' => 'class="span3"', 'form' => 0),
-    array('name' => 'ФИО',                            'value' => 'fname',         'allow' => '2,3,4,6', 'self' => 'class="span3"'),
-    array('name' => 'Телефон',                        'value' => 'phone',         'allow' => '2,3,4,6', 'self' => 'class="span3"'),
-    array('name' => 'Email адрес',                    'value' => 'email',         'allow' => '2,3,4,6', 'self' => 'class="span3"'),
-    array('name' => 'Район',                          'value' => 'region',        'allow' => '2,3,4,6', 'view' => 0, 'type' => 'select'),
-    array('name' => 'Адрес',                          'value' => 'address',       'allow' => '2,3,4,6', 'view' => 0),
+    array('name' => 'ФИО',                            'value' => 'fname',         'allow' => '2,3,6', 'self' => 'class="span3"'),
+    array('name' => 'Телефон',                        'value' => 'phone',         'allow' => '2,3,6', 'self' => 'class="span3"'),
+    array('name' => 'Email адрес',                    'value' => 'email',         'allow' => '2,3,6', 'self' => 'class="span3"'),
+    array('name' => 'Район',                          'value' => 'region',        'allow' => '2,3,6', 'view' => 0, 'type' => 'select'),
+    array('name' => 'Район',                          'value' => 'region',        'allow' => '4', 'type' => 'select', 'self' => 'class="span3"'),
+    array('name' => 'Адрес',                          'value' => 'address',       'allow' => '2,3,6', 'view' => 0),
+    array('name' => 'Адрес',                          'value' => 'address',       'allow' => '4', 'self' => 'class="span3"'),
     array('name' => 'Откуда узнали',                  'value' => 'hear',          'allow' => '2,3,6', 'view' => 0),
     array('name' => 'Дополнительная информация',      'value' => 'more',          'allow' => '2,3,4,6', 'view' => 0, 'type' => 'textarea'),
     array('name' => 'Назначение здания',              'value' => 'ztype',         'allow' => '2,3,4,6', 'view' => 0, 'type' => 'select'),
     array('name' => 'Назначение помещения',           'value' => 'ptype',         'allow' => '2,3,4,6', 'view' => 0, 'type' => 'select'),
     array('name' => 'Название проекта',               'value' => 'name',          'allow' => '2,3,4,6', 'view' => 0, 'add' => 0),
-    array('name' => 'Тип работ',                      'value' => 'rtype',         'allow' => '2,3,4,6', 'view' => 0, 'add' => 0),
+    array('name' => 'Стадийность проекта',            'value' => 'rtype',         'allow' => '2,3,4,6', 'view' => 0, 'add' => 0),
     array('name' => 'Площадь объекта',                'value' => 'footage',       'allow' => '2,3,4,6', 'view' => 0, 'add' => 0),
     array('name' => 'Документы',                      'value' => 'vdocs',         'allow' => '2,3,4,6', 'self' => 'class="span3"', 'form' => 0),
     array('name' => 'Работники',                      'value' => 'workers',       'allow' => '2,6', 'self' => 'class="span3"', 'form' => 0),
     array('name' => 'Состав проектной документации',  'value' => 'razd',          'allow' => '2,3,4,6', 'view' => 0, 'add' => 0, 'type' => 'checkbox'),
+    array('name' => 'Примечание ПД',                  'value' => 'pmore',         'allow' => '2,3,4,6', 'view' => 0, 'add' => 0, 'type' => 'textarea'),
+    array('name' => 'Объём работ ПД',                 'value' => 'total',         'allow' => '2,3,4,6', 'view' => 0, 'add' => 0, 'add-on' => 'Часов'),
     array('name' => 'Согласования',                   'value' => 'instance',      'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'type' => 'checkbox'),
-    array('name' => 'Примечание',                     'value' => 'pmore',         'allow' => '2,3,4,6', 'view' => 0, 'add' => 0, 'type' => 'textarea'),
-    array('name' => 'Общий объём работ',              'value' => 'total',         'allow' => '2,3,4,6', 'view' => 0, 'add' => 0),
+    array('name' => 'Примечание согл.',               'value' => 'smore',         'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'type' => 'textarea'),
+    array('name' => 'Общий объём работ',              'value' => 'atotal',        'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'add-on' => 'Дней'),
     array('name' => 'КП',                             'value' => 'kp',            'allow' => '2,3,6', 'form' => 0, 'self' => 'class="span3"'),
     array('name' => 'Действия',                       'value' => 'actions',       'allow' => '2,3,4,6', 'self' => 'width="5%"', 'form' => 0, 'self' => 'class="span3"')
 );

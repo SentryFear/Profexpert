@@ -28,8 +28,10 @@ class request_model extends CI_Model
 		foreach($form as $i) {
 			
 			if(!isset($i['form']) || $i['form'] != 0) {
-				
-				$insert1[$i['value']] = $this->input->post($i['value']);
+
+                $access = explode(",", $i['allow']);
+
+                if (in_array($this->dx_auth->get_role_id(), $access)) $insert1[$i['value']] = $this->input->post($i['value']);
 			}
 		}
 		
@@ -176,12 +178,18 @@ class request_model extends CI_Model
 		foreach($form as $i) {
 			
 			if(!isset($i['form']) || $i['form'] != 0) {
-				
-				if($i['value'] == 'razd') $orazd = 1;
-				
-				if($i['value'] == 'instance') $oins = 1;
-				
-				$update[$i['value']] = $this->input->post($i['value']);
+
+                $access = explode(",", $i['allow']);
+
+                if (in_array($this->dx_auth->get_role_id(), $access)) {
+
+                    if($i['value'] == 'razd') $orazd = 1;
+
+                    if($i['value'] == 'instance') $oins = 1;
+
+                    $update[$i['value']] = $this->input->post($i['value']);
+
+                }
 			}
 		}
 		

@@ -21,20 +21,13 @@ if (!function_exists('req_perm_in_view')) {
 
         foreach ($source as $i) {
 
-            $access = '';
+            $access = array();
 
             if (!isset($i[$type]) || $i[$type] != 0) {
-
-                //if($extra['is_admin'] == 1) {
-
-                //$table[] = $i;
-
-                //} else {
 
                 $access = explode(",", $i['allow']);
 
                 if (in_array($extra['role_id'], $access)) $table[] = $i;
-                //}
             }
         }
 
@@ -178,7 +171,9 @@ if (!function_exists('req_arr_to_table')) {
 
                     $act = '<li><a href="/request/edit/' . $i['id'] . '/">Изменить</a></li>';
 
-                    $act .= '<li><a href="/request/prints/' . $i['id'] . '/">Печать</a></li>';
+                    if($extra['role_id'] == 2 || $extra['role_id'] == 6 || $extra['role_id'] == 3) $act .= '<li><a href="/request/review/' . $i['id'] . '/">Просмотр</a></li>';
+
+                    //$act .= '<li><a href="/request/prints/' . $i['id'] . '/">Печать</a></li>';
 
                     if ($extra['is_admin']) $act .= '<li><a href="/request/delete/' . $i['id'] . '/" onClick="return confirm(\'Вы уверены что хотите удалить заявку?\')">Удалить</a></li>';
 
@@ -244,7 +239,19 @@ if (!function_exists('req_arr_to_form')) {
 
             if ($type == 'input') {
 
-                $inp = '<input class="inline-input" type="text" id="' . $val . '" name="' . $val . '" placeholder="' . $q['name'] . '" ' . $value . '/>';
+                $iclass = 'inline-input';
+
+                if(isset($q['add-on'])) {
+
+                    $inp .= '<div class="input-append">';
+
+                    $iclass = 'input-large';
+
+                }
+
+                $inp .= '<input class="' . $iclass . '" type="text" id="' . $val . '" name="' . $val . '" placeholder="' . $q['name'] . '" ' . $value . '/>';
+
+                if(isset($q['add-on'])) $inp .= '<span class="add-on">' . $q['add-on'] . '</span></div>';
 
             } elseif ($type == 'select') {
 
@@ -291,6 +298,10 @@ if (!function_exists('req_arr_to_form')) {
                         if (isset($data['footage'])) $val2 = $i['price'] * $data['footage'];
                         else $val2 = $i['price'];
 
+                        $plhold = $i['rname'];
+
+                        if(!empty($i['sname'])) $plhold = $i['sname'];
+
                         if (isset($value[$i['name']])) {
 
                             $sel = 'checked';
@@ -302,36 +313,36 @@ if (!function_exists('req_arr_to_form')) {
                             $all += $val1;
 
                             $inp .= '<tr>
-					<td>
-					    <div class="input-prepend input-append">
-						<span class="add-on" style="line-height: 17px;">
-						    <input type="checkbox" id="' . $i['name'] . 'ch" name="' . $i['name'] . 'ch" value="1" style="margin: 0;" ' . $sel . '/>
-						</span>';
+                                        <td>
+                                            <div class="input-prepend input-append">
+                                            <span class="add-on" style="line-height: 17px;">
+                                                <input type="checkbox" id="' . $i['name'] . 'ch" name="' . $i['name'] . 'ch" value="1" style="margin: 0;" ' . $sel . '/>
+                                            </span>';
 
-                            if ($extra['user_info']['role_id'] != 4) $inp .= '<input id="' . $i['name'] . '" name="' . $i['name'] . 'pr" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $i['rname'] . ' рублей" value="' . $val2 . '">';
+                            if ($extra['user_info']['role_id'] != 4) $inp .= '<input id="' . $i['name'] . '" name="' . $i['name'] . 'pr" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $plhold . ' рублей" value="' . $val2 . '">';
 
-                            $inp .= '<input id="' . $i['name'] . '" name="' . $i['name'] . '" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $i['rname'] . ' чел./час" value="' . $val1 . '">
-						<span class="add-on">' . $i['rname'] . '</span>
-					    </div>
-					</td>
-				    </tr>';
+                            $inp .= '<input id="' . $i['name'] . '" name="' . $i['name'] . '" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $plhold . '" value="' . $val1 . '">
+                                            <span class="add-on"> чел./час ' . $i['rname'] . '</span>
+                                            </div>
+                                        </td>
+                                     </tr>';
 
                         } elseif ($extra['user_info']['role_id'] != 6 && $extra['user_info']['role_id'] != 3 && $extra['user_info']['role_id'] != 2 ) {
 
                             $inp .= '<tr>
-				    <td>
-					<div class="input-prepend input-append">
-					    <span class="add-on" style="line-height: 17px;">
-						<input type="checkbox" id="' . $i['name'] . 'ch" name="' . $i['name'] . 'ch" value="1" style="margin: 0;" ' . $sel . '/>
-					    </span>';
+                                        <td>
+                                        <div class="input-prepend input-append">
+                                            <span class="add-on" style="line-height: 17px;">
+                                            <input type="checkbox" id="' . $i['name'] . 'ch" name="' . $i['name'] . 'ch" value="1" style="margin: 0;" ' . $sel . '/>
+                                            </span>';
 
-                            if ($extra['user_info']['role_id'] != 4) $inp .= '<input id="' . $i['name'] . '" name="' . $i['name'] . 'pr" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $i['rname'] . ' рублей" value="' . $val2 . '">';
+                            if ($extra['user_info']['role_id'] != 4) $inp .= '<input id="' . $i['name'] . '" name="' . $i['name'] . 'pr" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $plhold . ' рублей" value="' . $val2 . '">';
 
-                            $inp .= '<input id="' . $i['name'] . '" name="' . $i['name'] . '" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $i['rname'] . ' чел./час" value="' . $val1 . '">
-					    <span class="add-on">' . $i['rname'] . '</span>
-					</div>
-				    </td>
-				</tr>';
+                            $inp .= '<input id="' . $i['name'] . '" name="' . $i['name'] . '" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $plhold . '" value="' . $val1 . '">
+                                            <span class="add-on"> чел./час ' . $i['rname'] . '</span>
+                                        </div>
+                                        </td>
+                                    </tr>';
                         }
                     }
 
@@ -387,30 +398,30 @@ if (!function_exists('req_arr_to_form')) {
                                 $all += $val1;
 
                                 $inp .= '<tr>
-				    <td>
-					<div class="input-prepend input-append">
-					    <span class="add-on" style="line-height: 17px;">
-						<input type="checkbox" id="' . $i['name'] . 'ch" name="' . $i['name'] . 'ch" value="1" style="margin: 0;" ' . $sel . '/>
-					    </span>
-					    <input id="' . $i['name'] . '" name="' . $i['name'] . '" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $i['rname'] . ' руб." value="' . $val1 . '">
-					    <span class="add-on">руб. ' . $i['rname'] . '</span>
-					</div>
-				    </td>
-				</tr>';
+                                            <td>
+                                            <div class="input-prepend input-append">
+                                                <span class="add-on" style="line-height: 17px;">
+                                                <input type="checkbox" id="' . $i['name'] . 'ch" name="' . $i['name'] . 'ch" value="1" style="margin: 0;" ' . $sel . '/>
+                                                </span>
+                                                <input id="' . $i['name'] . '" name="' . $i['name'] . '" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $i['rname'] . ' руб." value="' . $val1 . '">
+                                                <span class="add-on">руб. ' . $i['rname'] . '</span>
+                                            </div>
+                                            </td>
+                                        </tr>';
 
                             } elseif ($extra['user_info']['role_id'] != 6) {
 
                                 $inp .= '<tr>
-				    <td>
-					<div class="input-prepend input-append">
-					    <span class="add-on" style="line-height: 17px;">
-						<input type="checkbox" id="' . $i['name'] . 'ch" name="' . $i['name'] . 'ch" value="1" style="margin: 0;" ' . $sel . '/>
-					    </span>
-					    <input id="' . $i['name'] . '" name="' . $i['name'] . '" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $i['rname'] . ' руб." value="' . $val1 . '">
-					    <span class="add-on">руб. ' . $i['rname'] . '</span>
-					</div>
-				    </td>
-				</tr>';
+                                            <td>
+                                            <div class="input-prepend input-append">
+                                                <span class="add-on" style="line-height: 17px;">
+                                                <input type="checkbox" id="' . $i['name'] . 'ch" name="' . $i['name'] . 'ch" value="1" style="margin: 0;" ' . $sel . '/>
+                                                </span>
+                                                <input id="' . $i['name'] . '" name="' . $i['name'] . '" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $i['rname'] . ' руб." value="' . $val1 . '">
+                                                <span class="add-on">руб. ' . $i['rname'] . '</span>
+                                            </div>
+                                            </td>
+                                        </tr>';
                             }
                         }
                     }
