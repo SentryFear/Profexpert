@@ -54,21 +54,6 @@ class Twig
 		
 			$data['segments'] = $this->CI->uri->segment_array();
 			
-			/*$topmenu = "<ul class='nav'>";
-			
-			foreach($data['menu'] as $i) {
-				
-				$topmenu .= "<li ";
-				
-				if($this->CI->uri->segment(2) === FALSE && trim($this->CI->uri->segment(1), "/") == trim($i['cpu'], "/")) $topmenu .= "class='active'";
-				
-				$topmenu .= "><a href='$i[cpu]' $i[self]>$i[name]</a></li>";
-			}
-			
-			$topmenu .= "</ul>";
-			
-			$data['topmenu'] = $topmenu;*/
-			
 			$access = array();
 			
 			$permission = array();
@@ -84,8 +69,6 @@ class Twig
 			}
 			
 			$data['access'] = $this->CI->dx_auth->is_admin() ? 'admin' : $access;
-			
-			//var_dump($access);
 			
 			$user['id'] = $this->CI->dx_auth->get_user_id();
 			

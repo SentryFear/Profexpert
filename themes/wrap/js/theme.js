@@ -1,5 +1,11 @@
 $(function () {
-  
+
+    $(window).scroll(function() {
+        var top = $(document).scrollTop();
+        if (top > 115) $('.form-actions .btn-group').addClass('fix-action');
+        else $('.form-actions .btn-group').removeClass('fix-action');
+    });
+
   $( document ).ajaxStart(function() {
     $( "#loading" ).show();
   });
@@ -9,9 +15,9 @@ $(function () {
   });
   
   $("#loading").bind("ajaxSend", function(){
-      $(this).show(); // показываем элемент
+      $(this).show(); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   }).bind("ajaxComplete", function(){
-      $(this).hide(); // скрываем элемент
+      $(this).hide(); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   });
   
   var $window = $(window)

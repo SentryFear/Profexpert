@@ -226,6 +226,7 @@ if (!function_exists('req_arr_to_form')) {
         $result .= '<form class="form-horizontal" method="POST" enctype="multipart/form-data" autocomplete="off">';
 
         if (empty($data)) $result .= '<div class="modal-body">';
+        else $result .= '<div class="form-actions"><div class="btn-group" style="float:left;"><input type="submit" class="btn btn-primary" name="add" value="Сохранить" /></div><div style="float: left; position: relative; height: 30px;">&nbsp;</div></div>';
 
         foreach ($source as $q) {
 
@@ -425,7 +426,7 @@ if (!function_exists('req_arr_to_form')) {
 
         if (empty($data)) $result .= '</div><div class="modal-footer"><div class="btn-group"><button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button><input type="submit" class="btn btn-primary" name="add" value="Добавить" /></div></div></form>';
 
-        if (!empty($data)) $result .= '<div class="form-actions"><div class="btn-group"><input type="submit" class="btn btn-primary" name="add" value="Изменить" /></div></div></form>';
+        if (!empty($data)) $result .= '<div class="form-actions"><div class="btn-group"><input type="submit" class="btn btn-primary" name="add" value="Сохранить" style="margin-left: 403px;" /></div></div></form>';
 
         if (empty($data)) $result .= '</div>';
 
