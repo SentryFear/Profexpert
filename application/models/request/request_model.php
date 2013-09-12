@@ -281,10 +281,6 @@ class request_model extends CI_Model
 				
 				$formdata['user_info'] = $this->dx_auth->get_all_data();
 				
-				//$access = $this->dx_auth->check_permissions('request');
-				
-				//if($this->dx_auth->is_admin() == 1) $access = 'is_admin';
-				
 				$source = req_perm_in_view($this->config->item('access'), $type = 'form', $this->dx_auth->get_all_data());
 				
 				$data['result'] = req_arr_to_form($source, $formdata, $data['result'], 'edit');
@@ -299,9 +295,13 @@ class request_model extends CI_Model
 				
 				$data['result']['razd'] = array();
 				
-				foreach($formdata['razd'] as $k => $i) {
-					
-					if(isset($razd[$k])) $data['result']['razd'][$i] = $razd[$k];
+				foreach($formdata['razd'] as $i) {
+
+                    $bname = $i['rname'];
+
+                    if(!empty($i['sname'])) $bname = $i['sname'];
+
+					if(isset($razd[$i['name']])) $data['result']['razd'][$bname] = $razd[$i['name']]['hours'];
 				}
 			}
 			

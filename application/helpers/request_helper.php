@@ -169,11 +169,18 @@ if (!function_exists('req_arr_to_table')) {
 
                 if ($val == 'actions') {
 
-                    $act = '<li><a href="/request/edit/' . $i['id'] . '/">Изменить</a></li>';
+                    $act = '';
+
+                    if($extra['role_id'] != 4) $act = '<li><a href="/request/edit/' . $i['id'] . '/">Изменить</a></li>';
 
                     if($extra['role_id'] == 2 || $extra['role_id'] == 6 || $extra['role_id'] == 3) $act .= '<li><a href="/request/review/' . $i['id'] . '/">Просмотр</a></li>';
 
-                    //$act .= '<li><a href="/request/prints/' . $i['id'] . '/">Печать</a></li>';
+                    if($extra['role_id'] == 4 && $i['kp'] == 1) {
+
+                        $act = '<li><a href="/request/edit/' . $i['id'] . '/">Изменить</a></li>';
+
+                        $act .= '<li><a href="/request/prints/' . $i['id'] . '/">Печать</a></li>';
+                    }
 
                     if ($extra['is_admin']) $act .= '<li><a href="/request/delete/' . $i['id'] . '/" onClick="return confirm(\'Вы уверены что хотите удалить заявку?\')">Удалить</a></li>';
 

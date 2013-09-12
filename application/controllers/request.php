@@ -344,17 +344,74 @@ class Request extends CI_Controller
 			
 			$name = explode(' ', $name);
 			
-			$data['user']['name'] =  $name[0]." ".mb_substr($name[1],0,1,'utf-8').". ".mb_substr($name[2],0,1,'utf-8').". ";
-			
+			$data['user']['name'] =  $name[0];
+
+            if(isset($name[1])) $data['user']['name'] .= " " . mb_substr($name[1],0,1,'utf-8') . ".";
+
+            if(isset($name[2])) $data['user']['name'] .= " " . mb_substr($name[2],0,1,'utf-8') . ".";
+
 			$data['result'] = $this->request_model->get_request($id, 'data');
-		   
-			echo $this->twig->render('request/print.html', $data);
+
+            $html = $this->twig->render('request/print.html', $data);
+
+            //echo $html;
+
+            // Load library
+            $this->load->library('dompdf_gen');
+
+            // Convert to PDF
+            $this->dompdf->load_html($html);
+            $this->dompdf->render();
+            $this->dompdf->stream("$id.pdf");
 			
 		} else {
          
 			redirect("/request/");
 		}
 	}
+
+    /**
+     * Печать заявки
+     */
+    function review()
+    {
+        $data = array();
+
+        $data['region'] = $this->config->item('region');
+
+        $id = intval($this->uri->segment(3));
+
+        if(!empty($id) && $this->dx_auth->check_permissions('print') == 1) {
+
+            $name = $this->dx_auth->get_name();
+
+            $name = explode(' ', $name);
+
+            $data['user']['name'] =  $name[0];
+
+            if(isset($name[1])) $data['user']['name'] .= " " . mb_substr($name[1],0,1,'utf-8') . ".";
+
+            if(isset($name[2])) $data['user']['name'] .= " " . mb_substr($name[2],0,1,'utf-8') . ".";
+
+            $data['result'] = $this->request_model->get_request($id, 'data');
+
+            $html = $this->twig->render('request/review.html', $data);
+
+            //echo $html;
+
+            // Load library
+            $this->load->library('dompdf_gen');
+
+            // Convert to PDF
+            $this->dompdf->load_html($html);
+            $this->dompdf->render();
+            $this->dompdf->stream("$id.pdf");
+
+        } else {
+
+            redirect("/request/");
+        }
+    }
 
     /**
      * Удаление заявки
