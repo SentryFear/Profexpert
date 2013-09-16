@@ -4,44 +4,120 @@
         <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
         <title>Порядок производства работ</title>
         <style>
-            html {font-size: 11pt;}
+
+
+
+            body {
+                font-size: 10pt;
+                margin: 2.5cm 0;
+                text-align: justify;
+            }
+
             table p { margin: 0;}
+
             hr {
                 page-break-after: always;
                 border: 0;
+            }
+
+            #header,
+            #footer {
+                position: fixed;
+                left: 0;
+                right: 0;
+                font-size: 0.9em;
+            }
+
+            #header {
+                top: 0;
+                border-bottom: 0.1pt solid #aaa;
+            }
+
+            #footer {
+                bottom: 0;
+                border-top: 0.1pt solid #aaa;
+                height: 50px;
+            }
+
+            #header table,
+            #footer table {
+                width: 100%;
+                border-collapse: collapse;
+                border: none;
+            }
+
+            #header td,
+            #footer td {
+                padding: 0;
+                width: 50%;
             }
         </style>
     </head>
 
     <body>
-    <div>
-        <table width="672" style="border-collapse:collapse">
+    <div id="header">
+        <table>
+            <tbody>
+                <tr>
+                    <td valign="top"><img height="80px" src="themes/img/asd.png"></td>
+                    <td valign="top" style="text-align: right;">
+                        <b>ООО «ПРОФЭКСПЕРТ»</b><br>
+                        Юр. адрес: 195027, г. Санкт – Петербург,<br>
+                        Пискаревский пр., д. 2, БЦ «Бенуа»<br>
+                        Т./ф:	+7(812) 702-73-73, +7(812) 665-30-42
+                    </td>
+                </tr>
             <tr>
-                <td width="53.9%" valign="top">
-                    <p>Исх. №    /13 от 22.08.2013</p></td>
-                <td width="46.1%" valign="top">
-                    <p><strong>Ольге Ивановне</strong></p>
-                    <p><strong>e</strong><strong>-</strong><strong>mail</strong><strong>: </strong><strong>pvt</strong><strong>611@</strong><strong>yandex</strong><strong>.</strong><strong>ru</strong></p></td> </tr>
+                <td colspan="2" valign="top">
+                    <p>Исх. № {{ result.id }}/{{ "now"|date("y") }} от {{ "now"|date("d.m.y") }}</p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="footer">
+        <table width="100%">
+            <tbody>
+                <tr>
+                    <td valign="top" width="35%"><br><img height="80px" src="themes/img/dsa.jpg"></td>
+                    <td valign="top" style="color: #444; text-align: justify;"><br>
+                        <p align="justify">ИНН/КПП:7810039009/781401001	Р/с  № 40702810407160000166  в</p>
+                        <p align="justify">ОКПО: 77753201,  БИК 044030809	Филиал «Петровский» ОАО Банк</p>
+                        <p align="justify">Кор.сч. №30101810600000000809	«ОТКРЫТИЕ»  г. Санкт-Петербург</p>
+                        <p align="center"><em>Свидетельство №0323-2012-7810039009-02</em></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <table width="100%" style="border-collapse:collapse">
             <tr>
                 <td valign="bottom">
-                    <p><strong><em>О стоимости разработки и согласования проекта перепланировки квартиры площадью 43 м&sup2;  по адресу: Санкт-Петербург, Ланское ш., д. 22, к. 3, кв. 7</em></strong></p></td>
-                <td valign="bottom" /> </tr> </table>
+                    <p><strong><em>О стоимости разработки и согласования проекта перепланировки квартиры площадью 43 м&sup2;  по адресу: Санкт-Петербург, Ланское ш., д. 22, к. 3, кв. 7</em></strong></p>
+                </td>
+                <td width="40%" valign="top">
+                    <p><strong><em>Заказчик:</em></strong> {{ result.fname }}</p>
+                    <p><strong><em>e-mail:</em></strong> {{ result.email }}</p>
+                </td>
+            </tr>
+        </table>
         <p align="center">Предварительный расчет стоимости </p>
-        <table width="660" style="border-collapse:collapse;border:none">
+        <table width="100%" style="border-collapse:collapse;border:none">
             <tr>
                 <td width="6.1%" style="border:solid windowtext 1.0pt">
                     <p align="center">№ п/п</p></td>
-                <td width="55.9%" style="border:solid windowtext 1.0pt;border-left:&#10;  none">
+                <td width="55.9%" style="border:solid windowtext 1.0pt;border-left:none">
                     <p align="center">Наименование</p></td>
-                <td width="19.8%" style="border:solid windowtext 1.0pt;border-left:&#10;  none">
+                <td width="19.8%" style="border:solid windowtext 1.0pt;border-left:none">
                     <p align="center">Стоимость работ</p>
                     <p align="center">(руб.)</p></td>
-                <td width="18.2%" style="border:solid windowtext 1.0pt;border-left:&#10;  none">
+                <td width="18.2%" style="border:solid windowtext 1.0pt;border-left:none">
                     <p align="center">Сроки исполнения (раб. день)</p></td> </tr>
             <tr>
                 <td style="border:solid windowtext 1.0pt" valign="top">
                     <p align="center">1</p></td>
-                <td style="border-top:none;border-left:&#10;  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" valign="top">
+                <td style="border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" valign="top">
                     <p>Получение исходно-разрешительной документации для разработки проекта</p></td>
                 <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt">
                     <p align="center">12 000</p></td>
@@ -50,7 +126,7 @@
             <tr>
                 <td style="border:solid windowtext 1.0pt" valign="top">
                     <p align="center">2</p></td>
-                <td style="border-top:none;border-left:&#10;  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" valign="top">
+                <td style="border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" valign="top">
                     <p>Разработка проекта перепланировки квартиры площадью 43м&sup2; по адресу: г. Санкт-Петербург, Ланское ш., д. 22, к. 3, кв. 7</p>
                     <p>Стадия проекта &ndash; &laquo;П&raquo;</p> Разделы:<br />
                     <p>АР &ndash; архитектурно-строительные решения</p>
@@ -64,7 +140,7 @@
             <tr>
                 <td width="6.1%" style="border:solid windowtext 1.0pt" valign="top">
                     <p align="center">3</p></td>
-                <td width="55.9%" style="border-top:none;border-left:&#10;  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" valign="top">
+                <td width="55.9%" style="border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" valign="top">
                     <p>Согласование проектной документации в установленном законодательством порядке в районной Межведомственной комиссии</p></td> </tr>
             <tr>
                 <td width="6.1%" style="border:solid windowtext 1.0pt" valign="top" />
@@ -74,8 +150,12 @@
                     <p align="center"><strong>57 000</strong></p></td>
                 <td width="18.2%" style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" /> </tr> </table>  Примечание: <br />
         <p>Стоимость проекта может измениться, если здание находится под охраной КГИОП.</p>
-        <p>Менеджер по работе с клиентами</p>
-        <p style="position: fixed;left: 0;right: 0;bottom: 20px;">ГК &laquo;ПРОФЭКСПЕРТ&raquo; ________________________ / Семичева Дарья  /</p>
+        <div style="position: fixed;left: 0;right: 0;bottom: 150px;">
+            <p>
+                Менеджер по работе с клиентами<br>
+                ГК &laquo;ПРОФЭКСПЕРТ&raquo; ________________________ / Семичева Дарья  /
+            </p>
+        </div>
     </div>
     <hr>
     <table style="border-collapse:collapse; border:none;" width="100%">
@@ -87,7 +167,7 @@
                 <td align="right"><b>Адрес</b></td>
                 <td colspan="4" style="padding: 5px 10px">г. Санкт-Петербург, {{ result.address }}</td>
             </tr>
-            <tr">
+            <tr>
                 <td align="right"><b>Площадь</b></td>
                 <td colspan="4" style="padding: 5px 10px">{{ result.footage }}</td>
             </tr>
@@ -111,16 +191,16 @@
             {% for razd in result.razd %}
                 {% set allpr = allpr + razd.price %}
                 <tr>
-                    <td colspan="2" style="border:thin black solid; border-width:1pt; padding: 5px;" valign="top">
+                    <td colspan="2" style="border:thin black solid; border-width:1pt; padding: 4px;" valign="top">
                         <p align="left">{% if razd.pname %} {{ razd.pname }} {% else %} {{ razd.rname }} {% endif %}</p>
                     </td>
-                    <td style="border:thin black solid; border-width:1pt; padding: 5px;" valign="top">
+                    <td style="border:thin black solid; border-width:1pt; padding: 4px;" valign="top">
                         <p align="center">{{ razd.sname }}</p>
                     </td>
-                    <td style="border:thin black solid; border-width:1pt; padding: 5px;">
+                    <td style="border:thin black solid; border-width:1pt; padding: 4px;">
                         <p align="right">{{ razd.price1|number_format(2, ',', ' ') }}</p>
                     </td>
-                    <td style="border:thin black solid; border-width:1pt; padding: 5px;">
+                    <td style="border:thin black solid; border-width:1pt; padding: 4px;">
                         <p align="right">{{ razd.price|number_format(2, ',', ' ') }}</p>
                     </td>
                 </tr>
@@ -149,10 +229,10 @@
             {% for instance in result.instance %}
                 {% set allip = allip + instance.price %}
                 <tr>
-                    <td colspan="4" style="border:thin black solid; border-width:1pt; padding: 5px;" valign="top">
+                    <td colspan="4" style="border:thin black solid; border-width:1pt; padding: 4px;" valign="top">
                         <p align="left">{{ instance.rname }}</p>
                     </td>
-                    <td style="border:thin black solid; border-width:1pt; padding: 5px;">
+                    <td style="border:thin black solid; border-width:1pt; padding: 4px;">
                         <p align="right">{{ instance.price|number_format(2, ',', ' ') }}</p>
                     </td>
                 </tr>
@@ -214,7 +294,7 @@
             </table><br><br>
             <p><em>* {{ result.pmore }}</em></p>
             <p><strong><em>Общий объем работ</em></strong> <em> на разработку и выпуск проектной документации: <strong><u>{{ result.total }} чел./час.</u></strong></em></p>
-            <p align="right" style="position: fixed;left: 0;right: 0;bottom: 20px;"><em><span style="color:black;">Подпись: _________________________</span></em></p>
+            <p align="right" style="position: fixed;left: 0;right: 0;bottom: 100px;"><em><span style="color:black;">Подпись: _________________________</span></em></p>
         </div>
     </body>
 </html>

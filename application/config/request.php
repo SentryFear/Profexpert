@@ -326,8 +326,8 @@ $config['instance'] = array(
 |
 */
 $config['access'] = array(
-    array('name' => 'Номер',                          'value' => 'loop.index',    'allow' => '2,3,4,6', 'self' => 'class="span2"', 'form' => 0),
-    array('name' => 'Дата',                           'value' => 'date',          'allow' => '2,3,4,6', 'date-format' => 'd.m.Y в H:i', 'self' => 'class="span3"', 'form' => 0),
+    array('name' => 'Номер',                          'value' => 'loop.index',    'allow' => '2,3,4,6', 'self' => 'class="span1"', 'form' => 0),
+    array('name' => 'Дата',                           'value' => 'date',          'allow' => '2,3,4,6', 'date-format' => 'd.m.Y', 'self' => 'class="span2"', 'form' => 0),
     array('name' => 'ФИО',                            'value' => 'fname',         'allow' => '2,3,6', 'self' => 'class="span3"'),
     array('name' => 'Телефон',                        'value' => 'phone',         'allow' => '2,3,6', 'self' => 'class="span3"', 'view' => 0),
     array('name' => 'Email адрес',                    'value' => 'email',         'allow' => '2,3,6', 'self' => 'class="span3"', 'view' => 0),
@@ -350,7 +350,7 @@ $config['access'] = array(
     array('name' => 'Согласования',                   'value' => 'instance',      'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'type' => 'checkbox'),
     array('name' => 'Примечание согл.',               'value' => 'smore',         'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'type' => 'textarea'),
     array('name' => 'Общий объём работ',              'value' => 'atotal',        'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'add-on' => 'Дней'),
-    array('name' => 'КП',                             'value' => 'kp',            'allow' => '2,3,6', 'form' => 0, 'self' => 'class="span3"'),
+    array('name' => 'КП',                             'value' => 'kp',            'allow' => '2,6', 'form' => 0, 'self' => 'class="span3"'),
     array('name' => 'Действия',                       'value' => 'actions',       'allow' => '2,3,4,6', 'self' => 'width="5%"', 'form' => 0, 'self' => 'class="span3"')
 );
 ?>
