@@ -307,8 +307,13 @@ class Request extends CI_Controller
 		$data['region'] = $this->config->item('region');
 		
 		$id = intval($this->uri->segment(3));
-		
-		if(!empty($id) && $this->dx_auth->check_permissions('edit') == 1) {
+
+        $perm = $this->dx_auth->check_permissions('edit');
+
+        //todo дописать проверку для проектировщиков
+        //if($this->dx_auth->get_user_id() == 4 && кп != 1) $perm = 0;
+
+		if(!empty($id) && $perm == 1) {
 			
 			if($this->input->post('add')) {
 			
@@ -381,19 +386,25 @@ class Request extends CI_Controller
 
         $id = intval($this->uri->segment(3));
 
-        if(!empty($id) && $this->dx_auth->check_permissions('print') == 1) {
+        if(!empty($id)) {
 
-            $name = $this->dx_auth->get_name();
+            $this->load->model('dx_auth/users_model');
 
-            $name = explode(' ', $name);
+
+
+            $data['result'] = $this->request_model->get_request($id, 'data');
+
+            $name = $this->users_model->get_user_by_id($data['result']['uid']);
+
+            $name = $name->result_array();
+            //var_dump($name);
+            $name = explode(' ', $name[0]['name']);
 
             $data['user']['name'] =  $name[0];
 
             if(isset($name[1])) $data['user']['name'] .= " " . mb_substr($name[1],0,1,'utf-8') . ".";
 
             if(isset($name[2])) $data['user']['name'] .= " " . mb_substr($name[2],0,1,'utf-8') . ".";
-
-            $data['result'] = $this->request_model->get_request($id, 'data');
 
             $html = $this->twig->render('request/review.html', $data);
 

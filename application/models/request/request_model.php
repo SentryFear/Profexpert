@@ -252,7 +252,8 @@ class request_model extends CI_Model
 			     );
 		
 		$this->load->helper('request');
-		
+
+        //редактирование или печать
 		if($id != null) {
 			
 			//GetData
@@ -266,7 +267,10 @@ class request_model extends CI_Model
 			$ntype = $this->config->item('ntype');
 			
 			$formdata['razd'] = $this->config->item('razd');
-			
+
+            $formdata['instance'] = $this->config->item('instance');
+
+            //форма редактирования
 			if($view == 'FormTable') {
 			
 				$data['table'] = $this->config->item('access');
@@ -277,14 +281,13 @@ class request_model extends CI_Model
 				
 				$formdata['ztype'] = $ntype;
 				
-				$formdata['instance'] = $this->config->item('instance');
-				
 				$formdata['user_info'] = $this->dx_auth->get_all_data();
 				
 				$source = req_perm_in_view($this->config->item('access'), $type = 'form', $this->dx_auth->get_all_data());
 				
 				$data['result'] = req_arr_to_form($source, $formdata, $data['result'], 'edit');
-			
+
+            //печать
 			} else {
 				
 				$data['result']['ptype'] = $ntype[$data['result']['ptype']];
@@ -292,17 +295,36 @@ class request_model extends CI_Model
 				$data['result']['ztype'] = $ntype[$data['result']['ztype']];
 				
 				$razd = unserialize($data['result']['razd']);
-				
-				$data['result']['razd'] = array();
-				
-				foreach($formdata['razd'] as $i) {
 
-                    $bname = $i['rname'];
+                $data['result']['razd'] = array();
 
-                    if(!empty($i['sname'])) $bname = $i['sname'];
+                foreach($formdata['razd'] as $i) {
 
-					if(isset($razd[$i['name']])) $data['result']['razd'][$bname] = $razd[$i['name']]['hours'];
-				}
+                    if(isset($razd[$i['name']])){
+
+                        $rs = array_merge($i, $razd[$i['name']]);
+
+                        $rs['price1'] = $i['price'];
+
+                        $data['result']['razd'][] = $rs;
+                    }
+                }
+
+                $instance = unserialize($data['result']['instance']);
+
+                $data['result']['instance'] = array();
+
+                foreach($formdata['instance'] as $i) {
+
+                    if(isset($i['name']) && isset($instance[$i['name']])){
+
+                        $rs = array_merge($i, $instance[$i['name']]);
+
+                        $rs['price1'] = $i['price'];
+
+                        $data['result']['instance'][] = $rs;
+                    }
+                }
 			}
 			
 		} else {

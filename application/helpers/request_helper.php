@@ -90,9 +90,16 @@ if (!function_exists('req_arr_to_table')) {
 
                 if (isset($q['date-format'])) $val = date($q['date-format'], $val);
 
-                if ($val == 'loop.index') $val = "<a href='/request/edit/" . $i['id'] . "/'>#" . $i['id'] . "</a>";
+                if ($val == 'loop.index') {
 
-                if ($q['value'] == 'fname') $val = '<span data-toggle="tooltip" data-original-title="' . $i['address'] . '">' . $i['fname'] . '</span>';
+                    $val = "<a href='/request/edit/" . $i['id'] . "/'>#" . $i['id'] . "</a>";
+
+                    if($extra['role_id'] == 4 && $i['ikp'] != 1) $val = "#" . $i['id'];
+                }
+
+                if ($q['value'] == 'fname') $val = '<span data-toggle="tooltip" data-original-title="' . $i['phone'] . ' - ' . $i['email'] . '">' . $i['fname'] . '</span>';
+
+                if ($q['value'] == 'address') $val = '<span data-toggle="tooltip" data-original-title="' . $i['region'] . '">' . $i['address'] . '</span>';
 
                 if ($val == 'vdocs') {
 
@@ -175,12 +182,14 @@ if (!function_exists('req_arr_to_table')) {
 
                     if($extra['role_id'] == 2 || $extra['role_id'] == 6 || $extra['role_id'] == 3) $act .= '<li><a href="/request/review/' . $i['id'] . '/">Просмотр</a></li>';
 
-                    if($extra['role_id'] == 4 && $i['kp'] == 1) {
+                    if($extra['role_id'] == 4 && $i['ikp'] == 1) {
 
                         $act = '<li><a href="/request/edit/' . $i['id'] . '/">Изменить</a></li>';
 
                         $act .= '<li><a href="/request/prints/' . $i['id'] . '/">Печать</a></li>';
                     }
+
+                    if($extra['role_id'] == 4 && $i['ikp'] > 1) $act = '<li><a href="/request/prints/' . $i['id'] . '/">Печать</a></li>';
 
                     if ($extra['is_admin']) $act .= '<li><a href="/request/delete/' . $i['id'] . '/" onClick="return confirm(\'Вы уверены что хотите удалить заявку?\')">Удалить</a></li>';
 
@@ -302,7 +311,13 @@ if (!function_exists('req_arr_to_form')) {
 
                         $val1 = "";
 
-                        if (isset($data['footage'])) $val2 = $i['price'] * $data['footage'];
+                        if (isset($data['footage'])) {
+
+                            $data['footage'] = str_replace(",",".",$data['footage']);
+
+                            $val2 = $i['price'] * $data['footage'];
+                        }
+
                         else $val2 = $i['price'];
 
                         $plhold = $i['rname'];

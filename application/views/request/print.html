@@ -30,14 +30,14 @@
             </td>
         </tr>
         {% set allr = 0 %}
-        {% for key,razd in result.razd %}
-        {% set allr = allr + razd %}
+        {% for razd in result.razd %}
+        {% set allr = allr + razd.hours %}
         <tr>
             <td style="border:thin black solid;border-top:none; border-width:0 1pt 1pt 2pt;" valign="top">
-                <p align="center"><em><span style="color:black">{{ key }}</span></em></p>
+                <p align="center"><em><span style="color:black">{{ razd.sname }}</span></em></p>
             </td>
             <td style="border:thin black solid;border-top:none;border-left: none;border-width:0 2pt 1pt 0;" valign="top">
-                <p align="center"><em><span style="color:black">{{ razd }}</span></em></p>
+                <p align="center"><em><span style="color:black">{{ razd.hours }}</span></em></p>
             </td>
         </tr>
         {% endfor %}
