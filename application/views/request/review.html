@@ -9,7 +9,7 @@
 
             body {
                 font-size: 10pt;
-                margin: 2.5cm 0;
+                margin: 1cm 0;
                 text-align: justify;
             }
 
@@ -23,18 +23,18 @@
             #header,
             #footer {
                 position: fixed;
-                left: 0;
-                right: 0;
+                left: -25;
+                right: -10;
                 font-size: 0.9em;
             }
 
             #header {
-                top: 0;
+                top: -45px;
                 border-bottom: 0.1pt solid #aaa;
             }
 
             #footer {
-                bottom: 0;
+                bottom: 0px;
                 border-top: 0.1pt solid #aaa;
                 height: 50px;
             }
@@ -64,7 +64,7 @@
                         <b>ООО «ПРОФЭКСПЕРТ»</b><br>
                         Юр. адрес: 195027, г. Санкт – Петербург,<br>
                         Пискаревский пр., д. 2, БЦ «Бенуа»<br>
-                        Т./ф:	+7(812) 702-73-73, +7(812) 665-30-42
+                        Т./ф: +7(812) 665-30-42
                     </td>
                 </tr>
             <tr>
@@ -79,8 +79,8 @@
         <table width="100%">
             <tbody>
                 <tr>
-                    <td valign="top" width="35%"><br><img height="80px" src="themes/img/dsa.jpg"></td>
-                    <td valign="top" style="color: #444; text-align: justify;"><br>
+                    <td valign="bottom"><br><img height="80px" src="themes/img/dsa.jpg"></td>
+                    <td valign="bottom" style="color: #444; text-align: right;"><br>
                         <p align="justify">ИНН/КПП:7810039009/781401001	Р/с  № 40702810407160000166  в</p>
                         <p align="justify">ОКПО: 77753201,  БИК 044030809	Филиал «Петровский» ОАО Банк</p>
                         <p align="justify">Кор.сч. №30101810600000000809	«ОТКРЫТИЕ»  г. Санкт-Петербург</p>
@@ -94,62 +94,65 @@
         <table width="100%" style="border-collapse:collapse">
             <tr>
                 <td valign="bottom">
-                    <p><strong><em>О стоимости разработки и согласования проекта перепланировки квартиры площадью 43 м&sup2;  по адресу: Санкт-Петербург, Ланское ш., д. 22, к. 3, кв. 7</em></strong></p>
+                    <p><strong><em>{{ result.kpname }}</em></strong></p>
                 </td>
-                <td width="40%" valign="top">
+                <td width="40%" valign="top" style="text-align: right;">
                     <p><strong><em>Заказчик:</em></strong> {{ result.fname }}</p>
+                    <p><strong><em>Тел:</em></strong> {{ result.phone }}</p>
                     <p><strong><em>e-mail:</em></strong> {{ result.email }}</p>
                 </td>
             </tr>
         </table>
         <p align="center">Предварительный расчет стоимости </p>
-        <table width="100%" style="border-collapse:collapse;border:none">
+        <table width="100%" style="border-collapse:collapse; border:none">
             <tr>
-                <td width="6.1%" style="border:solid windowtext 1.0pt">
-                    <p align="center">№ п/п</p></td>
+                <td width="6%" style="border:solid windowtext 1.0pt">
+                    <p align="center">№<br>п/п</p>
+                </td>
                 <td width="55.9%" style="border:solid windowtext 1.0pt;border-left:none">
-                    <p align="center">Наименование</p></td>
+                    <p align="center">Наименование</p>
+                </td>
                 <td width="19.8%" style="border:solid windowtext 1.0pt;border-left:none">
                     <p align="center">Стоимость работ</p>
-                    <p align="center">(руб.)</p></td>
+                    <p align="center">(руб.)</p>
+                </td>
                 <td width="18.2%" style="border:solid windowtext 1.0pt;border-left:none">
-                    <p align="center">Сроки исполнения (раб. день)</p></td> </tr>
+                    <p align="center">Сроки исполнения (раб. день)</p>
+                </td>
+            </tr>
+            {% set tcoun = 0 %}
+            {% set tcopr = 0 %}
+            {% for traspr in result.traspr %}
+                {% set tcoun = tcoun + 1 %}
+                {% set tcopr = tcopr + traspr.price %}
+                <tr>
+                    <td style="border:solid windowtext 1.0pt; padding: 4px;" valign="top">
+                        <p align="center">{{ tcoun }}</p>
+                    </td>
+                    <td style="border:solid windowtext 1.0pt; padding: 4px;" valign="top">
+                        <p>{{ traspr.name|raw }}</p>
+                    </td>
+                    <td style="border:solid windowtext 1.0pt; padding: 4px;">
+                        <p align="center">{{ traspr.price|number_format(2, ',', ' ') }}</p>
+                    </td>
+                    <td style="border:solid windowtext 1.0pt; padding: 4px;">
+                        <p align="center">{{ traspr.srok }}</p>
+                    </td>
+                </tr>
+            {% endfor %}
             <tr>
-                <td style="border:solid windowtext 1.0pt" valign="top">
-                    <p align="center">1</p></td>
-                <td style="border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" valign="top">
-                    <p>Получение исходно-разрешительной документации для разработки проекта</p></td>
-                <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt">
-                    <p align="center">12 000</p></td>
-                <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt">
-                    <p align="center">12</p></td> </tr>
-            <tr>
-                <td style="border:solid windowtext 1.0pt" valign="top">
-                    <p align="center">2</p></td>
-                <td style="border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" valign="top">
-                    <p>Разработка проекта перепланировки квартиры площадью 43м&sup2; по адресу: г. Санкт-Петербург, Ланское ш., д. 22, к. 3, кв. 7</p>
-                    <p>Стадия проекта &ndash; &laquo;П&raquo;</p> Разделы:<br />
-                    <p>АР &ndash; архитектурно-строительные решения</p>
-                    <p>ВК &ndash; водопровод и канализация</p>
-                    <p>*ЭО &ndash; электроснабжение и электроосвещение</p>
-                    <p><em>*ЭО раздел разрабатывается в пределах мощности по ТУ. Раздел разрабатывается для согласования проекта в МВК</em></p></td>
-                <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" rowspan="2">
-                    <p align="center">45 000</p></td>
-                <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" rowspan="2">
-                    <p align="center">70</p></td> </tr>
-            <tr>
-                <td width="6.1%" style="border:solid windowtext 1.0pt" valign="top">
-                    <p align="center">3</p></td>
-                <td width="55.9%" style="border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" valign="top">
-                    <p>Согласование проектной документации в установленном законодательством порядке в районной Межведомственной комиссии</p></td> </tr>
-            <tr>
-                <td width="6.1%" style="border:solid windowtext 1.0pt" valign="top" />
-                <td width="55.9%" style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt">
-                    <p align="right"><strong>Итого:</strong></p></td>
-                <td width="19.8%" style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt">
-                    <p align="center"><strong>57 000</strong></p></td>
-                <td width="18.2%" style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" /> </tr> </table>  Примечание: <br />
-        <p>Стоимость проекта может измениться, если здание находится под охраной КГИОП.</p>
+                <td style="border:none;" />
+                <td style="border:none;">
+                    <p align="right"><strong>Итого:</strong></p>
+                </td>
+                <td style="border:none;">
+                    <p align="center"><strong>{{ tcopr|number_format(2, ',', ' ') }}</strong></p>
+                </td>
+                <td style="border:none;" />
+            </tr>
+        </table>
+        Примечание: <br />
+        <p>{{ result.kpmore|raw }}</p>
         <div style="position: fixed;left: 0;right: 0;bottom: 150px;">
             <p>
                 Менеджер по работе с клиентами<br>
@@ -158,98 +161,100 @@
         </div>
     </div>
     <hr>
-    <table style="border-collapse:collapse; border:none;" width="100%">
-            <tr>
-                <td align="right"><b>Проект</b></td>
-                <td colspan="4" style="padding: 5px 10px">{{ result.name }}</td>
-            </tr>
-            <tr>
-                <td align="right"><b>Адрес</b></td>
-                <td colspan="4" style="padding: 5px 10px">г. Санкт-Петербург, {{ result.address }}</td>
-            </tr>
-            <tr>
-                <td align="right"><b>Площадь</b></td>
-                <td colspan="4" style="padding: 5px 10px">{{ result.footage }}</td>
-            </tr>
-            <tr>
-                <td align="right"><b>Часы</b></td>
-                <td colspan="4" style="padding: 5px 10px">{{ result.total }} ({{ result.atotal }} дн.)</td>
-            </tr>
-            <tr>
-                <td width="50%" colspan="2" valign="top" style="border:thin black solid; border-width:1pt;">
-                    <p align="center">Разделы</p>
-                </td>
-                <td width="25%" valign="top" style="border:thin black solid; border-width:1pt;"></td>
-                <td width="25%" valign="top" style="border:thin black solid; border-width:1pt;">
-                    <p align="center">Стоимость м<sup>2</sup></p>
-                </td>
-                <td width="25%" valign="top" style="border:thin black solid; border-width:1pt;">
-                    <p align="center">Итого</p>
-                </td>
-            </tr>
-            {% set allpr = 0 %}
-            {% for razd in result.razd %}
-                {% set allpr = allpr + razd.price %}
+    <div><br>
+        <table style="border-collapse:collapse;" width="100%">
                 <tr>
-                    <td colspan="2" style="border:thin black solid; border-width:1pt; padding: 4px;" valign="top">
-                        <p align="left">{% if razd.pname %} {{ razd.pname }} {% else %} {{ razd.rname }} {% endif %}</p>
+                    <td align="right"><b>Проект</b></td>
+                    <td colspan="4" style="padding: 5px 10px">{{ result.name }}</td>
+                </tr>
+                <tr>
+                    <td align="right"><b>Адрес</b></td>
+                    <td colspan="4" style="padding: 5px 10px">г. Санкт-Петербург, {{ result.address }}</td>
+                </tr>
+                <tr>
+                    <td align="right"><b>Площадь</b></td>
+                    <td colspan="4" style="padding: 5px 10px">{{ result.footage }}</td>
+                </tr>
+                <tr>
+                    <td align="right"><b>Часы</b></td>
+                    <td colspan="4" style="padding: 5px 10px">{{ result.total }} ({{ result.atotal }} дн.)</td>
+                </tr>
+                <tr>
+                    <td width="50%" colspan="2" valign="top" style="border:thin black solid; border-width:1pt;">
+                        <p align="center">Разделы</p>
                     </td>
-                    <td style="border:thin black solid; border-width:1pt; padding: 4px;" valign="top">
-                        <p align="center">{{ razd.sname }}</p>
+                    <td width="25%" valign="top" style="border:thin black solid; border-width:1pt;"></td>
+                    <td width="25%" valign="top" style="border:thin black solid; border-width:1pt;">
+                        <p align="center">Стоимость м<sup>2</sup></p>
                     </td>
-                    <td style="border:thin black solid; border-width:1pt; padding: 4px;">
-                        <p align="right">{{ razd.price1|number_format(2, ',', ' ') }}</p>
-                    </td>
-                    <td style="border:thin black solid; border-width:1pt; padding: 4px;">
-                        <p align="right">{{ razd.price|number_format(2, ',', ' ') }}</p>
+                    <td width="25%" valign="top" style="border:thin black solid; border-width:1pt;">
+                        <p align="center">Итого</p>
                     </td>
                 </tr>
-            {% endfor %}
-            <tr>
-                <td colspan="2"></td>
-                <td><p align="right"><em>Наценка</em></p></td>
-                <td><p align="right"><em>0,50</em></p></td>
-                <td><p align="right">{{ allpr|number_format(2, ',', ' ') }}</p></td>
-            </tr>
-            <tr>
-                <td colspan="3"></td>
-                <td><b>ИТОГО: </b></td>
-                <td><p align="right">{{ (allpr*2)|number_format(2, ',', ' ') }}</p></td>
-            </tr>
-            <tr><td colspan="5"><br></td></tr>
-            <tr>
-                <td width="50%" colspan="4" valign="top">
-                    <p align="center"><b>Согласование проекта</b></p>
-                </td>
-                <td width="25%" valign="top">
-                    <p align="center"><em>Стоимость</em></p>
-                </td>
-            </tr>
-            {% set allip = 0 %}
-            {% for instance in result.instance %}
-                {% set allip = allip + instance.price %}
+                {% set allpr = 0 %}
+                {% for razd in result.razd %}
+                    {% set allpr = allpr + razd.price %}
+                    <tr>
+                        <td colspan="2" style="border:thin black solid; border-width:1pt; padding: 4px;" valign="top">
+                            <p align="left">{% if razd.pname %} {{ razd.pname }} {% else %} {{ razd.rname }} {% endif %}</p>
+                        </td>
+                        <td style="border:thin black solid; border-width:1pt; padding: 4px;" valign="top">
+                            <p align="center">{{ razd.sname }}</p>
+                        </td>
+                        <td style="border:thin black solid; border-width:1pt; padding: 4px;">
+                            <p align="right">{{ razd.price1|number_format(2, ',', ' ') }}</p>
+                        </td>
+                        <td style="border:thin black solid; border-width:1pt; padding: 4px;">
+                            <p align="right">{{ razd.price|number_format(2, ',', ' ') }}</p>
+                        </td>
+                    </tr>
+                {% endfor %}
                 <tr>
-                    <td colspan="4" style="border:thin black solid; border-width:1pt; padding: 4px;" valign="top">
-                        <p align="left">{{ instance.rname }}</p>
+                    <td colspan="2"></td>
+                    <td><p align="right"><em>Наценка</em></p></td>
+                    <td><p align="right"><em>0,50</em></p></td>
+                    <td><p align="right">{{ allpr|number_format(2, ',', ' ') }}</p></td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                    <td><b>ИТОГО: </b></td>
+                    <td><p align="right">{{ (allpr*2)|number_format(2, ',', ' ') }}</p></td>
+                </tr>
+                <tr><td colspan="5"><br></td></tr>
+                <tr>
+                    <td width="50%" colspan="4" valign="top">
+                        <p align="center"><b>Согласование проекта</b></p>
                     </td>
-                    <td style="border:thin black solid; border-width:1pt; padding: 4px;">
-                        <p align="right">{{ instance.price|number_format(2, ',', ' ') }}</p>
+                    <td width="25%" valign="top">
+                        <p align="center"><em>Стоимость</em></p>
                     </td>
                 </tr>
-            {% endfor %}
-            <tr>
-                <td colspan="4"><p align="right"><em>Наценка</em></p></td>
-                <td><p align="right"><em>0,50</em></p></td>
-            </tr>
-            <tr>
-                <td colspan="4"><p align="right"><b>ИТОГО: </b></p></td>
-                <td><p align="right"><b>{{ (allip*2)|number_format(2, ',', ' ') }}</b></p></td>
-            </tr>
-            <tr>
-                <td colspan="4"><p align="right"><b><em style="text-decoration: underline;">ВСЕ РАБОТЫ</em></b></p></td>
-                <td><p align="right"><b><em style="text-decoration: underline;">{{ (allip*2+allpr*2)|number_format(2, ',', ' ') }}</em></b></p></td>
-            </tr>
-        </table>
+                {% set allip = 0 %}
+                {% for instance in result.instance %}
+                    {% set allip = allip + instance.price %}
+                    <tr>
+                        <td colspan="4" style="border:thin black solid; border-width:1pt; padding: 4px;" valign="top">
+                            <p align="left">{{ instance.rname }}</p>
+                        </td>
+                        <td style="border:thin black solid; border-width:1pt; padding: 4px;">
+                            <p align="right">{{ instance.price|number_format(2, ',', ' ') }}</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="4"><p align="right"><em>Наценка</em></p></td>
+                    <td><p align="right"><em>0,50</em></p></td>
+                </tr>
+                <tr>
+                    <td colspan="4"><p align="right"><b>ИТОГО: </b></p></td>
+                    <td><p align="right"><b>{{ (allip*2)|number_format(2, ',', ' ') }}</b></p></td>
+                </tr>
+                <tr>
+                    <td colspan="4"><p align="right"><b><em style="text-decoration: underline;">ВСЕ РАБОТЫ</em></b></p></td>
+                    <td><p align="right"><b><em style="text-decoration: underline;">{{ (allip*2+allpr*2)|number_format(2, ',', ' ') }}</em></b></p></td>
+                </tr>
+            </table>
+        </div>
         <hr>
         <div>
             <p align="center"><strong><em><u><span style="color:black">Объем работ на разработку проектной документации</span></u></em></strong></p>

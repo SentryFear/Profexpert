@@ -174,7 +174,11 @@ class request_model extends CI_Model
 		$instance = $this->config->item('instance');
 		
 		$orazd = 0;
-		
+
+        $oins = 0;
+
+        $traspr = 0;
+
 		foreach($form as $i) {
 			
 			if(!isset($i['form']) || $i['form'] != 0) {
@@ -186,6 +190,8 @@ class request_model extends CI_Model
                     if($i['value'] == 'razd') $orazd = 1;
 
                     if($i['value'] == 'instance') $oins = 1;
+
+                    if($i['value'] == 'traspr') $traspr = 1;
 
                     $update[$i['value']] = $this->input->post($i['value']);
 
@@ -207,7 +213,57 @@ class request_model extends CI_Model
 			$update['razd'] = $arazd;
 			
 		}
-		
+
+        if(!empty($traspr)) {
+
+            $traspr1 = array();
+
+            $row = $this->db->get_where('cCard', array('id' => $id))->row_array();
+
+            if(!empty($row['traspr'])) $traspr2 = unserialize($row['traspr']);
+
+            if(empty($traspr2)) $traspr2 = array();
+
+            foreach($traspr2 as $q) {
+
+                $q['name'] = $this->input->post('trasprname'.$q['id']);
+
+                $q['price'] = $this->input->post('trasprpr'.$q['id']);
+
+                $q['srok'] = $this->input->post('trasprsr'.$q['id']);
+
+                if(!empty($q['name'])) $traspr1[] = $q;
+            }
+
+            $traspr2 = $traspr1;
+
+            for($i=count($traspr2)+1;$i<=10;$i++) {
+
+                if($this->input->post('trasprname'.$i) && !empty($_POST['trasprname'.$i])) {
+
+                    $name = $this->input->post('trasprname'.$i);
+
+                    $price = $this->input->post('trasprpr'.$i);
+
+                    $srok = $this->input->post('trasprsr'.$i);
+
+                    $traspr2[] = array('id' => $i, 'price' => $price, 'name' => $name, 'srok' => $srok);
+                }
+            }
+
+            //var_dump($traspr2);
+
+            if(empty($traspr2)) {
+
+                $data['error'] = 'Произошла неожиданная ошибка, обратитесь к администратору.';
+
+            } else {
+
+                $update['traspr'] = serialize($traspr2);
+
+            }
+        }
+
 		if(!empty($oins)) {
 			
 			$ains = array();
@@ -324,6 +380,17 @@ class request_model extends CI_Model
 
                         $data['result']['instance'][] = $rs;
                     }
+                }
+
+                $traspr = array();
+
+                if(!empty($data['result']['traspr'])) $traspr = unserialize($data['result']['traspr']);
+
+                $data['result']['traspr'] = array();
+
+                foreach($traspr as $i) {
+
+                    $data['result']['traspr'][] = $i;
                 }
 			}
 			

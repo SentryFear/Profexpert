@@ -230,7 +230,7 @@ if (!function_exists('req_arr_to_table')) {
 if (!function_exists('req_arr_to_form')) {
     function req_arr_to_form($source, $extra, $data = array(), $allow = 'add')
     {
-        $result = '';
+        $result = '<style>ul{margin: 0;}</style>';
 
         if (empty($data)) $result .= '<div id="aNewReq" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="myModalLabel">Добавить заявку</h3></div>';
 
@@ -238,6 +238,14 @@ if (!function_exists('req_arr_to_form')) {
 
         if (empty($data)) $result .= '<div class="modal-body">';
         else $result .= '<div class="form-actions"><div class="btn-group" style="float:left;"><input type="submit" class="btn btn-primary" name="add" value="Сохранить" /></div><div style="float: left; position: relative; height: 30px;">&nbsp;</div></div>';
+
+        $totalrazd = '';
+
+        $totalpr = 0;
+
+        $totalsr = 0;
+
+        $totalipr = 0;
 
         foreach ($source as $q) {
 
@@ -269,6 +277,31 @@ if (!function_exists('req_arr_to_form')) {
 
                 if(isset($q['add-on'])) $inp .= '<span class="add-on">' . $q['add-on'] . '</span></div>';
 
+                if($val == 'traspr') {
+
+                    $inp = '<table width="100%" class="table table-hover addr"><thead><tr><th>№</th><th><span class="line"></span>Наименование</th><th><span class="line"></span>Стоимость работ<br>(руб.)</th><th><span class="line"></span>Сроки<br>исполнения<br>(раб. день)</th></tr></thead><tbody>';
+
+                    $value = unserialize($data[$val]);
+
+                    if(empty($value)) $value = array();
+
+                    foreach($value as $i) {
+
+                        $inp .= '<tr><td>'.$i['id'].'</td>';
+
+                        $inp .= '<td><textarea class="span6 wysihtml5" rows="5" id="' . $val . 'name' .$i['id']. '" name="' . $val . 'name' .$i['id']. '" placeholder="Наименование">' . $i['name'] . '</textarea></td>';
+
+                        $inp .= '<td><input class="inline-input" type="text" id="' . $val . 'pr' .$i['id']. '" name="' . $val . 'pr' .$i['id']. '" placeholder="Стоимость работ" value="' . $i['price'] . '"/></td>';
+
+                        $inp .= '<td><input class="inline-input" type="text" id="' . $val . 'sr' .$i['id']. '" name="' . $val . 'sr' .$i['id']. '" placeholder="Сроки исполнения" value="' . $i['srok'] . '"/></td></tr>';
+
+                    }
+
+                    $inp .= '</tbody></table><div class="addstr" data-count="'.(count($value)+1).'"></div>';
+
+                    $inp .= '<br><br><p><a href="javascript:void();" class="btn btn-success btn-mini" id="addstr1">Добавить строку</a></p>';
+                }
+
             } elseif ($type == 'select') {
 
                 if (!empty($value)) $value = $data[$val];
@@ -288,7 +321,7 @@ if (!function_exists('req_arr_to_form')) {
 
                 if (!empty($value)) $value = $data[$val];
 
-                $inp = '<textarea placeholder="' . $q['name'] . '" name="' . $val . '" id="' . $val . '">' . $value . '</textarea>';
+                $inp = '<textarea class="span10 wysihtml5" rows="10" placeholder="' . $q['name'] . '" name="' . $val . '" id="' . $val . '">' . $value . '</textarea>';
 
             } elseif ($type == 'checkbox') {
 
@@ -316,9 +349,8 @@ if (!function_exists('req_arr_to_form')) {
                             $data['footage'] = str_replace(",",".",$data['footage']);
 
                             $val2 = $i['price'] * $data['footage'];
-                        }
 
-                        else $val2 = $i['price'];
+                        } else $val2 = $i['price'];
 
                         $plhold = $i['rname'];
 
@@ -328,7 +360,13 @@ if (!function_exists('req_arr_to_form')) {
 
                             $sel = 'checked';
 
+                            if(!empty($i['sname'])) $totalrazd .= " - ".$i['sname']." - ".$i['rname']."<br>";
+
+                            $totalpr = $totalpr + $val2;
+
                             $val1 = $value[$i['name']]['hours'];
+
+                            $totalsr = $totalsr + $val1;
 
                             if(!empty($value[$i['name']]['price'])) $val2 = $value[$i['name']]['price'];
 
@@ -379,9 +417,11 @@ if (!function_exists('req_arr_to_form')) {
                         $value = unserialize($data[$val]);
                     }
 
-                    $inp = "<table class='table table-hover'><thead><tr><th>Согласование</th></tr></thead><tbody>";
+                    $inp = '<table class="table table-hover"><tbody><tr><td><a href="javascript:void(0);" onclick="$(\'.razd\').toggle();">Показать/Скрыть не отмеченные</a></td></tr>';
 
                     $all = 0;
+
+                    $view1 = 0;
 
                     foreach ($extra[$val] as $i) {
 
@@ -391,16 +431,21 @@ if (!function_exists('req_arr_to_form')) {
 
                             foreach ($i['names'] as $r) {
 
-                                if (isset($value[$r])) $view = 1;
+                                if (isset($value[$r])) {
+
+                                    $view = 1;
+
+                                    $view1 = 1;
+                                }
                             }
 
-                            if ($view == 1 && $extra['user_info']['role_id'] == 6) {
+                            if ($view == 1 || $view1 == 0) {
 
-                                $inp .= "<tr><th>" . $i['rname'] . "</th></tr>";
+                                $inp .= '<tr><th>' . $i['rname'] . '</th></tr>';
 
-                            } elseif ($extra['user_info']['role_id'] != 6) {
+                            } else {
 
-                                $inp .= "<tr><th>" . $i['rname'] . "</th></tr>";
+                                $inp .= '<tr class="razd" style="display:none;"><th>' . $i['rname'] . '</th></tr>';
                             }
 
                         } else {
@@ -416,6 +461,8 @@ if (!function_exists('req_arr_to_form')) {
                                 $val1 = $value[$i['name']]['price'];
 
                                 //$val2 = $value[$i['name']]['price'];
+
+                                $totalipr = $totalipr + $val1;
 
                                 $all += $val1;
 
@@ -433,7 +480,11 @@ if (!function_exists('req_arr_to_form')) {
 
                             } elseif ($extra['user_info']['role_id'] != 6) {
 
-                                $inp .= '<tr>
+                                $dnone = '';
+
+                                if($view1 != 0) $dnone = 'style="display:none;"';
+
+                                $inp .= '<tr class="razd" '.$dnone.'>
                                             <td>
                                             <div class="input-prepend input-append">
                                                 <span class="add-on" style="line-height: 17px;">
@@ -453,6 +504,24 @@ if (!function_exists('req_arr_to_form')) {
                     $inp .= "</tbody></table>";
                 }
             }
+
+            if($val == 'kpname') $result .= '<br><h3>Генерация коммерческого предложения</h3><hr>
+                            <div class="alert alert-info">
+                                <b>Основаная информация:</b><br>
+                                 - Адрес: <b>'.$data['address'].'</b><br>
+                                 - Район: <b>'.$extra['region'][$data['region']].'</b><br>
+                                 - Название проекта: <b>'.$data['name'].'</b><br>
+                                 - Площадь объекта: <b>'.$data['footage'].'м&sup2;</b><br><br>
+                                <b>Разделы:</b><br>'.$totalrazd.'<br>
+                                <b>Стоимость</b><br>
+                                 - Получение документации: стоимость - <b>12 000</b> руб., срок - <b>12</b> д.<br>
+                                 - Разработка проекта: стоимость - <b>'.number_format(($totalpr*2), '0', ',', ' ').'</b> руб., срок - <b>'.$data['atotal'].'</b> д.<br>
+                                 - Согласование проекта: стоимость - <b>'.number_format(($totalipr*2), '0', ',', ' ').'</b> руб., срок - <b>60</b> д.
+                            </div>';
+
+            if($val == 'instance') $result .= "<br><h3>Согласование</h3><hr>";
+
+            if($val == 'razd') $result .= "<br><h3>Проектный отдел</h3><hr>";
 
             if (!empty($val)) $result .= '<div class="control-group"><label class="control-label" for="' . $val . '">' . $q['name'] . '</label><div class="controls">' . $inp . '</div></div>';
         }
