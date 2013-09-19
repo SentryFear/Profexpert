@@ -193,7 +193,7 @@ class request_model extends CI_Model
 
                     if($i['value'] == 'traspr') $traspr = 1;
 
-                    $update[$i['value']] = $this->input->post($i['value']);
+                    $update[$i['value']] = str_replace('&nbsp;', ' ', $this->input->post($i['value']));
 
                 }
 			}
@@ -226,7 +226,7 @@ class request_model extends CI_Model
 
             foreach($traspr2 as $q) {
 
-                $q['name'] = $this->input->post('trasprname'.$q['id']);
+                $q['name'] = str_replace('&nbsp;', ' ', $this->input->post('trasprname'.$q['id']));
 
                 $q['price'] = $this->input->post('trasprpr'.$q['id']);
 
@@ -241,7 +241,7 @@ class request_model extends CI_Model
 
                 if($this->input->post('trasprname'.$i) && !empty($_POST['trasprname'.$i])) {
 
-                    $name = $this->input->post('trasprname'.$i);
+                    $name = str_replace('&nbsp;', ' ', $this->input->post('trasprname'.$i));
 
                     $price = $this->input->post('trasprpr'.$i);
 

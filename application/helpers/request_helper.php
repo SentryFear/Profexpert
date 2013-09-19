@@ -257,7 +257,7 @@ if (!function_exists('req_arr_to_form')) {
 
             if ($allow == 'add' && isset($q['add']) && $q['add'] == 0) $val = null;
 
-            if (!empty($data) && !empty($val) && isset($data[$val])) $value = 'value="' . $data[$val] . '"'; else $value = "";
+            if (!empty($data) && !empty($val) && !empty($data[$val])) $value = 'value="' . $data[$val] . '"'; else $value = "";
 
             if (isset($q['type'])) $type = $q['type'];
 
@@ -281,7 +281,7 @@ if (!function_exists('req_arr_to_form')) {
 
                     $inp = '<table width="100%" class="table table-hover addr"><thead><tr><th>№</th><th><span class="line"></span>Наименование</th><th><span class="line"></span>Стоимость работ<br>(руб.)</th><th><span class="line"></span>Сроки<br>исполнения<br>(раб. день)</th></tr></thead><tbody>';
 
-                    $value = unserialize($data[$val]);
+                    if(!empty($data[$val])) $value = unserialize($data[$val]);
 
                     if(empty($value)) $value = array();
 

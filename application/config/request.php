@@ -112,7 +112,7 @@ $config['status'] = array(
                                 array('name' => 'Отказано', 'fullname' => 'Заказчик отказался', 'class' => 'important', 'allow' => '3', 'logic' => 'ikp:7'),
                                 array('name' => 'В работе', 'fullname' => 'Заказчик согласился', 'class' => 'success', 'allow' => '3', 'logic' => 'ikp:8'),
                                 array('name' => 'Отправить', 'fullname' => 'Отправить повторно на согласование', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:9,ikp:12', 'uri' => '/request/send/optordor/'),
-                                array('name' => 'Доработка', 'fullname' => 'Отправить на доработку проектировщикам', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:9', 'uri' => '/request/send/optopr/'),
+                                array('name' => 'Доработка', 'fullname' => 'Отправить на доработку проектировщикам', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:9,ikp:2,ikp:3', 'uri' => '/request/send/optopr/'),
                                 array('name' => 'Согласовывается', 'fullname' => 'Заявка у руководства согласовывается после доработки', 'class' => 'info', 'allow' => '3', 'logic' => 'ikp:10'),
                                 array('name' => 'Дорабатывается', 'fullname' => 'Проектировщики дорабатывают', 'class' => 'info', 'allow' => '3', 'logic' => 'ikp:11'),
                             // Проектный отдел - id = 4

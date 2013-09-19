@@ -11,6 +11,7 @@
                 font-size: 10pt;
                 margin: 1cm 0;
                 text-align: justify;
+                font-family: serif;
             }
 
             table p { margin: 0;}
@@ -94,7 +95,7 @@
         <table width="100%" style="border-collapse:collapse">
             <tr>
                 <td valign="bottom">
-                    <p><strong><em>{{ result.kpname }}</em></strong></p>
+                    <p><strong><em>{{ result.kpname|raw }}</em></strong></p>
                 </td>
                 <td width="40%" valign="top" style="text-align: right;">
                     <p><strong><em>Заказчик:</em></strong> {{ result.fname }}</p>

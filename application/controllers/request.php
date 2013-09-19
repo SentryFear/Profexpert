@@ -332,8 +332,6 @@ class Request extends CI_Controller
 
     /**
      * Печать заявки
-     *
-     * TODO; Дописать печать кп
      */
     function prints() {
 		
@@ -389,8 +387,6 @@ class Request extends CI_Controller
         if(!empty($id)) {
 
             $this->load->model('dx_auth/users_model');
-
-
 
             $data['result'] = $this->request_model->get_request($id, 'data');
 
