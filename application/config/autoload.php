@@ -52,7 +52,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('database', 'session', 'twig', 'DX_Auth');
+$autoload['libraries'] = array('database', 'session', 'twig', 'DX_Auth', 'Notification');
 
 
 /*

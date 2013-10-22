@@ -51,7 +51,7 @@ class Card extends CI_Controller
 		
 		$this->config->load('request');
 		
-		$kpstatus = $this->config->item('kpstatus');
+		$kpstatus = array_merge($this->config->item('kpstatus'), $this->config->item('history'));
 		
 		foreach($kpstatus as $k => $i) {
 		

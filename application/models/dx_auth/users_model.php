@@ -16,6 +16,7 @@ class Users_model extends CI_Model
 	
 	function get_all($offset = 0, $row_count = 0)
 	{
+        //$this->output->enable_profiler(TRUE);
 		$users_table = $this->_table;
 		$roles_table = $this->_roles_table;
 		

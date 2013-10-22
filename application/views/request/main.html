@@ -45,43 +45,70 @@
     }
   </style>
   
-  <div class="table-wrapper products-table section">
+  <div class="table-products section">
     <div class="row-fluid filter-block">
-	<div class="pull-left">
-	  <div class="btn-group pull-right sort">
-		{% for i in sort %}
-		  <a href="/request/?sort={{ i.uri }}" class="btn btn-small {% if i.active == 1 %}active{% endif %}">{{ i.name }}</a>
-		{% endfor %}
+        <div class="pull-left">
+            <div class="btn-group">
+                {% set act = '' %}
+                {% for i in sort %}
+                    {% if i.active == 1 %}
+                        {% set act = i.name %}
+                    {% endif %}
+                {% endfor %}
+                <button class="btn glow">{{ act }}</button>
+                <button class="btn glow dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    {% set act = '' %}
+                    {% for i in sort %}
+                        <li><a href="/request/?sort={{ i.uri }}" class="{% if i.active == 1 %}active {% set act = i.name %}{% endif %}">{{ i.name }}</a></li>
+                    {% endfor %}
+                </ul>
             </div>
-	</div>
+          {#<div class="btn-group pull-right sort">
+            {% for i in sort %}
+              <a href="/request/?sort={{ i.uri }}" class="btn btn-small {% if i.active == 1 %}active{% endif %}">{{ i.name }}</a>
+            {% endfor %}
+          </div>#}
+        </div>
         <div class="pull-right">
-            <input type="text" class="search">
-	    <a href="#aNewReq" data-target="#aNewReq" data-toggle="modal" class="btn-flat success new-product"><i class="icon-plus"></i> <span>Добавить</span></a>
+            {#<input type="text" class="search">#}
+	        <a href="#aNewReq" data-target="#aNewReq" data-toggle="modal" class="btn-flat success new-product"><i class="icon-plus"></i> <span>Добавить</span></a>
         </div>
     </div>
 
     <div class="row-fluid">
-      <!-- Table -->
-	{{ result|raw }}
-      <!-- EndTable -->
-      
-      <!-- Help for users -->
-	<div class="alert alert-info">
-	  <button type="button" class="close" data-dismiss="alert">&times;</button>
-	  <b>Подсказка</b><br>
-	  &nbsp;&nbsp;&nbsp;&nbsp;* Чтобы загрузить или просмотреть документы нажмите на цифру в столбце <b>ДОКУМЕНТЫ</b>.<br>
-	  &nbsp;&nbsp;&nbsp;&nbsp;* Чтобы добавить информацию или изменить нажмите кнопку <b>Изменить</b>.<br>
-	  &nbsp;&nbsp;&nbsp;&nbsp;* Чтобы распечатать нажмите кнопку <b>Печать</b>.<br>
-	  <b>Cтатусы КП</b><br>
-	  &nbsp;&nbsp;&nbsp;&nbsp;* <b>Ожидание документов</b> - Ожидание получения документов от заказчика<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;* <b>Расчет данных</b> - Документы отправлены в отдел проектирования, производится расчёт<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;* <b>Согласование сроков</b><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;* <b>Оформление предложения</b><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;* <b>Согласование стоимости</b><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;* <b>Готово к отправке</b><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;* <b>Отправлено</b><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;* <b>Отказ</b>
-	</div>
+        <!-- Table -->
+	    {{ result|raw }}
+        <!-- EndTable -->
+        <div class="row-fluid filter-block">
+            <div class="pull-right">
+                {#<input type="text" class="search">#}
+                <a href="#aNewReq" data-target="#aNewReq" data-toggle="modal" class="btn-flat success new-product"><i class="icon-plus"></i> <span>Добавить</span></a>
+            </div>
+        </div>
+        <!-- Help for users -->
+        <div class="alert alert-info">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <b>Подсказка</b><br>
+          <span class="label label-warning" data-toggle="tooltip" data-original-title="Кнопка">Кнопка</span> - Нажимается,при выполнении какого либо действия<br>
+          <span class="label label-success" data-toggle="tooltip" data-original-title="Кнопка">Статус</span> - Положительный статус заявки<br>
+          <span class="label label-important" data-toggle="tooltip" data-original-title="Кнопка">Статус</span> - Отрицательный статус заявки<br>
+          <span class="label label-info" data-toggle="tooltip" data-original-title="Кнопка">Статус</span> - Нейтральный статус заявки<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;* Чтобы загрузить или просмотреть документы нажмите на цифру в столбце <b>ДОКУМЕНТЫ</b>.<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;* Чтобы добавить информацию или изменить нажмите кнопку <b>Изменить</b>.<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;* Чтобы распечатать нажмите кнопку <b>Печать</b>.<br>
+          <b>Cтатусы КП</b><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;* <b>Ожидание документов</b> - Ожидание получения документов от заказчика<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;* <b>Расчет данных</b> - Документы отправлены в отдел проектирования, производится расчёт<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;* <b>Согласование сроков</b><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;* <b>Оформление предложения</b><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;* <b>Согласование стоимости</b><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;* <b>Готово к отправке</b><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;* <b>Отправлено</b><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;* <b>Отказ</b>
+        </div>
       <!-- End Help -->
     </div>
   </div>

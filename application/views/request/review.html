@@ -10,6 +10,7 @@
             body {
                 font-size: 10pt;
                 margin: 1cm 0;
+                padding: 30px -30px;
                 text-align: justify;
                 font-family: serif;
             }
@@ -26,6 +27,8 @@
                 position: fixed;
                 left: -25;
                 right: -10;
+                padding-right: -10px;
+                padding-left: 0px;
                 font-size: 0.9em;
             }
 
@@ -37,7 +40,7 @@
             #footer {
                 bottom: 0px;
                 border-top: 0.1pt solid #aaa;
-                height: 50px;
+                height: 0px;
             }
 
             #header table,
@@ -60,27 +63,28 @@
         <table>
             <tbody>
                 <tr>
-                    <td valign="top"><img height="80px" src="themes/img/asd.png"></td>
-                    <td valign="top" style="text-align: right;">
+                    <td valign="top"><img height="80px" src="themes/img/blank-041.jpg"></td>
+                    <td valign="top" style="text-align: right; color: rgb(100, 100, 105);">
                         <b>ООО «ПРОФЭКСПЕРТ»</b><br>
-                        Юр. адрес: 195027, г. Санкт – Петербург,<br>
-                        Пискаревский пр., д. 2, БЦ «Бенуа»<br>
-                        Т./ф: +7(812) 665-30-42
+                        Адрес: г. Санкт – Петербург,<br>
+                        Феодосийская ул., д. 7, литера А<br>
+                        Т./ф: +7(812) 633-30-42<br>
+                        www.profexpert.com
                     </td>
                 </tr>
-            <tr>
-                <td colspan="2" valign="top">
-                    <p>Исх. № {{ result.id }}/{{ "now"|date("y") }} от {{ "now"|date("d.m.y") }}</p>
-                </td>
-            </tr>
+                <tr>
+                    <td colspan="2" valign="top" style="color: rgb(100, 100, 105);"><br>
+                        <p>Исх. № {{ result.id }}/{{ "now"|date("y") }} от {{ "now"|date("d.m.y") }}</p>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
-    <div id="footer">
+    {#<div id="footer">
         <table width="100%">
             <tbody>
                 <tr>
-                    <td valign="bottom"><br><img height="80px" src="themes/img/dsa.jpg"></td>
+                    <td valign="bottom" style="text-align: center; color: rgb(100, 100, 105); font-size: 20px;">www.profexpert.com</td>
                     <td valign="bottom" style="color: #444; text-align: right;"><br>
                         <p align="justify">ИНН/КПП:7810039009/781401001	Р/с  № 40702810407160000166  в</p>
                         <p align="justify">ОКПО: 77753201,  БИК 044030809	Филиал «Петровский» ОАО Банк</p>
@@ -90,7 +94,7 @@
                 </tr>
             </tbody>
         </table>
-    </div>
+    </div>#}
     <div>
         <table width="100%" style="border-collapse:collapse">
             <tr>
@@ -98,9 +102,9 @@
                     <p><strong><em>{{ result.kpname|raw }}</em></strong></p>
                 </td>
                 <td width="40%" valign="top" style="text-align: right;">
-                    <p><strong><em>Заказчик:</em></strong> {{ result.fname }}</p>
-                    <p><strong><em>Тел:</em></strong> {{ result.phone }}</p>
-                    <p><strong><em>e-mail:</em></strong> {{ result.email }}</p>
+                    {% if result.fname %}<p><strong><em>Заказчик:</em></strong> {{ result.fname }}</p>{% endif %}
+                    {% if result.phone %}<p><strong><em>Тел:</em></strong> {{ result.phone }}</p>{% endif %}
+                    {% if result.email %}<p><strong><em>e-mail:</em></strong> {{ result.email }}</p>{% endif %}
                 </td>
             </tr>
         </table>
@@ -110,8 +114,8 @@
                 <td width="6%" style="border:solid windowtext 1.0pt">
                     <p align="center">№<br>п/п</p>
                 </td>
-                <td width="55.9%" style="border:solid windowtext 1.0pt;border-left:none">
-                    <p align="center">Наименование</p>
+                <td width="55.9%" style="border:solid windowtext 1.0pt;border-left:none; text-align: center;" valign="middle">
+                    Наименование
                 </td>
                 <td width="19.8%" style="border:solid windowtext 1.0pt;border-left:none">
                     <p align="center">Стоимость работ</p>
@@ -133,11 +137,11 @@
                     <td style="border:solid windowtext 1.0pt; padding: 4px;" valign="top">
                         <p>{{ traspr.name|raw }}</p>
                     </td>
-                    <td style="border:solid windowtext 1.0pt; padding: 4px;">
-                        <p align="center">{{ traspr.price|number_format(2, ',', ' ') }}</p>
+                    <td style="border:solid windowtext 1.0pt; padding: 4px; text-align: center;" valign="middle">
+                        {{ traspr.price|number_format(2, ',', ' ') }}
                     </td>
-                    <td style="border:solid windowtext 1.0pt; padding: 4px;">
-                        <p align="center">{{ traspr.srok }}</p>
+                    <td style="border:solid windowtext 1.0pt; padding: 4px; text-align: center;" valign="middle">
+                        {{ traspr.srok }}
                     </td>
                 </tr>
             {% endfor %}
@@ -298,9 +302,13 @@
                     </td>
                 </tr>
             </table><br><br>
-            <p><em>* {{ result.pmore }}</em></p>
+            <p><em>* {{ result.pmore|raw }}</em></p>
             <p><strong><em>Общий объем работ</em></strong> <em> на разработку и выпуск проектной документации: <strong><u>{{ result.total }} чел./час.</u></strong></em></p>
             <p align="right" style="position: fixed;left: 0;right: 0;bottom: 100px;"><em><span style="color:black;">Подпись: _________________________</span></em></p>
-        </div>
+        </div>{#
+    <hr>
+    {% for docs in result.docs %}
+        <div><img width="100%" height="100%" src="uploads/{{ docs.file }}" /></div>
+    {% endfor %}#}
     </body>
 </html>

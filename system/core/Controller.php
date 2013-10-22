@@ -62,6 +62,7 @@
  * @property CI_URI $uri
  * @property CI_User_agent $user_agent
  * @property CI_Validation $validation
+ * @property dx_auth $dx_auth
  * @property CI_Xmlrpc $xmlrpc
  * @property CI_Xmlrpcs $xmlrpcs
  * @property CI_Zip $zip

@@ -19,10 +19,12 @@ $config['region'] = array(
                         'Московский район',
                         'Невский район',
                         'Петроградский район',
+                        'Петродворцовый район',
                         'Приморский район',
                         'Пушкинский район',
                         'Фрунзенский район',
-                        'Центральный район'
+                        'Центральный район',
+                        'Ленинградская обл.'
                      );
 
 /*
@@ -69,7 +71,7 @@ $config['sort'] = array(
                             array('name' => 'Все', 'uri' => 'sAll', 'allow' => '5', 'logic' => 'id:0', 'default' => '1'),
                         // Руководство - id = 6
                             array('name' => 'Все', 'uri' => 'rAll', 'allow' => '2,6', 'logic' => 'all', 'default' => '1'),
-                            array('name' => 'В работе у менеджера', 'uri' => 'rmInDev', 'allow' => '2,6', 'logic' => 'kp:0,kp:3'),
+                            array('name' => 'В работе у менеджера', 'uri' => 'rmInDev', 'allow' => '2,6', 'logic' => 'kp:0,kp:3,kp:5,kp:9,kp:12'),
                             array('name' => 'В работе у проектировщиков', 'uri' => 'rpInDev', 'allow' => '2,6', 'logic' => 'kp:1,kp:2'),
                             array('name' => 'Согласование стоимости', 'uri' => 'rPrice', 'allow' => '2,6', 'logic' => 'kp:4'),
                             array('name' => 'Предложение сделано', 'uri' => 'rSend', 'allow' => '2,6', 'logic' => 'kp:6'),
@@ -102,17 +104,17 @@ $config['sort'] = array(
 */
 $config['status'] = array(
                             // Отдел продаж - id = 3
-                                array('name' => 'Отправить', 'fullname' => 'Нажмите чтобы отправить заявку проектировщикам', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:0', 'uri' => '/request/send/optop/'),
+                                array('name' => 'Проектный отд.', 'fullname' => 'Нажмите чтобы отправить заявку проектировщикам', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:0', 'uri' => '/request/send/optop/'),
                                 array('name' => 'Отправлено', 'fullname' => 'Заявка отправлена проектировщикам', 'class' => 'success', 'allow' => '3', 'logic' => 'ikp:1'),
-                                array('name' => 'Отправить руководству', 'fullname' => 'Отправить заявку руководству для согласование стоимости', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:2,ikp:3', 'uri' => '/request/send/optor/'),
+                                array('name' => 'Руководству', 'fullname' => 'Отправить заявку руководству для согласование стоимости', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:0,ikp:2,ikp:3,ikp:12', 'uri' => '/request/send/optor/'),
                                 array('name' => 'Согласовывается', 'fullname' => 'Заявка у руководства', 'class' => 'success', 'allow' => '3', 'logic' => 'ikp:4'),
-                                array('name' => 'Отправить заказчику', 'fullname' => 'Нажмите чтобы отправить заявку заказчику', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:5', 'uri' => '/request/send/optoz/'),
+                                array('name' => 'Заказчику', 'fullname' => 'Нажмите чтобы отправить заявку заказчику', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:5', 'uri' => '/request/send/optoz/'),
                                 array('name' => 'Отказался', 'fullname' => 'Нажмите если заказчик отказался', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:6', 'uri' => '/request/send/otkaz/'),
                                 array('name' => 'Согласился', 'fullname' => 'Нажмите если заказчик согласился', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:6', 'uri' => '/request/send/inwork/'),
                                 array('name' => 'Отказано', 'fullname' => 'Заказчик отказался', 'class' => 'important', 'allow' => '3', 'logic' => 'ikp:7'),
                                 array('name' => 'В работе', 'fullname' => 'Заказчик согласился', 'class' => 'success', 'allow' => '3', 'logic' => 'ikp:8'),
-                                array('name' => 'Отправить', 'fullname' => 'Отправить повторно на согласование', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:9,ikp:12', 'uri' => '/request/send/optordor/'),
-                                array('name' => 'Доработка', 'fullname' => 'Отправить на доработку проектировщикам', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:9,ikp:2,ikp:3', 'uri' => '/request/send/optopr/'),
+                                array('name' => 'Руководству [2]', 'fullname' => 'Отправить повторно на согласование', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:9', 'uri' => '/request/send/optordor/'),
+                                array('name' => 'Проектный отд. [2]', 'fullname' => 'Отправить на доработку проектировщикам', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:9,ikp:2,ikp:3,ikp:12', 'uri' => '/request/send/optopr/'),
                                 array('name' => 'Согласовывается', 'fullname' => 'Заявка у руководства согласовывается после доработки', 'class' => 'info', 'allow' => '3', 'logic' => 'ikp:10'),
                                 array('name' => 'Дорабатывается', 'fullname' => 'Проектировщики дорабатывают', 'class' => 'info', 'allow' => '3', 'logic' => 'ikp:11'),
                             // Проектный отдел - id = 4
@@ -126,14 +128,14 @@ $config['status'] = array(
                                 array('name' => 'Проектный отдел', 'fullname' => 'Заявка в данный момент у проектировщиков', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:1'),
                                 array('name' => 'Менеджер', 'fullname' => 'Заявка в данный момент у менеджера составление стоимости', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:2,ikp:3'),
                                 array('name' => 'Согласовать', 'fullname' => 'Нажмите если стоимость согласована', 'class' => 'warning', 'allow' => '2,6', 'logic' => 'ikp:4', 'uri' => '/request/send/rtoop/'),
-                                array('name' => 'Доработка', 'fullname' => 'Нажмите чтобы отправить на доработку', 'class' => 'important', 'allow' => '2,6', 'logic' => 'ikp:4', 'uri' => '/request/send/rtodor/'),
+                                array('name' => 'Доработка', 'fullname' => 'Нажмите чтобы отправить на доработку', 'class' => 'important', 'allow' => '2,6', 'logic' => 'ikp:4', 'uri' => '/request/rework/', 'self' => 'data-target="#upload" data-toggle="modal" class="upl"'),
                                 array('name' => 'Менеджер', 'fullname' => 'Заявка в данный момент у менеджера отправка КП заказчику', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:5'),
-                                array('name' => 'Заказчик', 'fullname' => 'Заявка отправлена заказчику', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:6'),
+                                array('name' => 'Заказчик', 'fullname' => 'Предложение отправлено заказчику', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:6'),
                                 array('name' => 'Отказ', 'fullname' => 'Заказчик отказался', 'class' => 'important', 'allow' => '2,6', 'logic' => 'ikp:7'),
                                 array('name' => 'В работе', 'fullname' => 'Заказчик согласился', 'class' => 'success', 'allow' => '2,6', 'logic' => 'ikp:8'),
                                 array('name' => 'Менеджер', 'fullname' => 'Дорабатывается менеджером', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:9'),
                                 array('name' => 'Согласовать', 'fullname' => 'Нажмите если стоимость согласована после доработки', 'class' => 'warning', 'allow' => '2,6', 'logic' => 'ikp:10', 'uri' => '/request/send/rtoop/'),
-                                array('name' => 'Доработка', 'fullname' => 'Нажмите чтобы отправить на доработку ещё раз', 'class' => 'important', 'allow' => '2,6', 'logic' => 'ikp:10', 'uri' => '/request/send/rtodor/'),
+                                array('name' => 'Доработка', 'fullname' => 'Нажмите чтобы отправить на доработку ещё раз', 'class' => 'important', 'allow' => '2,6', 'logic' => 'ikp:10', 'uri' => '/request/rework/', 'self' => 'data-target="#upload" data-toggle="modal" class="upl"'),
                                 array('name' => 'Проектный отдел', 'fullname' => 'Дорабатывается проектировщиком', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:11'),
                                 array('name' => 'Менеджер', 'fullname' => 'Дорабатывается менеджером', 'class' => 'info', 'allow' => '2,6', 'logic' => 'ikp:12'),
                           );
@@ -326,8 +328,8 @@ $config['instance'] = array(
 |
 */
 $config['access'] = array(
-    array('name' => 'Номер',                          'value' => 'loop.index',    'allow' => '2,3,4,6', 'self' => 'class="span1"', 'form' => 0),
-    array('name' => 'Дата',                           'value' => 'date',          'allow' => '2,3,4,6', 'date-format' => 'd.m.Y', 'self' => 'class="span2"', 'form' => 0),
+    array('name' => '№',                             'value' => 'loop.index',    'allow' => '2,3,4,6', 'self' => 'class="span1"', 'form' => 0),
+    array('name' => 'Дата',                           'value' => 'date',          'allow' => '2,3,4,6', 'date-format' => 'd.m.y', 'self' => 'class="span1"', 'form' => 0),
     array('name' => 'ФИО',                            'value' => 'fname',         'allow' => '2,3,6', 'self' => 'class="span3"'),
     array('name' => 'Телефон',                        'value' => 'phone',         'allow' => '2,3,6', 'self' => 'class="span3"', 'view' => 0),
     array('name' => 'Email адрес',                    'value' => 'email',         'allow' => '2,3,6', 'self' => 'class="span3"', 'view' => 0),
@@ -336,7 +338,7 @@ $config['access'] = array(
     array('name' => 'Адрес',                          'value' => 'address',       'allow' => '2,3,6', 'self' => 'class="span3"'),
     array('name' => 'Адрес',                          'value' => 'address',       'allow' => '4', 'self' => 'class="span3"'),
     array('name' => 'Откуда узнали',                  'value' => 'hear',          'allow' => '2,3,6', 'view' => 0),
-    array('name' => 'Дополнительная информация',      'value' => 'more',          'allow' => '2,3,4,6', 'view' => 0, 'type' => 'textarea'),
+    array('name' => 'Дополнительная информация',      'value' => 'more',          'allow' => '2,3,4,6', 'view' => 0, 'type' => 'textarea', 'self' => 'class="span3 wysihtml5" rows="5"'),
     array('name' => 'Назначение здания',              'value' => 'ztype',         'allow' => '2,3,4,6', 'view' => 0, 'type' => 'select'),
     array('name' => 'Назначение помещения',           'value' => 'ptype',         'allow' => '2,3,4,6', 'view' => 0, 'type' => 'select'),
     array('name' => 'Название проекта',               'value' => 'name',          'allow' => '2,3,4,6', 'view' => 0, 'add' => 0),
@@ -345,15 +347,15 @@ $config['access'] = array(
     array('name' => 'Документы',                      'value' => 'vdocs',         'allow' => '2,3,4,6', 'self' => 'class="span3"', 'form' => 0),
     array('name' => 'Работники',                      'value' => 'workers',       'allow' => '2,6', 'self' => 'class="span3"', 'form' => 0),
     array('name' => 'Состав проектной документации',  'value' => 'razd',          'allow' => '2,3,4,6', 'view' => 0, 'add' => 0, 'type' => 'checkbox'),
-    array('name' => 'Примечание ПД',                  'value' => 'pmore',         'allow' => '2,3,4,6', 'view' => 0, 'add' => 0, 'type' => 'textarea'),
-    array('name' => 'Объём работ ПД',                 'value' => 'total',         'allow' => '2,3,4,6', 'view' => 0, 'add' => 0, 'add-on' => 'Часов'),
+    array('name' => 'Примечание ПД',                  'value' => 'pmore',         'allow' => '2,3,4,6', 'view' => 0, 'add' => 0, 'type' => 'textarea', 'self' => 'class="span10 wysihtml5" rows="10"'),
+    array('name' => 'Объём работ ПД',                 'value' => 'total',         'allow' => '2,3,4,6', 'view' => 0, 'add' => 0, 'add-on' => 'ч.'),
     array('name' => 'Согласование',                   'value' => 'instance',      'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'type' => 'checkbox'),
-    array('name' => 'Примечание согл.',               'value' => 'smore',         'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'type' => 'textarea'),
-    array('name' => 'Общий объём работ',              'value' => 'atotal',        'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'add-on' => 'Дней'),
-    array('name' => 'Название проекта для КП',        'value' => 'kpname',        'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'type' => 'textarea'),
+    array('name' => 'Примечание согл.',               'value' => 'smore',         'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'type' => 'textarea', 'self' => 'class="span10 wysihtml5" rows="10"'),
+    array('name' => 'Общий объём работ',              'value' => 'atotal',        'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'add-on' => 'дн.'),
+    array('name' => 'Название проекта для КП',        'value' => 'kpname',        'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'type' => 'textarea', 'self' => 'class="span10 wysihtml5" rows="10"'),
     array('name' => 'Предварительный расчёт',         'value' => 'traspr',        'allow' => '2,3', 'view' => 0, 'add' => 0),
-    array('name' => 'Примечание КП',                  'value' => 'kpmore',        'allow' => '2,3', 'view' => 0, 'add' => 0, 'type' => 'textarea'),
-    array('name' => 'КП',                             'value' => 'kp',            'allow' => '2,6', 'form' => 0, 'self' => 'class="span3"'),
+    array('name' => 'Примечание КП',                  'value' => 'kpmore',        'allow' => '2,3', 'view' => 0, 'add' => 0, 'type' => 'textarea', 'self' => 'class="span10 wysihtml5" rows="10"'),
+    //array('name' => 'КП',                             'value' => 'kp',            'allow' => '2,6', 'form' => 0, 'self' => 'class="span3"'),
     array('name' => 'Действия',                       'value' => 'actions',       'allow' => '2,3,4,6', 'self' => 'width="5%"', 'form' => 0, 'self' => 'class="span3"')
 );
 ?>

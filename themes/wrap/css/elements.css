@@ -453,6 +453,9 @@
 .pop-dialog {
 	z-index: 10000;
 	display: inline-block;
+    -webkit-animation: reveal .2s ease-out;
+    -moz-animation: reveal .2s ease-out;
+    animation: reveal .2s ease-out;
 }
 .pop-dialog.is-visible {
 	display: block; 

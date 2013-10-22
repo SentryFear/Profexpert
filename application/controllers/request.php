@@ -80,6 +80,11 @@ class Request extends CI_Controller
 			
 			$data = array_merge($data, $this->request_model->add_docs());
 		}
+
+        if($this->input->post('rework') && $this->input->post('id')) {
+
+            $this->request_model->add_rework() ? $data['success'] = "Заявка успешно отправлена на доработку!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+        }
 		
 		$data['result'] = $this->request_model->get_request(null, 'FormTable', $gsort);
 		
@@ -106,7 +111,7 @@ class Request extends CI_Controller
     function add()
 	{
 		$id = intval($this->uri->segment(3));
-		
+
 		$docs = array();
 		
 		if(!empty($id) && $this->input->is_ajax_request()) {
@@ -114,12 +119,18 @@ class Request extends CI_Controller
 			$res = $this->db->get_where('request', array('id' => $id))->row_array();
 			
 			$docs = unserialize($res['docs']);
-			
+
+            echo '<div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                     <h3 id="myModalLabel">Загрузить документы</h3>
+                  </div>
+                  <div class="modal-body">';
+
 			if(empty($docs)) {
 				
-				echo '	<div class="alert alert-error">
+				echo '<div class="alert alert-error">
 						<button type="button" class="close" data-dismiss="alert">&times;</button>
-						<b>Ещё не добавлено не одного файла.</b>
+						<b>Ещё не добавлено ни одного файла.</b>
 					</div>';
 				echo '<div class="alert alert-info">
 					<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -157,7 +168,14 @@ class Request extends CI_Controller
 				* Нажмите на текст названия чтобы изменить его.<br>
 				* Нажмите на кнопку <i class="icon-edit" style="margin:0;"></i> рядом с названием того файла который хотите заменить.<br>
 				* Нажмите на кнопку <i class="icon-download-alt" style="margin:0;"></i> рядом с названием того файла который хотите скачать.
-			      </div>';
+			      </div>
+			      </div>
+                  <div class="modal-footer">
+                    <div class="btn-group">
+                      <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                      <input type="submit" class="btn btn-primary" name="upload" value="Добавить" />
+                    </div>
+                  </div>';
 			
 			echo "<script>  
 				(function($) {  
@@ -187,6 +205,55 @@ class Request extends CI_Controller
 			redirect("/request");
 		}
 	}
+
+    function rework() {
+
+        $id = intval($this->uri->segment(3));
+
+        if(!empty($id) && $this->input->is_ajax_request()) {
+
+            $res = $this->db->get_where('request', array('id' => $id))->row_array();
+
+            if(!empty($res['rework'])) $rework = unserialize($res['rework']);
+            else $rework = array();
+
+            echo '<div class="modal-header">
+                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                 <h3 id="myModalLabel">Комментарии руководства</h3>
+              </div>
+              <div class="modal-body">';
+
+            foreach($rework as $i){
+
+                echo '<blockquote>
+                          <p>'.$i['text'].'</p>
+                          <small>Создал <b>'.$i['author'].'</b> '.date("d.m.Y в H:i", $i['date']).'</small>
+                        </blockquote>';
+            }
+
+            if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
+
+                echo '<textarea class="span5 wysihtml5" rows="5" name="text" id="text" placeholder="Комментарий к доработке"></textarea>';
+            }
+
+            echo '</div>
+              <div class="modal-footer">
+                <div class="btn-group">
+                  <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>';
+
+            if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
+
+                echo '<input type="submit" class="btn btn-primary" name="rework" value="Отправить" />';
+            }
+            
+            echo '</div></div>';
+
+        } else {
+
+            redirect("/request");
+        }
+
+    }
 
     /**
      * Изменение статуса заявки (отправление от отдела к отделу)
@@ -393,14 +460,17 @@ class Request extends CI_Controller
             $name = $this->users_model->get_user_by_id($data['result']['uid']);
 
             $name = $name->result_array();
-            //var_dump($name);
-            $name = explode(' ', $name[0]['name']);
 
-            $data['user']['name'] =  $name[0];
+            if(!empty($name)) {
 
-            if(isset($name[1])) $data['user']['name'] .= " " . mb_substr($name[1],0,1,'utf-8') . ".";
+                $name = explode(' ', $name[0]['name']);
 
-            if(isset($name[2])) $data['user']['name'] .= " " . mb_substr($name[2],0,1,'utf-8') . ".";
+                $data['user']['name'] =  $name[0];
+
+                if(isset($name[1])) $data['user']['name'] .= " " . mb_substr($name[1],0,1,'utf-8') . ".";
+
+                if(isset($name[2])) $data['user']['name'] .= " " . mb_substr($name[2],0,1,'utf-8') . ".";
+            }
 
             $html = $this->twig->render('request/review.html', $data);
 

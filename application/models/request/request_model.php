@@ -157,6 +157,33 @@ class request_model extends CI_Model
 		return $data;
 	}
 
+    function add_rework() {
+
+        $this->load->library('history');
+
+        $id = $this->input->post('id');
+
+        $text = $this->input->post('text');
+
+        $author = $this->dx_auth->get_username();
+
+        $row = $this->db->get_where('request', array('id' => $id))->row_array();
+
+        $rework = unserialize($row['rework']);
+
+        if(empty($rework)) $rework = array();
+
+        $rework[] = array('author' => $author, 'text'=> $text, 'date' => time());
+
+        $upd['kp'] = 9;
+
+        $upd['rework'] = serialize($rework);
+
+        $this->history->setHistory('dt9', $id);
+
+        return $this->db->update('request', $upd, array('id' => $id)) ? 1 : 0;
+    }
+
     /**
      * Изменение заявки
      *
@@ -349,7 +376,9 @@ class request_model extends CI_Model
 				$data['result']['ptype'] = $ntype[$data['result']['ptype']];
 				
 				$data['result']['ztype'] = $ntype[$data['result']['ztype']];
-				
+
+                $data['result']['docs'] = unserialize($data['result']['docs']);
+
 				$razd = unserialize($data['result']['razd']);
 
                 $data['result']['razd'] = array();

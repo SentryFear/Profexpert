@@ -53,44 +53,6 @@
     {% endblock %}
   </head>
   <body>
-    {#<div class="navbar navbar-fixed-top navbar-inverse">
-      <div class="navbar-inner">
-        <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="brand" href="/">ПРОФЭКСПЕРТ</a>
-          <div class="nav-collapse collapse">
-	    <ul class="nav">
-	      <li {% if segments.1|length == 0 %}class="active"{% endif %}><a href="/">Рабочий стол</a></li>
-	      {% for row in menu %}
-		{% if access == 'admin' or row.cpu in access %}
-		  <li {% if segments.2|length == 0 and segments.1|trim('/') == row.cpu|trim('/') %}class="active"{% endif %}><a href="{{ row.cpu }}" {{ row.self }}>{{ row.name }}</a></li>
-		  {% if segments.1|trim('/') == row.cpu|trim('/') %}
-		    {% for row1 in row.menu %}
-		      <li {% if segments.1|trim('/') ~ "/" ~ segments.2|trim('/') == row1.cpu|trim('/') %}class="active"{% endif %}><a href="{{ row1.cpu }}" {{ row1.self }}>{{ row1.name }}</a></li>
-		    {% endfor %}
-		  {% endif %}
-		{% endif %}
-	      {% endfor %}
-	    </ul>
-	    <ul class="nav pull-right">
-		<li class="divider-vertical"></li>
-		<li class="dropdown">
-		  <a href="#" class="dropdown-toggle" data-toggle="dropdown"> {{ user.username }} <b class="caret"></b></a>
-		  <ul class="dropdown-menu">
-		    <li><a>{{ user.role_name }}</a></li>
-		    <li class="divider"></li>
-		    <li><a href="/auth/logout">Выход</a></li>
-		  </ul>
-		</li>
-	    </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>#}
     <!-- navbar -->
     <div class="navbar navbar-inverse">
         <div class="navbar-inner">
@@ -100,7 +62,7 @@
                 <span class="icon-bar"></span>
             </button>
             
-            <a class="brand" href="/">ПРОФЭКСПЕРТ</a>
+            <a class="brand" href="/request"><img src="/themes/img/logo02.png" style="width: 134px;" /></a>
 
             <ul class="nav pull-right">                
                 <li class="hidden-phone">
@@ -117,32 +79,11 @@
                             <div class="arrow_border"></div>
                         </div>
                         <div class="body">
+                            <h3 class="notify">У вас есть <b class="count1">6</b> новых уведомлений</h3>
                             <a href="#" class="close-icon"><i class="icon-remove-sign"></i></a>
-                            <div class="notifications">
-                                <h3>You have 6 new notifications</h3>
-                                <a href="#" class="item">
-                                    <i class="icon-signin"></i> New user registration
-                                    <span class="time"><i class="icon-time"></i> 13 min.</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <i class="icon-signin"></i> New user registration
-                                    <span class="time"><i class="icon-time"></i> 18 min.</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <i class="icon-envelope-alt"></i> New message from Alejandra
-                                    <span class="time"><i class="icon-time"></i> 28 min.</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <i class="icon-signin"></i> New user registration
-                                    <span class="time"><i class="icon-time"></i> 49 min.</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <i class="icon-download-alt"></i> New order placed
-                                    <span class="time"><i class="icon-time"></i> 1 day.</span>
-                                </a>
-                                <div class="footer">
-                                    <a href="#" class="logout">View all notifications</a>
-                                </div>
+                            <div class="notifications"></div>
+                            <div class="footer">
+                                <a href="#" class="logout">View all notifications</a>
                             </div>
                         </div>
                     </div>
@@ -220,22 +161,22 @@
         <!-- sidebar -->
     <div id="sidebar-nav">
         <ul id="dashboard-menu">
-	      <li {% if segments.1|length == 0 %}class="active"{% endif %}><a href="/">{% if segments.1|length == 0 %}<div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>{% endif %}<i class="icon-home"></i><span>Главная</span></a></li>
+	      {# <li {% if segments.1|length == 0 %}class="active"{% endif %}><a href="/">{% if segments.1|length == 0 %}<div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>{% endif %}<i class="icon-home"></i><span>Главная</span></a></li> #}
 	      {% for row in menu %}
-		{% if access == 'admin' or row.cpu in access %}
-		  <li {% if segments.2|length == 0 and segments.1|trim('/') == row.cpu|trim('/') %}class="active"{% endif %}>
-		    {% if segments.2|length == 0 and segments.1|trim('/') == row.cpu|trim('/') %}<div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>{% endif %}
-		    <a href="{{ row.cpu }}" {{ row.self }}>{{row.icon|raw}} <span>{{ row.name }}</span></a>
-		  </li>
-		  {% if segments.1|trim('/') == row.cpu|trim('/') %}
-		    {% for row1 in row.menu %}
-		      <li {% if segments.1|trim('/') ~ "/" ~ segments.2|trim('/') == row1.cpu|trim('/') %}class="active"{% endif %}>
-			{% if segments.1|trim('/') ~ "/" ~ segments.2|trim('/') == row1.cpu|trim('/') %}<div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>{% endif %}
-			<a href="{{ row1.cpu }}" {{ row1.self }}>{{row1.icon|raw}} <span>{{ row1.name }}</span></a>
-		      </li>
-		    {% endfor %}
-		  {% endif %}
-		{% endif %}
+            {% if access == 'admin' or row.cpu in access %}
+              <li {% if segments.2|length == 0 and segments.1|trim('/') == row.cpu|trim('/') %}class="active"{% endif %}>
+                {% if segments.2|length == 0 and segments.1|trim('/') == row.cpu|trim('/') %}<div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>{% endif %}
+                <a href="{{ row.cpu }}" {{ row.self }}>{{row.icon|raw}} <span>{{ row.name }}</span></a>
+              </li>
+              {% if segments.1|trim('/') == row.cpu|trim('/') %}
+                {% for row1 in row.menu %}
+                  <li {% if segments.1|trim('/') ~ "/" ~ segments.2|trim('/') == row1.cpu|trim('/') %}class="active"{% endif %}>
+                    {% if segments.1|trim('/') ~ "/" ~ segments.2|trim('/') == row1.cpu|trim('/') %}<div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>{% endif %}
+                    <a href="{{ row1.cpu }}" {{ row1.self }}>{{row1.icon|raw}} <span>{{ row1.name }}</span></a>
+                  </li>
+                {% endfor %}
+              {% endif %}
+            {% endif %}
 	      {% endfor %}
         </ul>
     </div>

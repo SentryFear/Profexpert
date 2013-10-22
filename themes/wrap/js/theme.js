@@ -1,5 +1,18 @@
 $(function () {
 
+    $.getJSON( "/api/getNotification", function( data ) {
+        var items = [];
+        $.each( data, function( key, val ) {
+            items.push( "<a href='" + val.uri + "' class='item'><i class='icon-signin'></i> " + val.name + " <span class='time'><i class='icon-time'></i> " + val.time + "</span></a>" );
+        });
+
+        $('.count').html(items.length);
+
+        $('.count1').html(items.length);
+
+        $( items.join( "" ) ).appendTo( ".notifications" );
+    });
+
     $(".wysihtml5").wysihtml5({
         "font-styles": false,
         "emphasis": false,

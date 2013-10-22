@@ -110,7 +110,7 @@ class Users extends CI_Controller
 		// Get offset and limit for page viewing
 		$offset = (int) $this->uri->segment(3);
 		// Number of record showing per page
-		$row_count = 10;
+		$row_count = 100;
 		
 		// Get all users
 		$data['users'] = $this->users_model->get_all($offset, $row_count)->result();

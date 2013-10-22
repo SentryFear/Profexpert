@@ -15,6 +15,7 @@
 |
 */
 if (!function_exists('req_perm_in_view')) {
+
     function req_perm_in_view($source = array(), $type = 'view', $extra)
     {
         $table = array();
@@ -51,6 +52,7 @@ if (!function_exists('req_perm_in_view')) {
 |
 */
 if (!function_exists('req_arr_to_table')) {
+
     function req_arr_to_table($data, $source, $extra)
     {
         $result = "<table class='table table-hover'><thead><tr>";
@@ -97,19 +99,21 @@ if (!function_exists('req_arr_to_table')) {
                     if($extra['role_id'] == 4 && $i['ikp'] != 1) $val = "#" . $i['id'];
                 }
 
-                if ($q['value'] == 'fname') $val = '<span data-toggle="tooltip" data-original-title="' . $i['phone'] . ' - ' . $i['email'] . '">' . $i['fname'] . '</span>';
+                if ($q['value'] == 'fname') $val = '<span data-toggle="tooltip" data-original-title="Телефон:' . $i['phone'] . '  Email:' . $i['email'] . '">' . $i['fname'] . '</span>';
 
                 if ($q['value'] == 'address') $val = '<span data-toggle="tooltip" data-original-title="' . $i['region'] . '">' . $i['address'] . '</span>';
 
                 if ($val == 'vdocs') {
 
-                    $exist = '<span class="label label-important" data-toggle="tooltip" data-original-title="Файлы ещё не загружены">0</span>';
+                    $exist = '<span class="label label-important" data-toggle="tooltip" data-original-title="Файлы ещё не загружены">[ 0 ]</span>';
 
                     $send = '';
 
+                    $rework = '';
+
                     if (!empty($i['docs'])) {
 
-                        $exist = '<span class="label label-success" data-toggle="tooltip" data-original-title="Колличество загруженых файлов. Нажмите чтобы Добавить или обновить файлы.">' . count($i['docs']) . '</span>';
+                        $exist = '<span class="label label-success" data-toggle="tooltip" data-original-title="Колличество загруженых файлов. Нажмите чтобы Добавить или обновить файлы.">[ ' . count($i['docs']) . ' ]</span>';
 
                     }
 
@@ -119,7 +123,14 @@ if (!function_exists('req_arr_to_table')) {
 
                     $send = req_get_status($extra['status'], $extra);
 
-                    $val = '<a href="/request/add/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl" id="' . $i['id'] . '">' . $exist . '</a> ' . $send;
+                    if(!empty($i['rework'])) $i['rework'] = unserialize($i['rework']);
+                    else $i['rework'] = array();
+
+                    if($extra['req']['ikp'] == 9) $rework = '<a href="/request/rework/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl" id="' . $i['id'] . '"><span class="label label-important" data-toggle="tooltip" data-original-title="Колличество комментариев.">[ ' . count($i['rework']) . ' ]</span></a>';
+
+                    $val = '<a href="/request/add/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl" id="' . $i['id'] . '">' . $exist . '</a> ' . $send . ' ' . $rework;
+
+
                 }
 
                 if ($val == 'workers') {
@@ -178,20 +189,20 @@ if (!function_exists('req_arr_to_table')) {
 
                     $act = '';
 
-                    if($extra['role_id'] != 4) $act = '<li><a href="/request/edit/' . $i['id'] . '/">Изменить</a></li>';
+                    if($extra['role_id'] != 4) $act = '<li><a href="/request/edit/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Изменить"><i class="table-edit"></i></a></li>';
 
-                    if($extra['role_id'] == 2 || $extra['role_id'] == 6 || $extra['role_id'] == 3) $act .= '<li><a href="/request/review/' . $i['id'] . '/">Просмотр</a></li>';
+                    if($extra['role_id'] == 2 || $extra['role_id'] == 6 || $extra['role_id'] == 3) $act .= '<li><a href="/request/review/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
 
-                    if($extra['role_id'] == 4 && $i['ikp'] == 1) {
+                    if($extra['role_id'] == 4 && ($i['ikp'] == 1 || $i['ikp'] == 11)) {
 
-                        $act = '<li><a href="/request/edit/' . $i['id'] . '/">Изменить</a></li>';
+                        $act = '<li><a href="/request/edit/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Изменить"><i class="table-edit"></i></a></li>';
 
-                        $act .= '<li><a href="/request/prints/' . $i['id'] . '/">Печать</a></li>';
+                        $act .= '<li class="last"><a href="/request/prints/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
                     }
 
-                    if($extra['role_id'] == 4 && $i['ikp'] > 1) $act = '<li><a href="/request/prints/' . $i['id'] . '/">Печать</a></li>';
+                    if($extra['role_id'] == 4 && $i['ikp'] > 1 && $i['ikp'] != 11) $act = '<li><a href="/request/prints/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
 
-                    if ($extra['is_admin']) $act .= '<li><a href="/request/delete/' . $i['id'] . '/" onClick="return confirm(\'Вы уверены что хотите удалить заявку?\')">Удалить</a></li>';
+                    if ($extra['is_admin']) $act .= '<li class="last"><a href="/request/delete/' . $i['id'] . '/" onClick="return confirm(\'Вы уверены что хотите удалить заявку?\')" data-toggle="tooltip" data-original-title="Удалить"><i class="table-delete"></i></a></li>';
 
                     //$val = '<div class="btn-group">'.$act.'</div>';
                     $val = '<ul class="actions" style="float: left;">' . $act . '</ul>';
@@ -228,6 +239,7 @@ if (!function_exists('req_arr_to_table')) {
 |
 */
 if (!function_exists('req_arr_to_form')) {
+
     function req_arr_to_form($source, $extra, $data = array(), $allow = 'add')
     {
         $result = '<style>ul{margin: 0;}</style>';
@@ -252,6 +264,10 @@ if (!function_exists('req_arr_to_form')) {
             $inp = '';
 
             $val = $q['value'];
+
+            $self = '';
+
+            if(isset($q['self'])) $self = $q['self'];
 
             $type = 'input';
 
@@ -321,7 +337,7 @@ if (!function_exists('req_arr_to_form')) {
 
                 if (!empty($value)) $value = $data[$val];
 
-                $inp = '<textarea class="span10 wysihtml5" rows="10" placeholder="' . $q['name'] . '" name="' . $val . '" id="' . $val . '">' . $value . '</textarea>';
+                $inp = '<textarea '.$self.' placeholder="' . $q['name'] . '" name="' . $val . '" id="' . $val . '">' . $value . '</textarea>';
 
             } elseif ($type == 'checkbox') {
 
@@ -382,7 +398,7 @@ if (!function_exists('req_arr_to_form')) {
                             if ($extra['user_info']['role_id'] != 4) $inp .= '<input id="' . $i['name'] . '" name="' . $i['name'] . 'pr" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $plhold . ' рублей" value="' . $val2 . '">';
 
                             $inp .= '<input id="' . $i['name'] . '" name="' . $i['name'] . '" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $plhold . '" value="' . $val1 . '">
-                                            <span class="add-on"> чел./час ' . $i['rname'] . '</span>
+                                            <span class="add-on"> чел./час. ' . $i['rname'] . '</span>
                                             </div>
                                         </td>
                                      </tr>';
@@ -399,7 +415,7 @@ if (!function_exists('req_arr_to_form')) {
                             if ($extra['user_info']['role_id'] != 4) $inp .= '<input id="' . $i['name'] . '" name="' . $i['name'] . 'pr" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $plhold . ' рублей" value="' . $val2 . '">';
 
                             $inp .= '<input id="' . $i['name'] . '" name="' . $i['name'] . '" class="span2" id="appendedPrependedInput" type="text" placeholder="' . $plhold . '" value="' . $val1 . '">
-                                            <span class="add-on"> чел./час ' . $i['rname'] . '</span>
+                                            <span class="add-on"> чел./час. ' . $i['rname'] . '</span>
                                         </div>
                                         </td>
                                     </tr>';
@@ -511,7 +527,7 @@ if (!function_exists('req_arr_to_form')) {
                                  - Адрес: <b>'.$data['address'].'</b><br>
                                  - Район: <b>'.$extra['region'][$data['region']].'</b><br>
                                  - Название проекта: <b>'.$data['name'].'</b><br>
-                                 - Площадь объекта: <b>'.$data['footage'].'м&sup2;</b><br><br>
+                                 - Площадь объекта: <b>'.$data['footage'].'</b>м&sup2;<br><br>
                                 <b>Разделы:</b><br>'.$totalrazd.'<br>
                                 <b>Стоимость</b><br>
                                  - Получение документации: стоимость - <b>12 000</b> руб., срок - <b>12</b> д.<br>
@@ -534,6 +550,7 @@ if (!function_exists('req_arr_to_form')) {
 
         return $result;
     }
+
 }
 
 /*
@@ -549,6 +566,7 @@ if (!function_exists('req_arr_to_form')) {
 |
 */
 if (!function_exists('req_parse_data')) {
+
     function req_parse_data($query, $extra)
     {
         $result = array();
@@ -573,6 +591,7 @@ if (!function_exists('req_parse_data')) {
 
         return $result;
     }
+
 }
 
 /*
@@ -588,6 +607,7 @@ if (!function_exists('req_parse_data')) {
 |
 */
 if (!function_exists('req_parse_sort')) {
+
     function req_parse_sort($sort, $extra)
     {
         $sort = explode(',', $sort['logic']);
@@ -618,6 +638,8 @@ if (!function_exists('req_parse_sort')) {
 
                 $n++;
 
+                $del = '=';
+
                 $ext = '';
 
                 if ($n <= count($data) - 1) $ext = ' AND ';
@@ -626,7 +648,14 @@ if (!function_exists('req_parse_sort')) {
 
                 if ($data1[1] == 'usr') $data1[1] = $extra['user_id'];
 
-                $quer .= $data1[0] . ' = ' . $data1[1] . $ext;
+                if ($data1[0] == 'date') {
+
+                    $data1[1] = time() -  $data1[1];
+
+                    $del = '<';
+                }
+
+                $quer .= $data1[0] . ' '.$del.' ' . $data1[1] . $ext;
             }
 
             $quer1 .= $quer . $ext1;
@@ -634,6 +663,7 @@ if (!function_exists('req_parse_sort')) {
 
         return $quer1;
     }
+
 }
 
 /*
@@ -649,6 +679,7 @@ if (!function_exists('req_parse_sort')) {
 |
 */
 if (!function_exists('req_get_status')) {
+
     function req_get_status($status, $extra)
     {
         $html_status = '';
@@ -669,6 +700,8 @@ if (!function_exists('req_get_status')) {
 
                     $accept = 0;
 
+                    $self = '';
+
                     foreach ($data as $k => $q) {
 
                         $data1[$k] = explode(':', $q);
@@ -687,7 +720,9 @@ if (!function_exists('req_get_status')) {
 
                     if ($accept == count($data1)) {
 
-                        if (!empty($i['uri'])) $html_status .= '<a href="' . $i['uri'] . '' . $extra['id'] . '/">';
+                        if (!empty($i['self'])) $self = $i['self'];
+
+                        if (!empty($i['uri'])) $html_status .= '<a href="' . $i['uri'] . '' . $extra['id'] . '/" '.$self.' id="'.$extra['id'].'">';
 
                         $html_status .= '<span class="label label-' . $i['class'] . '" data-toggle="tooltip" data-original-title="' . $i['fullname'] . '">' . $i['name'] . '</span> ';
 
@@ -699,6 +734,7 @@ if (!function_exists('req_get_status')) {
 
         return $html_status;
     }
+
 }
 
 

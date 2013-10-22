@@ -101,9 +101,12 @@ input.search{
 	right: -10px;
 	top: 55px;
 	display: none;
+    -webkit-animation: reveal .2s ease-out;
+    -moz-animation: reveal .2s ease-out;
+    animation: reveal .2s ease-out;
 }
 .navbar-inverse .pop-dialog.is-visible {
-	display: block; 
+	display: block;
 	-webkit-animation: reveal .2s ease-out;
 	-moz-animation: reveal .2s ease-out;
 	animation: reveal .2s ease-out;
@@ -118,22 +121,31 @@ input.search{
 	position: relative;
 }
 .navbar-inverse  .pop-dialog .footer {
-	border-top: 1px solid #e6e8e9;
-	background-color: #eff4f7;
-	margin: 15px 0px -10px 0px;
-	border-radius: 0px 0px 5px 5px;
-	padding: 12px 20px;
-	text-align: center;
+    border-top: 1px solid #e6e8e9;
+    background-color: #eff4f7;
+    margin: 5px -10px -10px -10px;
+    border-radius: 0px 0px 5px 5px;
+    padding: 12px 20px;
+    text-align: center;
 }
 .navbar-inverse  .pop-dialog .footer a {
 	font-weight: 600;
 	color: #7d91a8;
 }
-
+.notify {
+    font-size: 13px;
+    color: #404951;
+    font-weight: bold;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    float: left;
+}
 /* navar popup dialog for notifications */
 .navbar-inverse  .pop-dialog .notifications {
-	width: 330px;
-	margin: 10px -10px 0px -10px;
+    width: 330px;
+    height: 230px;
+    margin: 10px -10px 0px -10px;
+    overflow-x: auto;
 }
 .navbar-inverse  .pop-dialog .notifications h3 {
 	font-size: 13px;
@@ -249,7 +261,7 @@ input.search{
 
 /* Sidebar */
 #sidebar-nav {
-	position: absolute;
+	position: fixed;
 	width: 180px;
 	float: left;
 	margin: 0em;
@@ -496,7 +508,18 @@ input.search{
 }
 /* end skin changer*/
 
-
+.content {
+    margin-left: 65px;
+}
+#dashboard-menu {
+    margin-left: 5px;
+}
+#dashboard-menu .pointer {
+    display: none;
+}
+#dashboard-menu li a span {
+    visibility: hidden;
+}
 
 /* responsive */
 @media (max-width: 1020px) {
