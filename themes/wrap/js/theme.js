@@ -30,22 +30,23 @@ $(function () {
 
         if(q<10) {
             $('table.addr').append(
-                '<tr><td>'+i+'</td><td><textarea class="span6 wysihtml5" rows="5" id="trasprname'+i+'" name="trasprname'+i+'" placeholder="Наименование"></textarea></td><td><input class="inline-input" type="text" id="trasprpr'+i+'" name="trasprpr'+i+'" placeholder="Стоимость работ"/></td><td><input class="inline-input" type="text" id="trasprsr'+i+'" name="trasprsr'+i+'" placeholder="Сроки исполнения"/></td></tr> '
+                '<tr><td>'+i+'</td><td><textarea class="span6 wysihtml5'+i+'" rows="5" id="trasprname'+i+'" name="trasprname'+i+'" placeholder="Наименование"></textarea></td><td><input class="inline-input" type="text" id="trasprpr'+i+'" name="trasprpr'+i+'" placeholder="Стоимость работ"/></td><td><input class="inline-input" type="text" id="trasprsr'+i+'" name="trasprsr'+i+'" placeholder="Сроки исполнения"/></td></tr> '
             );
+            $(".wysihtml5"+i).wysihtml5({
+                "font-styles": false,
+                "emphasis": false,
+                "lists": false,
+                "html": false,
+                "link": false,
+                "image": false
+            });
             q++;
             i++;
         } else {
             alert('За один раз можно отправлять только 10 файлов!');
         };
 
-        $(".wysihtml5").wysihtml5({
-            "font-styles": false,
-            "emphasis": false,
-            "lists": false,
-            "html": false,
-            "link": false,
-            "image": false
-        });
+
     });
 
     $(window).scroll(function() {

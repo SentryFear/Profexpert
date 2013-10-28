@@ -191,7 +191,12 @@ if (!function_exists('req_arr_to_table')) {
 
                     if($extra['role_id'] != 4) $act = '<li><a href="/request/edit/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Изменить"><i class="table-edit"></i></a></li>';
 
-                    if($extra['role_id'] == 2 || $extra['role_id'] == 6 || $extra['role_id'] == 3) $act .= '<li><a href="/request/review/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
+                    if($extra['role_id'] == 2 || $extra['role_id'] == 6 || $extra['role_id'] == 3) {
+
+                        $act .= '<li><a href="/request/review/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
+
+                        $act .= '<li><a href="/request/review/' . $i['id'] . '/1/" data-toggle="tooltip" data-original-title="Печать только КП"><i class="table-settings"></i></a></li>';
+                    }
 
                     if($extra['role_id'] == 4 && ($i['ikp'] == 1 || $i['ikp'] == 11)) {
 
@@ -350,7 +355,7 @@ if (!function_exists('req_arr_to_form')) {
                         $value = unserialize($data[$val]);
                     }
 
-                    $inp = "<table class='table table-hover'><thead><tr><th>Раздел</th></tr></thead><tbody>";
+                    $inp = '<table class="table table-hover razds"><thead><tr><th>Раздел</th></tr></thead><tbody>';
 
                     $all = 0;
 
@@ -433,11 +438,9 @@ if (!function_exists('req_arr_to_form')) {
                         $value = unserialize($data[$val]);
                     }
 
-                    $inp = '<table class="table table-hover"><tbody><tr><td><a href="javascript:void(0);" onclick="$(\'.razd\').toggle();">Показать/Скрыть не отмеченные</a></td></tr>';
+                    $inp = '<table class="table table-hover insta"><tbody><tr><td><a href="javascript:void(0);" onclick="$(\'.razd\').toggle();">Показать/Скрыть не отмеченные</a></td></tr>';
 
                     $all = 0;
-
-                    $view1 = 0;
 
                     foreach ($extra[$val] as $i) {
 
@@ -445,24 +448,19 @@ if (!function_exists('req_arr_to_form')) {
 
                             $view = 0;
 
+                            $dnon = '';
+
                             foreach ($i['names'] as $r) {
 
                                 if (isset($value[$r])) {
 
                                     $view = 1;
-
-                                    $view1 = 1;
                                 }
                             }
 
-                            if ($view == 1 || $view1 == 0) {
+                            if ($view == 0) $dnon = 'class="razd" style="display:none;"';
 
-                                $inp .= '<tr><th>' . $i['rname'] . '</th></tr>';
-
-                            } else {
-
-                                $inp .= '<tr class="razd" style="display:none;"><th>' . $i['rname'] . '</th></tr>';
-                            }
+                            $inp .= '<tr '.$dnon.'><th>' . $i['rname'] . '</th></tr>';
 
                         } else {
 
@@ -475,8 +473,6 @@ if (!function_exists('req_arr_to_form')) {
                                 $sel = 'checked';
 
                                 $val1 = $value[$i['name']]['price'];
-
-                                //$val2 = $value[$i['name']]['price'];
 
                                 $totalipr = $totalipr + $val1;
 
@@ -494,13 +490,13 @@ if (!function_exists('req_arr_to_form')) {
                                             </td>
                                         </tr>';
 
-                            } elseif ($extra['user_info']['role_id'] != 6) {
+                            } else {
 
-                                $dnone = '';
+                                //$dnone = '';
 
-                                if($view1 != 0) $dnone = 'style="display:none;"';
+                                //if($view == 0) $dnone = '';
 
-                                $inp .= '<tr class="razd" '.$dnone.'>
+                                $inp .= '<tr class="razd" style="display:none;">
                                             <td>
                                             <div class="input-prepend input-append">
                                                 <span class="add-on" style="line-height: 17px;">
@@ -535,9 +531,9 @@ if (!function_exists('req_arr_to_form')) {
                                  - Согласование проекта: стоимость - <b>'.number_format(($totalipr*2), '0', ',', ' ').'</b> руб., срок - <b>60</b> д.
                             </div>';
 
-            if($val == 'instance') $result .= "<br><h3>Согласование</h3><hr>";
+            if($val == 'instance') $result .= '<br><a href="#" onclick="$(\'.insta\').toggle(); return false;"><h3>Согласование <i class="icon-chevron-down"></i></h3></a><hr>';
 
-            if($val == 'razd') $result .= "<br><h3>Проектный отдел</h3><hr>";
+            if($val == 'razd') $result .= '<br><a href="#" onclick="$(\'.razds\').toggle(); return false;"><h3>Проектный отдел <i class="icon-chevron-down"></i></h3></a><hr>';
 
             if (!empty($val)) $result .= '<div class="control-group"><label class="control-label" for="' . $val . '">' . $q['name'] . '</label><div class="controls">' . $inp . '</div></div>';
         }

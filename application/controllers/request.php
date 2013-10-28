@@ -451,17 +451,40 @@ class Request extends CI_Controller
 
         $id = intval($this->uri->segment(3));
 
+        $first = $this->uri->segment(4);
+
+        if($first == 1) $data['first'] = 1;
+
         if(!empty($id)) {
 
             $this->load->model('dx_auth/users_model');
 
             $data['result'] = $this->request_model->get_request($id, 'data');
 
+            $manager = $this->users_model->get_user_by_id($data['result']['mid']);
+
+            $manager = $manager->result_array();
+
+            if(!empty($manager)) {
+
+                $data['manager']['sign'] = $manager[0]['signature'];
+
+                $manager = explode(' ', $manager[0]['name']);
+
+                $data['manager']['name'] =  $manager[0];
+
+                if(isset($manager[1])) $data['manager']['name'] .= " " . mb_substr($manager[1],0,1,'utf-8') . ".";
+
+                if(isset($manager[2])) $data['manager']['name'] .= " " . mb_substr($manager[2],0,1,'utf-8') . ".";
+            }
+
             $name = $this->users_model->get_user_by_id($data['result']['uid']);
 
             $name = $name->result_array();
 
             if(!empty($name)) {
+
+                $data['project']['sign'] = $name[0]['signature'];
 
                 $name = explode(' ', $name[0]['name']);
 

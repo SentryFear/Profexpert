@@ -10,7 +10,7 @@
             body {
                 font-size: 10pt;
                 margin: 1cm 0;
-                padding: 30px -30px;
+                padding: 30px 0px;
                 text-align: justify;
                 font-family: serif;
             }
@@ -25,7 +25,7 @@
             #header,
             #footer {
                 position: fixed;
-                left: -25;
+                left: 0;
                 right: -10;
                 padding-right: -10px;
                 padding-left: 0px;
@@ -155,16 +155,42 @@
                 </td>
                 <td style="border:none;" />
             </tr>
+            {% if result.kpsale %}
+            <tr>
+                <td style="border:none;" />
+                <td style="border:none;">
+                    <p align="right"><strong>Скидка:</strong></p>
+                </td>
+                <td style="border:none;">
+                    <p align="center"><strong>{{ result.kpsale }}%</strong></p>
+                </td>
+                <td style="border:none;" />
+            </tr>
+            {% endif %}
+            {% if result.kptotsale %}
+            <tr>
+                <td style="border:none;" />
+                <td style="border:none; text-decoration: underline;">
+                    <p align="right"><strong>Итого с учётом скидки:</strong></p>
+                </td>
+                <td style="border:none; text-decoration: underline;">
+                    <p align="center"><strong>{{ result.kptotsale|number_format(2, ',', ' ') }}</strong></p>
+                </td>
+                <td style="border:none;" />
+            </tr>
+            {% endif %}
         </table>
         Примечание: <br />
         <p>{{ result.kpmore|raw }}</p>
+        {% if manager.sign %}<div style="position: fixed;left: 0;right: 0;bottom: 135px; left:260px;"><img height="80px" src="themes/img/sign/{{ manager.sign }}"></div>{% endif %}
         <div style="position: fixed;left: 0;right: 0;bottom: 150px;">
             <p>
                 Менеджер по работе с клиентами<br>
-                ГК &laquo;ПРОФЭКСПЕРТ&raquo; ________________________ / Семичева Дарья  /
+                ГК &laquo;ПРОФЭКСПЕРТ&raquo;  ________________________ / {{ manager.name }}  /
             </p>
         </div>
     </div>
+    {% if first != 1 %}
     <hr>
     <div><br>
         <table style="border-collapse:collapse;" width="100%">
@@ -271,7 +297,7 @@
             <p><strong><em><span style="color:black">Название проекта: </span></em></strong><em><span style="color:black">&laquo;{{ result.name }}&raquo; </span></em></p>
             <p><strong><em><span style="color:black">Имеющиеся документы: </span></em></strong><em><span style="color:black">кадастровый паспорт</span></em></p>
             <p><strong><em><span style="color:black"> <u>Состав проектной документации:</u></span></em></strong></p>
-            <p><em>Стадийность проекта: <strong>П</strong></em></p>
+            <p><em>Стадийность проекта: <strong>П</strong>{{ user.sign }}</em></p>
             <table width="510" style="border-collapse:collapse;border:none">
                 <tr>
                     <td width="24.1%" style="border:thin black solid; border-width:2pt;" valign="top">
@@ -304,11 +330,9 @@
             </table><br><br>
             <p><em>* {{ result.pmore|raw }}</em></p>
             <p><strong><em>Общий объем работ</em></strong> <em> на разработку и выпуск проектной документации: <strong><u>{{ result.total }} чел./час.</u></strong></em></p>
+            {% if project.sign %}<p align="right" style="position: fixed;right: 0;bottom: 135px; left:0px;"><img height="80px" src="themes/img/sign/{{ project.sign }}"></p>{% endif %}
             <p align="right" style="position: fixed;left: 0;right: 0;bottom: 100px;"><em><span style="color:black;">Подпись: _________________________</span></em></p>
-        </div>{#
-    <hr>
-    {% for docs in result.docs %}
-        <div><img width="100%" height="100%" src="uploads/{{ docs.file }}" /></div>
-    {% endfor %}#}
+        </div>
+    {% endif %}
     </body>
 </html>

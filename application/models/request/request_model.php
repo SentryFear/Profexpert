@@ -192,6 +192,8 @@ class request_model extends CI_Model
      */
     function update_request($id) {
 
+        //$this->output->enable_profiler(TRUE);
+
         $data = $this->db->get_where('request', array('id' => $id))->row_array();
 		
 		$form = $this->config->item('access');
@@ -225,7 +227,7 @@ class request_model extends CI_Model
                 }
 			}
 		}
-		
+		//var_dump($this->input->post('kpmore'));
 		if(!empty($orazd)) {
 			
 			$arazd = array();
