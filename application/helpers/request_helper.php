@@ -90,13 +90,18 @@ if (!function_exists('req_arr_to_table')) {
 
                 $val = isset($i[$q['value']]) ? $i[$q['value']] : $val = $q['value'];
 
-                if (isset($q['date-format'])) $val = date($q['date-format'], $val);
+                if (isset($q['date-format'])) {
+
+                    $val = date($q['date-format'], $val);
+
+                    $tself = ' data-sort-value="'.$n.'"';
+                }
 
                 if ($val == 'loop.index') {
 
-                    $val = "<a href='/request/edit/" . $i['id'] . "/'>#" . $i['id'] . "</a>";
+                    $val = "<a href='/request/edit/" . $i['id'] . "/'>" . $i['id'] . "</a>";
 
-                    if($extra['role_id'] == 4 && $i['ikp'] != 1) $val = "#" . $i['id'];
+                    if($extra['role_id'] == 4 && $i['ikp'] != 1) $val = "" . $i['id'];
                 }
 
                 if ($q['value'] == 'fname') $val = '<span data-toggle="tooltip" data-original-title="Телефон:' . $i['phone'] . '  Email:' . $i['email'] . '">' . $i['fname'] . '</span>';
@@ -126,7 +131,12 @@ if (!function_exists('req_arr_to_table')) {
                     if(!empty($i['rework'])) $i['rework'] = unserialize($i['rework']);
                     else $i['rework'] = array();
 
-                    if($extra['req']['ikp'] == 9) $rework = '<a href="/request/rework/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl" id="' . $i['id'] . '"><span class="label label-important" data-toggle="tooltip" data-original-title="Колличество комментариев.">[ ' . count($i['rework']) . ' ]</span></a>';
+                    $worklabel = 'label-warning';
+
+                    if(count($i['rework']) > 0) $worklabel = 'label-important';
+
+                    //if($extra['req']['ikp'] == 9)
+                    $rework = '<a href="/request/rework/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl" id="' . $i['id'] . '"><span class="label '.$worklabel.'" data-toggle="tooltip" data-original-title="Колличество комментариев.">[ ' . count($i['rework']) . ' ]</span></a>';
 
                     $val = '<a href="/request/add/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl" id="' . $i['id'] . '">' . $exist . '</a> ' . $send . ' ' . $rework;
 
@@ -254,7 +264,7 @@ if (!function_exists('req_arr_to_form')) {
         $result .= '<form class="form-horizontal" method="POST" enctype="multipart/form-data" autocomplete="off">';
 
         if (empty($data)) $result .= '<div class="modal-body">';
-        else $result .= '<div class="form-actions"><div class="btn-group" style="float:left;"><input type="submit" class="btn btn-primary" name="add" value="Сохранить" /></div><div style="float: left; position: relative; height: 30px;">&nbsp;</div></div>';
+        else $result .= '<div class="form-actions"><div class="btn-group" style="float:left;"><input type="submit" class="btn btn-primary" name="add" value="Сохранить" /><a href="/request/review/' . $data['id'] . '/" target="_blank" class="btn btn-primary">Печать</a></div><div style="float: left; position: relative; height: 30px;">&nbsp;</div></div>';
 
         $totalrazd = '';
 
@@ -518,17 +528,27 @@ if (!function_exists('req_arr_to_form')) {
             }
 
             if($val == 'kpname') $result .= '<br><h3>Генерация коммерческого предложения</h3><hr>
-                            <div class="alert alert-info">
-                                <b>Основаная информация:</b><br>
-                                 - Адрес: <b>'.$data['address'].'</b><br>
-                                 - Район: <b>'.$extra['region'][$data['region']].'</b><br>
-                                 - Название проекта: <b>'.$data['name'].'</b><br>
-                                 - Площадь объекта: <b>'.$data['footage'].'</b>м&sup2;<br><br>
-                                <b>Разделы:</b><br>'.$totalrazd.'<br>
-                                <b>Стоимость</b><br>
-                                 - Получение документации: стоимость - <b>12 000</b> руб., срок - <b>12</b> д.<br>
-                                 - Разработка проекта: стоимость - <b>'.number_format(($totalpr*2), '0', ',', ' ').'</b> руб., срок - <b>'.$data['atotal'].'</b> д.<br>
-                                 - Согласование проекта: стоимость - <b>'.number_format(($totalipr*2), '0', ',', ' ').'</b> руб., срок - <b>60</b> д.
+                            <div class="alert alert-info" style="height: 235px;">
+                                <div style="float: left;">
+                                    <b>Основаная информация:</b><br>
+                                     - Адрес: <b>'.$data['address'].'</b><br>
+                                     - Район: <b>'.$extra['region'][$data['region']].'</b><br>
+                                     - Название проекта: <b>'.$data['name'].'</b><br>
+                                     - Площадь объекта: <b>'.$data['footage'].'</b>м&sup2;<br><br>
+                                    <b>Разделы:</b><br>'.$totalrazd.'<br>
+                                    <b>Стоимость</b><br>
+                                     - Получение документации: стоимость - <b>12 000</b> руб., срок - <b>12</b> д.<br>
+                                     - Разработка проекта: стоимость - <b>'.number_format(($totalpr*2), '0', ',', ' ').'</b> руб., срок - <b>'.$data['atotal'].'</b> д.<br>
+                                     - Согласование проекта: стоимость - <b>'.number_format(($totalipr*2), '0', ',', ' ').'</b> руб., срок - <b>60</b> д.
+                                </div>
+                                <div style="float: right; width: 73%;">
+                                    Примечание:<br>
+                                    Стоимость проекта может измениться, если здание находится под охраной КГИОП.<br>
+                                    Стоимость работ может измениться после получения подробного технического задания от Заказчика.<br>
+                                    Платежи за выдачу технической документации и согласование проектной документации, предусмотренные государственными инстанциями, оплачиваются Заказчиком отдельно.<br>
+                                    В данный расчет не включена стоимость работ по вводу в эксплуатацию объекта после перепланировки и получению технического паспорта на образованный в результате перепланировки объект, получению дополнительной мощности и оформления электропотребления. Услуги по вводу объекта в эксплуатацию осмечиваются отдельно и составляют 70-80% от данного коммерческого предложения.<br>
+                                    Цены по коммерческому предложению действительны в течение месяца.<br>
+                                </div>
                             </div>';
 
             if($val == 'instance') $result .= '<br><a href="#" onclick="$(\'.insta\').toggle(); return false;"><h3>Согласование <i class="icon-chevron-down"></i></h3></a><hr>';
@@ -540,7 +560,7 @@ if (!function_exists('req_arr_to_form')) {
 
         if (empty($data)) $result .= '</div><div class="modal-footer"><div class="btn-group"><button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button><input type="submit" class="btn btn-primary" name="add" value="Добавить" /></div></div></form>';
 
-        if (!empty($data)) $result .= '<div class="form-actions"><div class="btn-group"><input type="submit" class="btn btn-primary" name="add" value="Сохранить" style="margin-left: 403px;" /></div></div></form>';
+        if (!empty($data)) $result .= '<div class="form-actions"><div class="btn-group"><input type="submit" class="btn btn-primary" name="add" value="Сохранить" style="margin-left: 403px;" /><a href="/request/review/' . $data['id'] . '/" target="_blank" class="btn btn-primary">Печать</a></div></div></form>';
 
         if (empty($data)) $result .= '</div>';
 

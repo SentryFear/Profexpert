@@ -219,7 +219,7 @@ class Request extends CI_Controller
 
             echo '<div class="modal-header">
                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                 <h3 id="myModalLabel">Комментарии руководства</h3>
+                 <h3 id="myModalLabel">Комментарии к проекту</h3>
               </div>
               <div class="modal-body">';
 
@@ -231,20 +231,20 @@ class Request extends CI_Controller
                         </blockquote>';
             }
 
-            if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
+            //if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
 
-                echo '<textarea class="span5 wysihtml5" rows="5" name="text" id="text" placeholder="Комментарий к доработке"></textarea>';
-            }
+                echo '<textarea class="span5 wysihtml5" rows="5" name="text" id="text" placeholder="Комментарий к проекту"></textarea>';
+            //}
 
             echo '</div>
               <div class="modal-footer">
                 <div class="btn-group">
                   <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>';
 
-            if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
+            //if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
 
                 echo '<input type="submit" class="btn btn-primary" name="rework" value="Отправить" />';
-            }
+            //}
             
             echo '</div></div>';
 
@@ -484,7 +484,8 @@ class Request extends CI_Controller
 
             if(!empty($name)) {
 
-                $data['project']['sign'] = $name[0]['signature'];
+                if(!empty($name[0]['signature'])) $data['project']['sign'] = $name[0]['signature'];
+                else $data['project']['sign'] = false;
 
                 $name = explode(' ', $name[0]['name']);
 

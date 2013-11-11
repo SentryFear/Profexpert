@@ -14,7 +14,7 @@ class Api extends CI_Controller
 
         if($this->input->is_ajax_request()) {
 
-            echo $this->notification->getNotification();
+            echo $this->notification->getNotification($this->dx_auth->get_all_data());
 
         } else {
 

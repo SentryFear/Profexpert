@@ -182,7 +182,7 @@
         </table>
         Примечание: <br />
         <p>{{ result.kpmore|raw }}</p>
-        {% if manager.sign %}<div style="position: fixed;left: 0;right: 0;bottom: 135px; left:260px;"><img height="80px" src="themes/img/sign/{{ manager.sign }}"></div>{% endif %}
+        {% if manager.sign %}<div style="position: fixed;left: 0;right: 0;bottom: 135px; left:260px;"><img height="80px" src="uploads/img/sign/{{ manager.sign }}"></div>{% endif %}
         <div style="position: fixed;left: 0;right: 0;bottom: 150px;">
             <p>
                 Менеджер по работе с клиентами<br>
@@ -330,7 +330,7 @@
             </table><br><br>
             <p><em>* {{ result.pmore|raw }}</em></p>
             <p><strong><em>Общий объем работ</em></strong> <em> на разработку и выпуск проектной документации: <strong><u>{{ result.total }} чел./час.</u></strong></em></p>
-            {% if project.sign %}<p align="right" style="position: fixed;right: 0;bottom: 135px; left:0px;"><img height="80px" src="themes/img/sign/{{ project.sign }}"></p>{% endif %}
+            {% if project.sign != false %}<p align="right" style="position: fixed;right: 0;bottom: 135px; left:0px;"><img height="80px" src="uploads/img/sign/{{ project.sign }}"></p>{% endif %}
             <p align="right" style="position: fixed;left: 0;right: 0;bottom: 100px;"><em><span style="color:black;">Подпись: _________________________</span></em></p>
         </div>
     {% endif %}

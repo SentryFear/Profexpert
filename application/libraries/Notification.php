@@ -48,6 +48,8 @@ class Notification {
     function __construct()
     {
         $this->CI =& get_instance();
+
+        $this->CI->load->helper('Notification');
     }
 
     /**
@@ -61,37 +63,18 @@ class Notification {
     /**
      * Выбрать все уведомления
      */
-    function getNotification()
+    function getNotification($user_info)
     {
-        $notify = array(
-            array('name' => 'test', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1381119536', 'lock' => '0'),
-            array('name' => 'test1', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1381039536', 'lock' => '0'),
-            array('name' => 'test2', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1380139536', 'lock' => '0'),
-            array('name' => 'test3', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1351139536', 'lock' => '0'),
-            array('name' => 'test4', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1331139536', 'lock' => '0'),
-            array('name' => 'test5', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1381139536', 'lock' => '0'),
-            array('name' => 'test6', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1381139536', 'lock' => '0'),
-            array('name' => 'test7', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1381139536', 'lock' => '0'),
-            array('name' => 'test8', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1381139536', 'lock' => '0'),
-            array('name' => 'test9', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1381139536', 'lock' => '0'),
-            array('name' => 'test10', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1381139536', 'lock' => '0'),
-            array('name' => 'test11', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1381139536', 'lock' => '0'),
-            array('name' => 'test12', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1381139536', 'lock' => '0'),
-            array('name' => 'test12', 'uri' => '/request', 'text' => 'тестовое уведомление', 'time' => '1381139536', 'lock' => '0')
-        );
+        $notify = $this->CI->db->get('notification')->result_array();
 
         foreach($notify as $i) {
 
-            $i['time'] = time() - $i['time']." сек.";
+            if( (isset($i['role']) && $user_info['role_id'] == $i['role']) || (isset($i['user']) && $user_info['user_id'] == $i['user']) || (empty($i['user']) && empty($i['role']) )) {
 
-            if($i['time'] > 31536000) $i['time'] = round($i['time']/31536000)." г.";
-            elseif($i['time'] > 2419200) $i['time'] = round($i['time']/2419200)." мес.";
-            elseif($i['time'] > 604800) $i['time'] = round($i['time']/604800)." нед.";
-            elseif($i['time'] > 86400) $i['time'] = round($i['time']/86400)." дн.";
-            elseif($i['time'] > 3600) $i['time'] = round($i['time']/3600)." ч.";
-            elseif($i['time'] > 60) $i['time'] = round($i['time']/60)." мин.";
+                $i['time'] = time_to_notify($i['time']);
 
-            $this->notify[] = $i;
+                $this->notify[] = $i;
+            }
         }
 
         $this->notify = json_encode($this->notify);

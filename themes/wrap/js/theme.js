@@ -1,17 +1,32 @@
 $(function () {
 
-    $.getJSON( "/api/getNotification", function( data ) {
-        var items = [];
-        $.each( data, function( key, val ) {
-            items.push( "<a href='" + val.uri + "' class='item'><i class='icon-signin'></i> " + val.name + " <span class='time'><i class='icon-time'></i> " + val.time + "</span></a>" );
+    function get_notification()
+    {
+        $('.notifications').html('');
+
+        $.getJSON( "/api/getNotification", function( data ) {
+
+            var items = [];
+
+            $.each( data, function( key, val ) {
+                items.push( "<a href='" + val.uri + "' class='item'><i class='icon-signin'></i> " + val.name + " <span class='time'><i class='icon-time'></i> " + val.time + "</span></a>" );
+            });
+
+            $('.count').html(items.length);
+
+            $('.count1').html(items.length);
+
+            $( items.join( "" ) ).appendTo( ".notifications" );
         });
+    }
 
-        $('.count').html(items.length);
+    get_notification();
 
-        $('.count1').html(items.length);
+    setInterval(function()
+    {
+        get_notification();
 
-        $( items.join( "" ) ).appendTo( ".notifications" );
-    });
+    }, 10000);
 
     $(".wysihtml5").wysihtml5({
         "font-styles": false,

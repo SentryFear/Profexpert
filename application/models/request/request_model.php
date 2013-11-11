@@ -253,20 +253,34 @@ class request_model extends CI_Model
 
             if(empty($traspr2)) $traspr2 = array();
 
+            $v = 0;
+
+            $ct = 0;
+
             foreach($traspr2 as $q) {
 
-                $q['name'] = str_replace('&nbsp;', ' ', $this->input->post('trasprname'.$q['id']));
+                $ct++;
 
-                $q['price'] = $this->input->post('trasprpr'.$q['id']);
+                if($this->input->post('trasprname'.$q['id'])) {
 
-                $q['srok'] = $this->input->post('trasprsr'.$q['id']);
+                    $q['name'] = str_replace('&nbsp;', ' ', $this->input->post('trasprname'.$q['id']));
 
-                if(!empty($q['name'])) $traspr1[] = $q;
+                    $q['price'] = $this->input->post('trasprpr'.$q['id']);
+
+                    $q['srok'] = $this->input->post('trasprsr'.$q['id']);
+
+                    $v++;
+
+                    $q['id'] = $v;
+
+                    $traspr1[] = $q;
+
+                }
             }
 
             $traspr2 = $traspr1;
 
-            for($i=count($traspr2)+1;$i<=10;$i++) {
+            for($i=$ct+1;$i<=10;$i++) {
 
                 if($this->input->post('trasprname'.$i) && !empty($_POST['trasprname'.$i])) {
 
