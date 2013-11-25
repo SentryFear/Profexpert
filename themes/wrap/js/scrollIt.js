@@ -119,7 +119,7 @@
         $(window).on('keydown', keyNavigation);
 
         $('body').on('click','[data-scroll-nav], [data-scroll-goto]', function(e){
-            //e.preventDefault();
+            e.stopPropagation()
             doScroll(e);
             $('[data-scroll-index]').removeClass(settings.activeClass);
             $('[data-scroll-index=' + $(this).attr('data-scroll-nav') + ']').addClass(settings.activeClass);

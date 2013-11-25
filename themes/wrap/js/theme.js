@@ -1,34 +1,6 @@
-$(function () {
+$(function() {
 
-    function get_notification()
-    {
-        $.getJSON( "/api/getNotification", function( data ) {
-
-            var items = [];
-
-            $.each( data, function( key, val ) {
-                items.push( "<a href='" + val.uri + "#hs" + val.rid + "' onclick='' data-nid='" + val.id + "' data-scroll-nav='" + val.rid + "' class='item' data-toggle='tooltip' data-original-title='" + val.text + "'><i class='icon-signin'></i> " + val.name + " <span class='time'><i class='icon-time'></i> " + val.time + "</span></a>" );
-            });
-
-            $('.count').html(items.length);
-
-            $('.count1').html(items.length);
-
-            $('.notifications').html('');
-
-            $( items.join( "" ) ).appendTo( ".notifications" );
-        });
-    }
-
-    function lock_notification(id) {
-
-        $.getJSON( "/api/lockNotification/"+id)
-            .success(function() {  })
-            .error(function() { alert("Ошибка выполнения"); })
-            .complete(function() {  });
-
-        get_notification();
-    }
+    $.Notification();
 
     function get_status()
     {
@@ -40,30 +12,13 @@ $(function () {
 
         });
     }
-
-    get_notification();
-    get_status()
+    get_status();
     setInterval(function()
     {
-        get_notification();
         get_status();
 
     }, 10000);
 
-    $('body').on('click','[data-nid]', function(e){
-
-        lock_notification($(this).attr('data-nid'));
-
-    });
-
-    /*if(window.location.hash) {
-
-        var hash = parseInt(window.location.hash.slice(3));
-
-        lock_notification(hash);
-    }*/
-
-    //$('.fat-btn').click(function (e) {
     $('body').on('click','[data-ind]', function(e){
             e.preventDefault();
 
@@ -334,7 +289,7 @@ $(function () {
 
   	// toggle all checkboxes from a table when header checkbox is clicked
   	$(".table th input:checkbox").click(function () {
-  		$checks = $(this).closest(".table").find("tbody input:checkbox");
+  		var $checks = $(this).closest(".table").find("tbody input:checkbox");
   		if ($(this).is(":checked")) {
   			$checks.prop("checked", true);
   		} else {

@@ -73,11 +73,11 @@ class Notification {
     /**
      * Выбрать все уведомления
      */
-    function getNotification($user_info)
+    function getNotification($user_info, $lock)
     {
         $this->CI->db->order_by('time', 'desc');
 
-        $notify = $this->CI->db->get_where('notification', array('lock' => 0))->result_array();
+        $notify = $this->CI->db->get_where('notification', array('lock' => $lock))->result_array();
 
         foreach($notify as $i) {
 

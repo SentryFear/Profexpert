@@ -14,7 +14,11 @@ class Api extends CI_Controller
 
         if($this->input->is_ajax_request()) {
 
-            echo $this->notification->getNotification($this->dx_auth->get_all_data());
+            $lock = intval($this->uri->segment(3));
+
+            if(empty($lock)) $lock = 0;
+
+            echo $this->notification->getNotification($this->dx_auth->get_all_data(),$lock);
 
         } else {
 
