@@ -289,11 +289,13 @@ if (!function_exists('req_arr_to_form')) {
         if (empty($data)) $result .= '<div class="modal-body">';
         else $result .= '<div class="form-actions"><div class="btn-group" style="float:left;"><input type="submit" class="btn btn-primary" name="add" value="Сохранить" /><a href="/request/review/' . $data['id'] . '/" target="_blank" class="btn btn-primary">Печать</a></div><div style="float: left; position: relative; height: 30px;">&nbsp;</div></div>';
 
-        $totalrazd = '';
+        $totalrazd = array();
 
         $totalpr = 0;
 
         $totalsr = 0;
+
+        $totalarrpr = array();
 
         $totalipr = 0;
 
@@ -414,8 +416,6 @@ if (!function_exists('req_arr_to_form')) {
 
                             $sel = 'checked';
 
-                            if(!empty($i['sname'])) $totalrazd .= " - ".$i['sname']." - ".$i['rname']."<br>";
-
                             $totalpr = $totalpr + $val2;
 
                             $val1 = $value[$i['name']]['hours'];
@@ -423,6 +423,8 @@ if (!function_exists('req_arr_to_form')) {
                             $totalsr = $totalsr + $val1;
 
                             if(!empty($value[$i['name']]['price'])) $val2 = $value[$i['name']]['price'];
+
+                            if(!empty($i['sname'])) $totalrazd[] = array('sname' => $i['sname'], 'rname' => $i['rname'], 'srok' => $val1, 'price' => $val2);
 
                             $all += $val1;
 
@@ -495,6 +497,10 @@ if (!function_exists('req_arr_to_form')) {
 
                             $inp .= '<tr '.$dnon.'><th>' . $i['rname'] . '</th></tr>';
 
+                            $ins = array('id' => $i['rname'], 'name' => $i['rname']);
+
+
+
                         } else {
 
                             $sel = "";
@@ -508,6 +514,10 @@ if (!function_exists('req_arr_to_form')) {
                                 $val1 = $value[$i['name']]['price'];
 
                                 $totalipr = $totalipr + $val1;
+
+                                if(empty($totalarrpr[$ins['id']])) $totalarrpr[$ins['id']] = array('name' => $ins['name'], 'price' => '0', 'inins' => array());
+
+                                $totalarrpr[$ins['id']]['inins'][] = array('name' => $i['rname'], 'price' => $val1);
 
                                 $all += $val1;
 
@@ -550,29 +560,98 @@ if (!function_exists('req_arr_to_form')) {
                 }
             }
 
-            if($val == 'kpname') $result .= '<br><h3>Генерация коммерческого предложения</h3><hr>
-                            <div class="alert alert-info" style="height: 400px;">
-                                <div style="float: left; width: 27%;">
-                                    <b>Основаная информация:</b><br>
-                                     - Адрес: <b>'.$data['address'].'</b><br>
-                                     - Район: <b>'.$extra['region'][$data['region']].'</b><br>
-                                     - Название проекта: <b>'.$data['name'].'</b><br>
-                                     - Площадь объекта: <b>'.$data['footage'].'</b>м&sup2;<br><br>
-                                    <b>Разделы:</b><br>'.$totalrazd.'<br>
-                                    <b>Стоимость</b><br>
-                                     - Получение документации: стоимость - <b>12 000</b> руб., срок - <b>12</b> д.<br>
-                                     - Разработка проекта: стоимость - <b>'.number_format(($totalpr*2), '0', ',', ' ').'</b> руб., срок - <b>'.$data['atotal'].'</b> д.<br>
-                                     - Согласование проекта: стоимость - <b>'.number_format(($totalipr*2), '0', ',', ' ').'</b> руб., срок - <b>60</b> д.
+            if($val == 'kpname') {
+
+                $arrtext = '';
+
+                $ttarrpr = 0;
+
+                foreach($totalarrpr as $arrpr) {
+
+                    $arrnames = '';
+
+                    foreach($arrpr['inins'] as $arrtpr) {
+
+                        $ttarrpr += $arrtpr['price'];
+
+                        $arrpr['price'] += $arrtpr['price'];
+
+                        $arrnames .= '- '.$arrtpr['name'].'<br>';
+                    }
+
+                    $arrtext .= '<tr><td><span data-toggle="tooltip" data-original-title="'.$arrnames.'">'.$arrpr['name'].'</span></td><td>0 д.</td><td>'.number_format($arrpr['price'], '0', ',', ' ').' руб.</td><td>'.number_format($arrpr['price']*2, '0', ',', ' ').' руб.</td></tr>';
+                }
+
+                $arrtext .= '<tr><td style="text-align: right;"><b>Итого:</b></td><td><b>60</b> д.</td><td><b>'.number_format($ttarrpr, '0', ',', ' ').'</b>  руб.</td><td><b>'.number_format($ttarrpr*2, '0', ',', ' ').'</b>  руб.</td></tr>';
+
+                $ttrazdtext = '';
+
+                $ttrazdsr = 0;
+
+                $ttrazdpr = 0;
+
+                foreach($totalrazd as $ttrazd) {
+
+                    $ttrazdsr += $ttrazd['srok'];
+
+                    $ttrazdpr += $ttrazd['price'];
+
+                    $ttrazdtext .= '<tr><td>'.$ttrazd['sname'].' - '.$ttrazd['rname'].'</td><td>'.$ttrazd['srok'].' чел./час.</td><td>'.number_format($ttrazd['price'], '0', ',', ' ').' руб.</td><td>'.number_format($ttrazd['price']*2, '0', ',', ' ').' руб.</td></tr>';
+                }
+
+                $ttrazdtext .= '<tr><td style="text-align: right;"><b>Итого:</b></td><td><b>'.$data['atotal'].'</b> д.</td><td><b>'.number_format($ttrazdpr, '0', ',', ' ').'</b>  руб.</td><td><b>'.number_format($ttrazdpr*2, '0', ',', ' ').'</b>  руб.</td></tr>';
+
+                $result .= '<br><h3>Генерация коммерческого предложения</h3><hr>
+                            <div class="row-fluid">
+                            <div class="alert alert-info">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <b>Основаная информация:</b><br>
+                                         - Адрес: <b>'.$data['address'].'</b><br>
+                                         - Район: <b>'.$extra['region'][$data['region']].'</b><br>
+                                         - Название проекта: <b>'.$data['name'].'</b><br>
+                                         - Площадь объекта: <b>'.$data['footage'].'</b>м&sup2;<br><br>
+                                    </div>
+                                    <div class="span9">
+                                        <b>Примечание:</b><br>
+                                        Стоимость проекта может измениться, если здание находится под охраной КГИОП.<br>
+                                        Стоимость работ может измениться после получения подробного технического задания от Заказчика.<br>
+                                        Платежи за выдачу технической документации и согласование проектной документации, предусмотренные государственными инстанциями, оплачиваются Заказчиком отдельно.<br>
+                                        В данный расчет не включена стоимость работ по вводу в эксплуатацию объекта после перепланировки и получению технического паспорта на образованный в результате перепланировки объект, получению дополнительной мощности и оформления электропотребления. Услуги по вводу объекта в эксплуатацию осмечиваются отдельно и составляют 70-80% от данного коммерческого предложения.<br>
+                                        Цены по коммерческому предложению действительны в течение месяца.<br>
+                                    </div>
                                 </div>
-                                <div style="float: right; width: 73%;">
-                                    Примечание:<br>
-                                    Стоимость проекта может измениться, если здание находится под охраной КГИОП.<br>
-                                    Стоимость работ может измениться после получения подробного технического задания от Заказчика.<br>
-                                    Платежи за выдачу технической документации и согласование проектной документации, предусмотренные государственными инстанциями, оплачиваются Заказчиком отдельно.<br>
-                                    В данный расчет не включена стоимость работ по вводу в эксплуатацию объекта после перепланировки и получению технического паспорта на образованный в результате перепланировки объект, получению дополнительной мощности и оформления электропотребления. Услуги по вводу объекта в эксплуатацию осмечиваются отдельно и составляют 70-80% от данного коммерческого предложения.<br>
-                                    Цены по коммерческому предложению действительны в течение месяца.<br>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <b><a href="javascript:void(0);" onclick="$(\'.rrp\').toggle();">Разработка проекта</a></b><br>
+                                        <table class="table table-hover hide rrp">
+                                            <tr>
+                                               <th class="span8">Наименование</th>
+                                               <th class="span1">Срок</th>
+                                               <th class="span1">Стоимость</th>
+                                               <th class="span1">С наценкой</th>
+                                            </tr>
+                                            '.$ttrazdtext.'
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>';
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <b><a href="javascript:void(0);" onclick="$(\'.sgp\').toggle();">Согласование проекта</a></b><br>
+                                        <table class="table table-hover hide sgp">
+                                             <tr>
+                                                <th class="span8">Наименование</th>
+                                                <th class="span1">Срок</th>
+                                                <th class="span1">Стоимость</th>
+                                                <th class="span1">С наценкой</th>
+                                             </tr>
+                                             '.$arrtext.'
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div></div>';
+            }
 
             if($val == 'instance') $result .= '<br><a href="#" onclick="$(\'.insta\').toggle(); return false;"><h3>Согласование <i class="icon-chevron-down"></i></h3></a><hr>';
 
