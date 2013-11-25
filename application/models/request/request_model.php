@@ -10,7 +10,9 @@ class request_model extends CI_Model
      */
     function __construct()
 	{
-		parent::__construct();	
+		parent::__construct();
+
+        $this->config->load('request');
 	}
 
     /**
@@ -131,7 +133,7 @@ class request_model extends CI_Model
 			
 			if ($this->upload->do_upload('doc'.$i)) {
 				
-				$name = $this->input->post('name'.$i);
+				$name = $this->input->post('name'.$i) ? $this->input->post('name'.$i) : $dt['file_name'];
 				
 				$data['success'] .= "Документ номер $i с именем $name успешно загружен.<br>";
 			      
@@ -161,6 +163,8 @@ class request_model extends CI_Model
 
         $this->load->library('history');
 
+        $this->load->library('notification');
+
         $id = $this->input->post('id');
 
         $text = $this->input->post('text');
@@ -169,17 +173,22 @@ class request_model extends CI_Model
 
         $row = $this->db->get_where('request', array('id' => $id))->row_array();
 
+        $this->notification->setNotification('Новый комментарий ['.$id.']', '/request/', $id, 'Новый комментарий к заявке', '0', $row['mid']);
+
         $rework = unserialize($row['rework']);
 
         if(empty($rework)) $rework = array();
 
         $rework[] = array('author' => $author, 'text'=> $text, 'date' => time());
 
-        $upd['kp'] = 9;
+        if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
+
+            //$upd['kp'] = 9;
+
+            //$this->history->setHistory('dt9', $id);
+        }
 
         $upd['rework'] = serialize($rework);
-
-        $this->history->setHistory('dt9', $id);
 
         return $this->db->update('request', $upd, array('id' => $id)) ? 1 : 0;
     }
@@ -457,12 +466,27 @@ class request_model extends CI_Model
 			//end GetData
 			
 			$alldata = $this->dx_auth->get_all_data();
-			
+
 			$source = req_perm_in_view($this->config->item('access'), $type = 'view', $alldata);
 
 			$alldata['status'] = $this->config->item('status');
-			
-			$data['result'] = req_arr_to_table($data['result'], $source, $alldata);
+
+            if($view == 'json') {
+
+                foreach($data['result'] as $r) {
+
+                    $extra = $alldata;
+
+                    $extra['id'] = $r['id'];
+
+                    $extra['req'] = $r;
+
+                    $json[] = array('id' => $r['id'], 'text' => req_get_status($alldata['status'], $extra));
+                }
+
+                $data['result'] = $json;
+
+            } else $data['result'] = req_arr_to_table($data['result'], $source, $alldata);
 		}
 		
 		return $data['result'];

@@ -3280,6 +3280,17 @@ button.close {
           box-shadow: none;
 }
 
+.label.disabled,
+.label[disabled] {
+    cursor: default !important;
+    background-image: none;
+    opacity: 0.65;
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
 .btn-large {
   padding: 11px 19px;
   font-size: 17.5px;
@@ -5305,6 +5316,7 @@ input[type="submit"].btn.btn-mini {
 .tooltip.top {
   padding: 5px 0;
   margin-top: -3px;
+  white-space: normal;
 }
 
 .tooltip.right {

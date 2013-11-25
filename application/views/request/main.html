@@ -43,6 +43,12 @@
       background: -ms-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
       background: linear-gradient(to bottom, #fefefe 0%,#f7f7f7 100%);
     }
+      td{
+          max-width: 150px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+      }
   </style>
   
   <div class="table-products section">
@@ -92,10 +98,19 @@
         <div class="alert alert-info">
           <button type="button" class="close" data-dismiss="alert">&times;</button>
           <b>Подсказка</b><br>
-          <span class="label label-warning" data-toggle="tooltip" data-original-title="Кнопка">Кнопка</span> - Нажимается,при выполнении какого либо действия<br>
-          <span class="label label-success" data-toggle="tooltip" data-original-title="Кнопка">Статус</span> - Положительный статус заявки<br>
-          <span class="label label-important" data-toggle="tooltip" data-original-title="Кнопка">Статус</span> - Отрицательный статус заявки<br>
-          <span class="label label-info" data-toggle="tooltip" data-original-title="Кнопка">Статус</span> - Нейтральный статус заявки<br>
+          <span class="label label-warning" data-toggle="tooltip" data-original-title="Статус">Предупреждение</span>
+          <span class="label label-success" data-toggle="tooltip" data-original-title="Статус">Успех</span>
+          <span class="label label-important" data-toggle="tooltip" data-original-title="Статус">Важно</span>
+          <span class="label label-info" data-toggle="tooltip" data-original-title="Статус">Информация</span>
+          <span class="label" data-toggle="tooltip" data-original-title="Статус">По умолчанию</span>- Варианты статусов заявки<br>
+
+          <a href="javascript:void(0);" class="label label-warning" data-toggle="tooltip" data-original-title="Кнопка">Предупреждение</a>
+          <a href="javascript:void(0);" class="label label-success" data-toggle="tooltip" data-original-title="Кнопка">Успех</a>
+          <a href="javascript:void(0);" class="label label-important" data-toggle="tooltip" data-original-title="Кнопка">Важно</a>
+          <a href="javascript:void(0);" class="label label-info" data-toggle="tooltip" data-original-title="Кнопка">Информация</a>
+          <a href="javascript:void(0);" class="label" data-toggle="tooltip" data-original-title="Кнопка">По умолчанию</a> - Варианты кнопок для выполнения какого либо действия<br>
+
+
           &nbsp;&nbsp;&nbsp;&nbsp;* Чтобы загрузить или просмотреть документы нажмите на цифру в столбце <b>ДОКУМЕНТЫ</b>.<br>
           &nbsp;&nbsp;&nbsp;&nbsp;* Чтобы добавить информацию или изменить нажмите кнопку <b>Изменить</b>.<br>
           &nbsp;&nbsp;&nbsp;&nbsp;* Чтобы распечатать нажмите кнопку <b>Печать</b>.<br>

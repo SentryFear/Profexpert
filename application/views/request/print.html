@@ -5,52 +5,295 @@
     <title>Порядок производства работ</title>
 </head>
 <style>
-    table p { margin: 0;}
+
+    body {
+        font-size: 11pt;
+        top: -45px;
+        text-align: justify;
+        font-family: serif;
+        margin: 0px;
+        padding: 0px 0px;
+    }
+
+    p {
+        margin: 0;
+        text-indent: 20px;
+    }
+
+    table p {
+        text-indent: 0px;
+        margin: 0;
+        width: 100%;
+    }
+
+    hr {
+        page-break-after: always;
+        border: 0;
+    }
+
 </style>
 <body>
 
 <div>
-    <p align="center"><strong><em><u><span style="color:black">Объем работ на разработку проектной документации</span></u></em></strong></p>
-    <p align="right"><em><span style="color:black">Дата: {{ "now"|date("d.m.y") }}</span></em></p>
-    <p align="right"><em><span style="color:black">Составил: {{ user.name }}</span></em></p>
-    <p><strong><em><span style="color:black">Адрес объекта: </span></em></strong><em><span style="color:black">  г. Санкт-Петербург, {{ result.address }}</span></em></p>
-    <p><strong><em><span style="color:black">Площадь объекта:  </span></em></strong><em>{{ result.footage }}  м<sup>2</sup></em></p>
-    <p><strong><em><span style="color:black">Назначение здания/помещения: </span></em></strong><em><span style="color:black">{{ result.ztype }}/{{ result.ptype }}</span></em></p>
-    <p><strong><em><span style="color:black">Название проекта: </span></em></strong><em><span style="color:black">&laquo;{{ result.name }}&raquo; </span></em></p>
-    <p><strong><em><span style="color:black">Имеющиеся документы: </span></em></strong><em><span style="color:black">кадастровый паспорт</span></em></p>
-    <p><strong><em><span style="color:black"> <u>Состав проектной документации:</u></span></em></strong></p>
-    <p><em>Стадийность проекта: <strong>П</strong></em></p>
-    <table width="510" style="border-collapse:collapse;border:none">
+    <p align="center"><strong>ДОГОВОР № {{ result.id }}/{{ "now"|date("y") }}</strong></p>
+    <table style="width:100%;">
         <tr>
-            <td width="24.1%" style="border:thin black solid; border-width:2pt;" valign="top">
-                <p align="center"><strong><em><span style="color:black">Раздел</span></em></strong></p>
-            </td>
-            <td width="75.9%" style="border:thin black solid; border-width:2pt;" valign="top">
-                <p align="center"><strong><em><span style="color:black">Трудоемкость, чел./час.</span></em></strong></p>
-            </td>
-        </tr>
-        {% set allr = 0 %}
-        {% for razd in result.razd %}
-        {% set allr = allr + razd.hours %}
-        <tr>
-            <td style="border:thin black solid;border-top:none; border-width:0 1pt 1pt 2pt;" valign="top">
-                <p align="center"><em><span style="color:black">{{ razd.sname }}</span></em></p>
-            </td>
-            <td style="border:thin black solid;border-top:none;border-left: none;border-width:0 2pt 1pt 0;" valign="top">
-                <p align="center"><em><span style="color:black">{{ razd.hours }}</span></em></p>
-            </td>
-        </tr>
-        {% endfor %}
-        <tr>
-            <td style="border:thin black solid; border-width:2pt;" valign="top">
-                <p align="center"><em><span style="color:black">Всего:</span></em></p>
-            </td>
-            <td style="border:thin black solid; border-width:2pt;" valign="top">
-                <p align="center"><em><span style="color:black">{{ allr }}</span></em></p>
-            </td>
+            <td>Санкт-Петербург</td>
+            <td align="right">{{ date }}</td>
         </tr>
     </table><br><br>
-    <p><em>* {{ result.pmore }}</em></p>
-    <p><strong><em>Общий объем работ</em></strong> <em> на разработку и выпуск проектной документации: <strong><u>{{ result.total }} чел./час.</u></strong></em></p>
-    <p align="right" style="position: fixed;left: 0;right: 0;bottom: 20px;"><em><span style="color:black;">Подпись: _________________________</span></em></p> </div>
+    <p>ООО «ПРОФЭКСПЕРТ» в лице Генерального директора Клюевой Екатерины Сергеевны, действующего на основании Устава, именуемый в дальнейшем Исполнитель с одной стороны и {{ result.fname }}, именуемый в дальнейшем Заказчик, с другой стороны, заключили настоящий Договор о нижеследующем:</p>
+    <br><br>
+    <p align="center"><strong>1. ПРЕДМЕТ ДОГОВОРА</strong></p>
+    <p>1.1.      Исполнитель обязуется выполнить самостоятельно или с привлечением третьих лиц, работы указанные в Приложении №1 к настоящему Договору, а Заказчик принять и оплатить их результат.</p>
+    <p>1.2.      Сроки, стоимость и порядок оплаты работ согласовываются Сторонами и указываются в Приложении №1 к настоящему Договору.</p>
+    <p>1.3.      Датой начала работ по настоящему Договору считается дата передачи Исполнителю Заказчиком исходных данных, правоустанавливающих документов и внесение предоплаты по договору, согласно Приложениям №1,2.</p>
+    <br><br>
+    <p align="center"><strong>2. ОБЯЗАННОСТИ СТОРОН</strong></p>
+    <p>2.1. Заказчик обязан:</p>
+    <p>2.1.1.          Передать Исполнителю необходимые для производства работ исходные данные и правоустанавливающие документы.</p>
+    <p>2.1.2.          Произвести предоплату по договору, окончательный расчет по факту выполнения работ в суммах и сроках в соответствии с Приложением №1 к настоящему Договору.</p>
+    <p>2.1.3.          Возместить Исполнителю дополнительные расходы, вызванные изменением исходных данных для выполнения работ, вследствие обстоятельств, не зависящих от Исполнителя. Перечень изменений, согласовывается Сторонами и оформляется дополнительным соглашением.</p>
+    <p>2.1.4.          Информировать Исполнителя в письменном виде о наличии споров находящихся на рассмотрении в суде или жалоб, связанных с выполнением обязательств настоящего Договора. В случае не предоставления подобной информации Исполнителю, ответственность за невыполнение или срыв сроков выполнения работ несет Заказчик.</p>
+    <p>2.1.5.          Не предоставлять третьим лицам информацию о предмете договора, а также не осуществлять самостоятельно действия, которые предусмотрены предметом настоящего Договора.</p>
+    <p>2.2. Исполнитель обязан:</p>
+    <p>2.2.1.        Выполнить в срок указанные в Приложении №1 к настоящему Договору работы.</p>
+    <p>2.2.2.        Передать Заказчику результаты работ после полной оплаты.</p>
+    <p>2.2.3.        Не передавать результаты работ по настоящему Договору третьим лицам без согласия Заказчика.</p>
+    <p>2.2.4.        Своевременно информировать Заказчика о возможных изменениях в сроках выполнения работ.</p>
+    <br><br>
+    <p align="center"><strong>3. ПРАВА СТОРОН</strong></p>
+    <p>3.1. Права Заказчика:</p>
+    <p>3.1.1.        Требовать от Исполнителя выполнения работ в соответствии с Приложением №1 к настоящему Договору.</p>
+    <p>3.1.2.        Требовать от Исполнителя возврата сумм, в случае невыполнения Исполнителем этапов работ, указанных в Приложении №1 к настоящему Договору, при полном добросовестном исполнении Заказчиком своих обязанностей.</p>
+    <p>3.1.3.        Отказаться от выполнения работ Исполнителем, оплатив Исполнителю сумму за выполненные этапы работ.</p>
+    <p>3.2. Права Исполнителя:</p>
+    <p>3.2.1.        Требовать от Заказчика передачи технического задания, исходных данных и правоустанавливающих документов.</p>
+    <p>3.2.2.        Самостоятельно определять способы выполнения работ.</p>
+    <p>3.2.3.        Не передавать Заказчику результаты работ до момента их полной оплаты.</p>
+    <p>3.2.4. В случае отказа Заказчика от выполнения работ, требовать оплаты за выполненные этапы.</p>
+
+    <p align="center"><strong>4. ПОРЯДОК РАСЧЕТОВ</strong></p>
+    <p>4.1.  Произвести предоплату в соответствии с Приложением №1 к настоящему договору.</p>
+    <p>4.2.  В течение трех банковских дней с момента фактического выполнения работ Исполнителем Заказчик производит окончательный расчет, в соответствии с Приложением №1 к настоящему Договору.</p>
+    <br><br>
+    <p align="center"><strong>5. </strong><strong>OTBETCTBEHHOCT</strong><strong>Ь СТОРОН</strong></p>
+    <p>5.1.        В случае нарушения обязательств по настоящему Договору, стороны несут ответственность в соответствии с действующим законодательством.</p>
+    <p>5.2.  Стороны освобождаются от ответственности за полное или частичное неисполнение обязательств по настоящему договору в случае, если их неисполнение вызвано форс-мажорными обстоятельствами.</p>
+    <p>5.3.  Исполнитель не несет ответственности за выполнение условий договора в связи с изменением действующего законодательства, изменениями в порядке работы городских и государственных инстанций.</p>
+    <br><br>
+    <p align="center"><strong>6. ПОРЯДОК УРЕГУЛИРОВАНИЯ СПОРОВ</strong></p>
+    <p>6.1.  Споры между Сторонами, по которым не было достигнуто соглашение, разрешаются в соответствии с законодательством Российской Федерации в Арбитражном суде по месту нахождения ответчика.</p>
+    <p>6.2.  Любые изменения и дополнения к настоящему договору будут действительны, и являются неотъемлемой частью договора, если они оформлены в виде дополнительных соглашений, подписанных уполномоченными представителями Сторон.</p>
+    <br><br>
+    <p align="center"><strong>7.СРОК ДЕЙСТВИЯ ДОГОВОРА</strong></p>
+    <p>7.1. Договор вступает в силу с момента подписания и действует до полного исполнения Сторонами обязательств по настоящему Договору.</p>
+    <br><br>
+    <p align="center"><strong>8. ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ</strong></p>
+    <p>8.1.       Договор составлен в двух экземплярах имеющих одинаковую юридическую силу, по одному для каждой из сторон. Все приложения к настоящему Договору являются его неотъемлемой частью.</p>
+    <p>8.2.       Стороны обязаны незамедлительно информировать друг друга об изменении адресов и реквизитов.</p>
+    <br><br>
+    <p align="center"><strong>9. АДРЕСА И РЕКВИЗИТЫ СТОРОН</strong></p>
+    <table style="border-collapse:collapse" cellspacing=10>
+        <tr>
+            <td width="50%" valign="top">
+                <p><strong>ИСПОЛНИТЕЛЬ:</strong></p>
+            </td>
+            <td valign="top">
+                <p><strong>ЗАКАЗЧИК:</strong></p>
+            </td>
+        </tr>
+
+        <tr>
+            <td valign="top">
+                <p>Юр.адрес: 195027, Санкт-Петербург, Пискарёвский пр. д. 2 корп. 3, лит А</p>
+                <p>ОГРН 1057812515353, </p>
+                <p>ИНН:7810039009 КПП:780 401 001</p>
+                <p>ОКПО:777 532 01</p>
+                <p>Р/сч. № 407 028 104 071 600 001 66 в Филиал &laquo;Петровский&raquo; ОАО Банк &laquo;ОТКРЫТИЕ&raquo; </p>
+                <p>г. Санкт-Петербург</p>
+                <p>К/с № 301 018 104 000 000 007 66</p>
+                <p>БИК 044 030 766</p>
+                <p>Тел.: (812) 633-30-42</p></td>
+            <td valign="top" />
+        </tr>
+
+        <tr><td><br></td></tr>
+
+        <tr>
+            <td valign="top"> Исполнитель<br />
+                <p><strong>_____________________</strong>/Клюева Е.С./</p></td>
+            <td valign="top"> Заказчик<br />
+                <p><strong>_____________________</strong>/______________/</p></td>
+        </tr>
+    </table>
+    <hr>
+    Приложение №1<br />
+    к Договору № {{ result.id }}/{{ "now"|date("y") }} от {{ date }}<br />
+    <br>
+    <p align="center"><strong>Наименование, сроки, и порядок оплаты работ</strong></p>
+    <div align="center">
+        <table width="95%" style="border-collapse:collapse">
+            <tr>
+                <td width="3%" style="border:solid windowtext 1.0pt" rowspan="2">
+                    <p align="center">п/п</p>
+                </td>
+                <td width="52.1%" style="border:solid windowtext 1.0pt" rowspan="2">
+                    <p align="center">Наименование работ</p>
+                </td>
+                <td width="28.2%" style="border:solid windowtext 1.0pt" colspan="2">
+                    <p align="center">Сумма, руб.</p>
+                </td>
+                <td width="13.5%" style="border:solid windowtext 1.0pt" rowspan="2">
+                    <p align="center">Срок исполнения (раб. дн.)</p>
+                </td>
+            </tr>
+            <tr>
+                <td width="14.2%" style="border-top:none;border-left:none;border-bottom: solid windowtext 1.0pt;border-right:solid windowtext 1.0pt">
+                    <p align="center">Предоплата</p>
+                    <p align="center"><span style="color:black">(руб.)</span></p></td>
+                <td width="14.2%" style="border:solid windowtext 1.0pt;border-left: none">
+                    <p align="center">Оплата</p>
+                    <p align="center"><span style="color:black">(руб.)</span></p></td>
+            </tr>
+            {% set tcopr = 0 %}
+            {% set tcosr = 0 %}
+            {% for traspr in result.traspr %}
+                {% set tcopr = tcopr + traspr.price %}
+                {% set tcosr = tcosr + traspr.srok %}
+            {% endfor %}
+            <tr>
+                <td width="6.2%" style="border-top:none;border-left: solid windowtext 1.0pt;border-bottom:none;border-right:solid windowtext 1.0pt" valign="top" />
+                <td width="52.1%" style="border-top:none;border-left: none;border-bottom:none;border-right:solid windowtext 1.0pt" valign="top" />
+                <td width="14.2%" style="border:none; border-right:solid windowtext 1.0pt; border-bottom:solid windowtext 1.0pt; text-align: center;" valign="middle" rowspan="4">{{ (tcopr/2)|number_format(2, ',', ' ') }}</td>
+                <td width="14.2%" style="border:none; border-right:solid windowtext 1.0pt; border-bottom:solid windowtext 1.0pt; text-align: center;" valign="middle" rowspan="4">{{ (tcopr/2)|number_format(2, ',', ' ') }}</td>
+                <td width="13.5%" style="border:none; border-right:solid windowtext 1.0pt; border-bottom:solid windowtext 1.0pt; text-align: center;" valign="middle" rowspan="4">{{ tcosr }}</td>
+            </tr>
+            {% set tcoun = 0 %}
+            {% for traspr in result.traspr %}
+                {% set tcoun = tcoun + 1 %}
+                <tr>
+                    <td width="6.2%" style="border:solid windowtext 1.0pt; border-top:none; padding: 4px;" valign="top">{{ tcoun }}</td>
+                    <td width="52.1%" style="border:solid windowtext 1.0pt; border-top:none; padding: 4px;" valign="top">{{ traspr.name|raw }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td width="" style="border:none; text-align: right;" colspan="2"><strong>Итого:</strong> </td>
+                <td width="28.2%" style="border:none; text-align: center;" valign="middle" colspan="2"><strong>{{ tcopr|number_format(2, ',', ' ') }}</strong></td>
+                <td width="13.5%" style="border:none;border-left: none" />
+            </tr>
+            {#<tr>
+                <td width="6.2%" style="border-top:none;border-left: solid windowtext 1.0pt;border-bottom:none;border-right:solid windowtext 1.0pt" valign="top"> 1<br /></td>
+                <td width="52.1%" style="border-top:none;border-left: none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" valign="top" />
+                <td width="14.2%" style="border:none;border-right:solid windowtext 1.0pt" rowspan="3" />
+                <td width="14.2%" style="border:none;border-right:solid windowtext 1.0pt" rowspan="3" />
+                <td width="13.5%" style="border:none;border-right:solid windowtext 1.0pt" rowspan="3" />
+            </tr>
+            <tr>
+                <td width="6.2%" style="border:solid windowtext 1.0pt" valign="top"> 2<br /></td>
+                <td width="52.1%" style="border-top:none;border-left: none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" valign="top" />
+            </tr>
+            <tr>
+                <td style="border:solid windowtext 1.0pt" valign="top"> 3<br /></td>
+                <td style="border-top:none;border-left: none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" valign="top" />
+            </tr>
+            <tr>
+                <td width="58.3%" style="border:solid windowtext 1.0pt" colspan="2">
+                    <p align="right">Итого:</p></td>
+                <td width="28.2%" style="border:solid windowtext 1.0pt" colspan="2" />
+                <td width="13.5%" style="border:solid windowtext 1.0pt;border-left: none" />
+            </tr>#}
+        </table>
+    </div>
+    <p><strong><em>Примечание: </em></strong></p>
+    <p>{{ result.kpmore|raw }}</p>
+    <table style="border-collapse:collapse" cellspacing=10>
+        <tr>
+            <td width="50%" valign="top">
+                <p><strong>ИСПОЛНИТЕЛЬ:</strong></p>
+            </td>
+            <td valign="top">
+                <p><strong>ЗАКАЗЧИК:</strong></p>
+            </td>
+        </tr>
+
+        <tr>
+            <td valign="top">
+                <p>Юр.адрес: 195027, Санкт-Петербург, Пискарёвский пр. д. 2 корп. 3, лит А</p>
+                <p>ОГРН 1057812515353, </p>
+                <p>ИНН:7810039009 КПП:780 401 001</p>
+                <p>ОКПО:777 532 01</p>
+                <p>Р/сч. № 407 028 104 071 600 001 66 в Филиал &laquo;Петровский&raquo; ОАО Банк &laquo;ОТКРЫТИЕ&raquo; </p>
+                <p>г. Санкт-Петербург</p>
+                <p>К/с № 301 018 104 000 000 007 66</p>
+                <p>БИК 044 030 766</p>
+                <p>Тел.: (812) 633-30-42</p></td>
+            <td valign="top" />
+        </tr>
+
+        <tr><td><br></td></tr>
+
+        <tr>
+            <td valign="top"> Исполнитель<br />
+                <p><strong>_____________________</strong>/Клюева Е.С./</p></td>
+            <td valign="top"> Заказчик<br />
+                <p><strong>_____________________</strong>/______________/</p></td>
+        </tr>
+    </table>
+        <hr>
+    Приложение №2<br />
+    к Договору № {{ result.id }}/{{ "now"|date("y") }} от {{ date }}<br>
+    <br>
+    <p align="center"><strong>Перечень исходной документации </strong></p><br><br>
+    <table width="95%" style="border-collapse:collapse;border:none">
+        <tr>
+            <td width="6.6%" style="border:solid windowtext 1.0pt">
+                <p align="center">№ п/п</p></td>
+            <td width="57.8%" style="border:solid windowtext 1.0pt;border-left: none">
+                <p align="center">Наименование</p></td>
+            <td width="16.4%" style="border:solid windowtext 1.0pt;border-left: none">
+                <p align="center">Количество</p></td>
+            <td width="19.2%" style="border:solid windowtext 1.0pt;border-left: none">
+                <p align="center">Примечание</p></td> </tr>
+        <tr>
+            <td style="border:solid windowtext 1.0pt;border-top: none">
+                <p align="center">1</p></td>
+            <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" />
+            <td style="border-top:none;border-left:none;border-bottom: solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" />
+            <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" /> </tr>
+        <tr>
+            <td style="border:solid windowtext 1.0pt;border-top: none">
+                <p align="center">2</p></td>
+            <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" />
+            <td style="border-top:none;border-left:none;border-bottom: solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" />
+            <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" /> </tr>
+        <tr>
+            <td style="border:solid windowtext 1.0pt;border-top: none">
+                <p align="center">3</p></td>
+            <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" />
+            <td style="border-top:none;border-left:none;border-bottom: solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" />
+            <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" /> </tr>
+        <tr>
+            <td style="border:solid windowtext 1.0pt;border-top: none">
+                <p align="center">4</p></td>
+            <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" />
+            <td style="border-top:none;border-left:none;border-bottom: solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" />
+            <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" /> </tr>
+        <tr>
+            <td style="border:solid windowtext 1.0pt;border-top: none">
+                <p align="center">5</p></td>
+            <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" />
+            <td style="border-top:none;border-left:none;border-bottom: solid windowtext 1.0pt;border-right:solid windowtext 1.0pt" />
+            <td style="border-top:none;border-left:none;border-right:solid windowtext 1.0pt" /> </tr> </table>
+    <br><br><br>
+    <table width="100%" style="border-collapse:collapse;border:none">
+        <tr>
+            <td width="50.0%" valign="top"> Исполнитель<br />
+                <p><strong>_____________________</strong>/Клюева Е.С./</p></td>
+            <td width="50.0%" valign="top"> Заказчик<br />
+                <p><strong>_____________________</strong>/__________________/</p>
+            </td>
+        </tr>
+    </table>
+</div>
 </body></html>

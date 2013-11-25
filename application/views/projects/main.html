@@ -1,0 +1,67 @@
+{% extends "_main.html" %}
+
+{% block title %}Проекты{% endblock %}
+
+{% block content %}
+<div class="table-products section">
+    {#<div class="row-fluid filter-block">
+        <div class="pull-left">
+            <div class="btn-group">
+                {% set act = '' %}
+                {% for i in sort %}
+                {% if i.active == 1 %}
+                {% set act = i.name %}
+                {% endif %}
+                {% endfor %}
+                <button class="btn glow">{{ act }}</button>
+                <button class="btn glow dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    {% set act = '' %}
+                    {% for i in sort %}
+                    <li><a href="/request/?sort={{ i.uri }}" class="{% if i.active == 1 %}active {% set act = i.name %}{% endif %}">{{ i.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>#}
+
+    <div class="row-fluid">
+        <!-- Table -->
+        <table class="table table-hover">
+            <thead>
+                <th>№</th>
+                <th><span class="line"></span>Дата</th>
+                <th><span class="line"></span>Адрес</th>
+                <th><span class="line"></span>Заказчик</th>
+                <th><span class="line"></span>Статус</th>
+                <th><span class="line"></span>Работники</th>
+                <th><span class="line"></span>Действия</th>
+            </thead>
+            <tbody>
+            {% for row in data %}
+                <td>{{ row.id }}</td>
+                <td>{{ row.date|date("d.m.Y") }}</td>
+                <td>{{ row.address }}</td>
+                <td>{{ row.fname }}</td>
+                <td>Статус</td>
+                <td>Работники</td>
+                <td>Действия</td>
+            {% endfor %}
+            </tbody>
+        </table>
+        {#{ result|raw }#}
+        <!-- EndTable -->
+    </div>
+</div>
+
+<!-- Modal Upload -->
+{% include 'request/upload.html' %}
+<!-- EndModal Upload -->
+
+<!-- Modal Add -->
+{# include 'request/add.html' #}
+{{ add|raw }}
+<!-- EndModal Add -->
+{% endblock %}

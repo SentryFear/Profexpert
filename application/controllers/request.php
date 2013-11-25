@@ -7,6 +7,9 @@
  */
 class Request extends CI_Controller
 {
+    //Если раздел в разработке $dev = 1
+    public $dev = 0;
+
     /**
      * Инифиализация
      */
@@ -29,81 +32,108 @@ class Request extends CI_Controller
      */
     function index()
 	{
-		$data = array();
-		
-		$data['success'] = $this->session->flashdata('success');
-		
-		$data['error'] = $this->session->flashdata('error');
-		
-		$sort = '1';
-		
-		if($this->input->get('sort')) $sort = $this->input->get('sort');
-		
-		$data['region'] = $this->config->item('region');
-		
-		$csort = $this->config->item('sort');
-		
-		$gsort = 'all';
-		
-		$role_id = $this->dx_auth->get_role_id();
-		
-		foreach($csort as $i) {
-			
-			$i['allow'] = explode(',', $i['allow']);
-			
-			if(in_array($role_id, $i['allow'])) {
-				
-				if(isset($i['default']) && $sort == $i['default']) {
-				
-					$i['active'] = 1;
-					
-					$gsort = $i;
-				}
-				
-				if($sort == $i['uri']) {
-				
-					$i['active'] = 1;
-					
-					$gsort = $i;
-				}
-				
-				$data['sort'][] = $i;
-			}
-		}
-		
-		if($this->input->post('add')) {
-		
-			$this->request_model->create_request() ? $data['success'] = "Заявка успешно добавлена!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
-		}
-		
-		if($this->input->post('upload') && $this->input->post('id')) {
-			
-			$data = array_merge($data, $this->request_model->add_docs());
-		}
+        if($this->dx_auth->is_admin() == 0 && $this->dev == 1) {
 
-        if($this->input->post('rework') && $this->input->post('id')) {
+            echo $this->twig->render('indev.html');
 
-            $this->request_model->add_rework() ? $data['success'] = "Заявка успешно отправлена на доработку!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+        } else {
+
+            $data = array();
+
+            $data['success'] = $this->session->flashdata('success');
+
+            $data['error'] = $this->session->flashdata('error');
+
+            $sort = '1';
+
+            if($this->input->get('sort')) $sort = $this->input->get('sort');
+
+            $data['region'] = $this->config->item('region');
+
+            $csort = $this->config->item('sort');
+
+            $gsort = 'all';
+
+            $role_id = $this->dx_auth->get_role_id();
+
+            foreach($csort as $i) {
+
+                $i['allow'] = explode(',', $i['allow']);
+
+                if(in_array($role_id, $i['allow'])) {
+
+                    if(isset($i['default']) && $sort == $i['default']) {
+
+                        $i['active'] = 1;
+
+                        $gsort = $i;
+                    }
+
+                    if($sort == $i['uri']) {
+
+                        $i['active'] = 1;
+
+                        $gsort = $i;
+                    }
+
+                    $data['sort'][] = $i;
+                }
+            }
+
+            if($this->input->post('add')) {
+
+                $this->request_model->create_request() ? $data['success'] = "Заявка успешно добавлена!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+            }
+
+            if($this->input->post('upload') && $this->input->post('id')) {
+
+                $data = array_merge($data, $this->request_model->add_docs());
+            }
+
+            if($this->input->post('rework') && $this->input->post('id')) {
+
+                $this->request_model->add_rework() ? $data['success'] = "Заявка успешно отправлена на доработку!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+            }
+
+            $data['result'] = $this->request_model->get_request(null, 'FormTable', $gsort);
+
+            $data['table'] = $this->config->item('access');
+
+            $ntype = $this->config->item('ntype');
+
+            $formdata['region'] = $data['region'];
+
+            $formdata['ptype'] = $ntype;
+
+            $formdata['ztype'] = $ntype;
+
+            $source = req_perm_in_view($this->config->item('access'), $type = 'form', $this->dx_auth->get_all_data());
+
+            if($this->dx_auth->check_permissions('add')) $data['add'] = req_arr_to_form($source, $formdata);
+
+            echo $this->twig->render('request/main.html', $data);
         }
-		
-		$data['result'] = $this->request_model->get_request(null, 'FormTable', $gsort);
-		
-		$data['table'] = $this->config->item('access');
-		
-		$ntype = $this->config->item('ntype');
-		
-		$formdata['region'] = $data['region'];
-		
-		$formdata['ptype'] = $ntype;
-		
-		$formdata['ztype'] = $ntype;
-		
-		$source = req_perm_in_view($this->config->item('access'), $type = 'form', $this->dx_auth->get_all_data());
-		
-		if($this->dx_auth->check_permissions('add')) $data['add'] = req_arr_to_form($source, $formdata);
-		
-		echo $this->twig->render('request/main.html', $data);
 	}
+
+    /*function test() {
+
+        $ins = $this->config->item('instance');
+
+        echo '<table>';
+
+        foreach($ins as $i) {
+
+            echo '<tr>';
+
+            if(empty($i['price'])) $i['price'] = '';
+
+            echo '<td>'.$i['rname'].'</td><td>'.$i['price'].'</td>';
+
+            echo '</tr>';
+        }
+
+        echo '</table>';
+    }*/
 
     /**
      * Добавление файлов открывается с помощью AJAX
@@ -145,11 +175,11 @@ class Request extends CI_Controller
 				
 				foreach($docs as $i) {
 
-					echo '<blockquote><table class="table table-hover" style="margin-bottom: 0px;"><tr><td style="width: 100%; vertical-align: top;">
+					echo '<blockquote><table class="table table-hover" style="margin-bottom: 0px;"><tr><td style="vertical-align: top;">
 							<input class="inline-input" placeholder="Название файла" name="name'.$i['id'].'" value="'.$i['name'].'" type="text">
 							<input id="inp'.$i['id'].'" type="file" name="doc'.$i['id'].'" style="display:none; margin-top: 15px;" />
 							</td>
-							<td style="vertical-align: top;"><div class="btn-group">
+							<td style="vertical-align: top; overflow: visible;"><div class="btn-group">
 								<a href="#" class="btn btn-mini" onclick="$(\'#inp'.$i['id'].'\').toggle();" data-toggle="tooltip" data-original-title="Загрузить другой файл" data-placement="left"><i class="icon-edit"></i> Обновить файл</a>
 								<a href="/uploads/'.$i['file'].'" target="_blank" class="btn btn-mini" data-toggle="tooltip" data-original-title="Скачать файл" data-placement="left"><i class="icon-download-alt"></i> Скачать файл</a>
 							</div></td></tr>
@@ -266,9 +296,12 @@ class Request extends CI_Controller
 
         $this->load->library('history');
 
-		if(!empty($id)) {
+        $this->load->library('notification');
+
+        if(!empty($id)) {
 
             $row = $this->db->get_where('request', array('id' => $id))->row_array();
+            //$row = $this->db->select('*')->from('request')->join('cCard', 'cCard.id = request.cid')->get()->row_array();
 
             if(!empty($row)) {
 
@@ -293,6 +326,8 @@ class Request extends CI_Controller
 
                     $this->history->setHistory('dt22', $id);
 
+                    $this->notification->setNotification('Завершено ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/', $id, 'Проектный отдел завершил работу над заявкой', '0', $row['mid']);
+
                     $this->db->update('request', array('kp' => 3), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
                 // Отдел продаж завершил работу и отправляет заявку руководству на согласование сроков
@@ -306,6 +341,8 @@ class Request extends CI_Controller
                 } elseif($type == 'rtoop') {
 
                     $this->history->setHistory('dt5', $id);
+
+                    $this->notification->setNotification('КП Согласовано ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/', $id, 'Руководство согласовало КП', '0', $row['mid']);
 
                     $this->db->update('request', array('kp' => 5), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
@@ -335,6 +372,8 @@ class Request extends CI_Controller
 
                     $this->history->setHistory('dt9', $id);
 
+                    $this->notification->setNotification('Доработка ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/', $id, 'Руководство отправило заявку на доработку', '0', $row['mid']);
+
                     $this->db->update('request', array('kp' => 9), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
                 // Менеджер прислал с доработки
@@ -356,12 +395,61 @@ class Request extends CI_Controller
 
                     $this->history->setHistory('dt12', $id);
 
+                    $this->notification->setNotification('Доработано ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/', $id, 'Проектный отдел доработал заявку', '0', $row['mid']);
+
                     $this->db->update('request', array('kp' => 12), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+                } elseif($type == 'zaytoproj') {
+
+                    $this->history->setHistory('dt13', $id);
+
+                    $InsProject = array(
+                        'date' => time(),
+                        'cid' => $row['cid'],
+                    );
+
+                    $this->db->insert('projects', $InsProject);
+
+                    $this->db->update('request', array('kp' => 13), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно авершена. Договор подписан.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+
+                }
+
+                if($this->input->is_ajax_request()) {
+
+                    $this->load->helper('request');
+
+                    $res = array(
+                        'kpstatus' => $this->config->item('kpstatus'),
+                        'region' => $this->config->item('region'),
+                    );
+
+                    //GetData
+                    $this->db->order_by("date", "asc");
+
+                    $query = array(
+                        'request' => $this->db->get('request')->result_array(),
+                        'cCard' => $this->db->get('cCard')->result_array(),
+                    );
+
+                    $data['result'] = req_parse_data($query, $res);
+                    //end GetData
+
+                    $alldata = $this->dx_auth->get_all_data();
+
+                    $alldata['status'] = $this->config->item('status');
+
+                    $alldata['id'] = $data['result'][$id]['id'];
+
+                    $alldata['req'] = $data['result'][$id];
+
+                    echo req_get_status($alldata['status'], $alldata);
+
+                } else {
+
+                    redirect("/request");
                 }
             }
 		}
-		
-		redirect("/request");
 	}
 
     /**
@@ -377,19 +465,34 @@ class Request extends CI_Controller
 
         $perm = $this->dx_auth->check_permissions('edit');
 
-        //todo дописать проверку для проектировщиков
-        //if($this->dx_auth->get_user_id() == 4 && кп != 1) $perm = 0;
-
 		if(!empty($id) && $perm == 1) {
-			
-			if($this->input->post('add')) {
-			
-				$this->request_model->update_request($id) ? $data['success'] = "Заявка успешно изменена!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
-			}
-			
-			$data['result'] = $this->request_model->get_request($id);
-			
-			echo $this->twig->render('request/edit.html', $data);
+
+            $check = $this->request_model->get_request($id, 'data');
+
+            if($this->dx_auth->get_role_id() == 4) {
+
+                if($check['uid'] == 0) $perm = 0;
+
+                if($check['kp'] != 1 && $check['kp'] != 11) $perm = 0;
+            }
+
+            if(!empty($check) && $perm == 1) {
+
+                if($this->input->post('add')) {
+
+                    $this->request_model->update_request($id) ? $data['success'] = "Заявка успешно изменена!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+                }
+
+                $data['result'] = $this->request_model->get_request($id);
+
+                echo $this->twig->render('request/edit.html', $data);
+
+            } else {
+
+                $this->session->set_flashdata('error', 'Нет доступа!');
+
+                redirect("/request");
+            }
 			
 		} else {
          
@@ -419,6 +522,10 @@ class Request extends CI_Controller
             if(isset($name[1])) $data['user']['name'] .= " " . mb_substr($name[1],0,1,'utf-8') . ".";
 
             if(isset($name[2])) $data['user']['name'] .= " " . mb_substr($name[2],0,1,'utf-8') . ".";
+
+            $m_ru = array('января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря');
+
+            $data['date'] = date("«d»")." ".$m_ru[date("m")-1]." ".date("Y")." г.";
 
 			$data['result'] = $this->request_model->get_request($id, 'data');
 
@@ -454,6 +561,8 @@ class Request extends CI_Controller
         $first = $this->uri->segment(4);
 
         if($first == 1) $data['first'] = 1;
+
+        if($first == 2) $data['first'] = 2;
 
         if(!empty($id)) {
 
@@ -530,7 +639,9 @@ class Request extends CI_Controller
 			$this->db->delete('cCard', array('id' => $req['cid']));
          
 			$this->db->delete('history', array('rid' => $req['id']));
-         
+
+            $this->db->delete('projects', array('cid' => $req['cid']));
+
 			$this->db->delete('request', array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно удалена.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 		}
 

@@ -95,103 +95,105 @@
             </tbody>
         </table>
     </div>#}
-    <div>
-        <table width="100%" style="border-collapse:collapse">
-            <tr>
-                <td valign="bottom">
-                    <p><strong><em>{{ result.kpname|raw }}</em></strong></p>
-                </td>
-                <td width="40%" valign="top" style="text-align: right;">
-                    {% if result.fname %}<p><strong><em>Заказчик:</em></strong> {{ result.fname }}</p>{% endif %}
-                    {% if result.phone %}<p><strong><em>Тел:</em></strong> {{ result.phone }}</p>{% endif %}
-                    {% if result.email %}<p><strong><em>e-mail:</em></strong> {{ result.email }}</p>{% endif %}
-                </td>
-            </tr>
-        </table>
-        <p align="center">Предварительный расчет стоимости </p>
-        <table width="100%" style="border-collapse:collapse; border:none">
-            <tr>
-                <td width="6%" style="border:solid windowtext 1.0pt">
-                    <p align="center">№<br>п/п</p>
-                </td>
-                <td width="55.9%" style="border:solid windowtext 1.0pt;border-left:none; text-align: center;" valign="middle">
-                    Наименование
-                </td>
-                <td width="19.8%" style="border:solid windowtext 1.0pt;border-left:none">
-                    <p align="center">Стоимость работ</p>
-                    <p align="center">(руб.)</p>
-                </td>
-                <td width="18.2%" style="border:solid windowtext 1.0pt;border-left:none">
-                    <p align="center">Сроки исполнения (раб. день)</p>
-                </td>
-            </tr>
-            {% set tcoun = 0 %}
-            {% set tcopr = 0 %}
-            {% for traspr in result.traspr %}
-                {% set tcoun = tcoun + 1 %}
-                {% set tcopr = tcopr + traspr.price %}
+    {% if first != 2 %}
+        <div>
+            <table width="100%" style="border-collapse:collapse">
                 <tr>
-                    <td style="border:solid windowtext 1.0pt; padding: 4px;" valign="top">
-                        <p align="center">{{ tcoun }}</p>
+                    <td valign="bottom">
+                        <p><strong><em>{{ result.kpname|raw }}</em></strong></p>
                     </td>
-                    <td style="border:solid windowtext 1.0pt; padding: 4px;" valign="top">
-                        <p>{{ traspr.name|raw }}</p>
-                    </td>
-                    <td style="border:solid windowtext 1.0pt; padding: 4px; text-align: center;" valign="middle">
-                        {{ traspr.price|number_format(2, ',', ' ') }}
-                    </td>
-                    <td style="border:solid windowtext 1.0pt; padding: 4px; text-align: center;" valign="middle">
-                        {{ traspr.srok }}
+                    <td width="40%" valign="top" style="text-align: right;">
+                        {% if result.fname %}<p><strong><em>Заказчик:</em></strong> {{ result.fname }}</p>{% endif %}
+                        {% if result.phone %}<p><strong><em>Тел:</em></strong> {{ result.phone }}</p>{% endif %}
+                        {% if result.email %}<p><strong><em>e-mail:</em></strong> {{ result.email }}</p>{% endif %}
                     </td>
                 </tr>
-            {% endfor %}
-            <tr>
-                <td style="border:none;" />
-                <td style="border:none;">
-                    <p align="right"><strong>Итого:</strong></p>
-                </td>
-                <td style="border:none;">
-                    <p align="center"><strong>{{ tcopr|number_format(2, ',', ' ') }}</strong></p>
-                </td>
-                <td style="border:none;" />
-            </tr>
-            {% if result.kpsale %}
-            <tr>
-                <td style="border:none;" />
-                <td style="border:none;">
-                    <p align="right"><strong>Скидка:</strong></p>
-                </td>
-                <td style="border:none;">
-                    <p align="center"><strong>{{ result.kpsale }}%</strong></p>
-                </td>
-                <td style="border:none;" />
-            </tr>
-            {% endif %}
-            {% if result.kptotsale %}
-            <tr>
-                <td style="border:none;" />
-                <td style="border:none; text-decoration: underline;">
-                    <p align="right"><strong>Итого с учётом скидки:</strong></p>
-                </td>
-                <td style="border:none; text-decoration: underline;">
-                    <p align="center"><strong>{{ result.kptotsale|number_format(2, ',', ' ') }}</strong></p>
-                </td>
-                <td style="border:none;" />
-            </tr>
-            {% endif %}
-        </table>
-        Примечание: <br />
-        <p>{{ result.kpmore|raw }}</p>
-        {% if manager.sign %}<div style="position: fixed;left: 0;right: 0;bottom: 135px; left:260px;"><img height="80px" src="uploads/img/sign/{{ manager.sign }}"></div>{% endif %}
-        <div style="position: fixed;left: 0;right: 0;bottom: 150px;">
-            <p>
-                Менеджер по работе с клиентами<br>
-                ГК &laquo;ПРОФЭКСПЕРТ&raquo;  ________________________ / {{ manager.name }}  /
-            </p>
+            </table>
+            <p align="center">Предварительный расчет стоимости </p>
+            <table width="100%" style="border-collapse:collapse; border:none">
+                <tr>
+                    <td width="6%" style="border:solid windowtext 1.0pt">
+                        <p align="center">№<br>п/п</p>
+                    </td>
+                    <td width="55.9%" style="border:solid windowtext 1.0pt;border-left:none; text-align: center;" valign="middle">
+                        Наименование
+                    </td>
+                    <td width="19.8%" style="border:solid windowtext 1.0pt;border-left:none">
+                        <p align="center">Стоимость работ</p>
+                        <p align="center">(руб.)</p>
+                    </td>
+                    <td width="18.2%" style="border:solid windowtext 1.0pt;border-left:none">
+                        <p align="center">Сроки исполнения (раб. день)</p>
+                    </td>
+                </tr>
+                {% set tcoun = 0 %}
+                {% set tcopr = 0 %}
+                {% for traspr in result.traspr %}
+                    {% set tcoun = tcoun + 1 %}
+                    {% set tcopr = tcopr + traspr.price %}
+                    <tr>
+                        <td style="border:solid windowtext 1.0pt; padding: 4px;" valign="top">
+                            <p align="center">{{ tcoun }}</p>
+                        </td>
+                        <td style="border:solid windowtext 1.0pt; padding: 4px;" valign="top">
+                            <p>{{ traspr.name|raw }}</p>
+                        </td>
+                        <td style="border:solid windowtext 1.0pt; padding: 4px; text-align: center;" valign="middle">
+                            {{ traspr.price|number_format(2, ',', ' ') }}
+                        </td>
+                        <td style="border:solid windowtext 1.0pt; padding: 4px; text-align: center;" valign="middle">
+                            {{ traspr.srok }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td style="border:none;" />
+                    <td style="border:none;">
+                        <p align="right"><strong>Итого:</strong></p>
+                    </td>
+                    <td style="border:none;">
+                        <p align="center"><strong>{{ tcopr|number_format(2, ',', ' ') }}</strong></p>
+                    </td>
+                    <td style="border:none;" />
+                </tr>
+                {% if result.kpsale %}
+                <tr>
+                    <td style="border:none;" />
+                    <td style="border:none;">
+                        <p align="right"><strong>Скидка:</strong></p>
+                    </td>
+                    <td style="border:none;">
+                        <p align="center"><strong>{{ result.kpsale }}%</strong></p>
+                    </td>
+                    <td style="border:none;" />
+                </tr>
+                {% endif %}
+                {% if result.kptotsale %}
+                <tr>
+                    <td style="border:none;" />
+                    <td style="border:none; text-decoration: underline;">
+                        <p align="right"><strong>Итого с учётом скидки:</strong></p>
+                    </td>
+                    <td style="border:none; text-decoration: underline;">
+                        <p align="center"><strong>{{ result.kptotsale|number_format(2, ',', ' ') }}</strong></p>
+                    </td>
+                    <td style="border:none;" />
+                </tr>
+                {% endif %}
+            </table>
+            Примечание: <br />
+            <p>{{ result.kpmore|raw }}</p>
+            {% if manager.sign %}<div style="position: fixed;left: 0;right: 0;bottom: 135px; left:260px;"><img height="80px" src="uploads/img/sign/{{ manager.sign }}"></div>{% endif %}
+            <div style="position: fixed;left: 0;right: 0;bottom: 150px;">
+                <p>
+                    Менеджер по работе с клиентами<br>
+                    ГК &laquo;ПРОФЭКСПЕРТ&raquo;  ________________________ / {{ manager.name }}  /
+                </p>
+            </div>
         </div>
-    </div>
-    {% if first != 1 %}
     <hr>
+    {% endif %}
+    {% if first != 1 and first != 2 %}
     <div><br>
         <table style="border-collapse:collapse;" width="100%">
                 <tr>
@@ -286,7 +288,10 @@
                 </tr>
             </table>
         </div>
-        <hr>
+    <hr>
+    {% endif %}
+    {% if first != 1 %}
+
         <div>
             <p align="center"><strong><em><u><span style="color:black">Объем работ на разработку проектной документации</span></u></em></strong></p>
             <p align="right"><em><span style="color:black">Дата: {{ "now"|date("d.m.y") }}</span></em></p>
@@ -333,6 +338,7 @@
             {% if project.sign != false %}<p align="right" style="position: fixed;right: 0;bottom: 135px; left:0px;"><img height="80px" src="uploads/img/sign/{{ project.sign }}"></p>{% endif %}
             <p align="right" style="position: fixed;left: 0;right: 0;bottom: 100px;"><em><span style="color:black;">Подпись: _________________________</span></em></p>
         </div>
+
     {% endif %}
     </body>
 </html>

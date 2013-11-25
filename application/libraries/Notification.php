@@ -55,9 +55,19 @@ class Notification {
     /**
      * Добавить уведомление
      */
-    function setNotification()
+    function setNotification($name, $uri, $id, $text, $role, $user)
     {
+        $insert = array(
+            'name' => $name,
+            'uri' => $uri,
+            'rid' => $id,
+            'text' => $text,
+            'time' => time(),
+            'role' => $role,
+            'user' => $user
+        );
 
+        return $this->CI->db->insert('notification', $insert);
     }
 
     /**
@@ -65,7 +75,9 @@ class Notification {
      */
     function getNotification($user_info)
     {
-        $notify = $this->CI->db->get('notification')->result_array();
+        $this->CI->db->order_by('time', 'desc');
+
+        $notify = $this->CI->db->get_where('notification', array('lock' => 0))->result_array();
 
         foreach($notify as $i) {
 
@@ -93,9 +105,13 @@ class Notification {
     /**
      * Отложить уведомление
      */
-    function lockNotification()
+    function lockNotification($id)
     {
+        $update = array(
+            'lock' => 1
+        );
 
+        return $this->CI->db->update('notification', $update, array('id' => $id));
     }
 
     /**

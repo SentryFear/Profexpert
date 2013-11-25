@@ -2,31 +2,79 @@ $(function () {
 
     function get_notification()
     {
-        $('.notifications').html('');
-
         $.getJSON( "/api/getNotification", function( data ) {
 
             var items = [];
 
             $.each( data, function( key, val ) {
-                items.push( "<a href='" + val.uri + "' class='item'><i class='icon-signin'></i> " + val.name + " <span class='time'><i class='icon-time'></i> " + val.time + "</span></a>" );
+                items.push( "<a href='" + val.uri + "#hs" + val.rid + "' onclick='' data-nid='" + val.id + "' data-scroll-nav='" + val.rid + "' class='item' data-toggle='tooltip' data-original-title='" + val.text + "'><i class='icon-signin'></i> " + val.name + " <span class='time'><i class='icon-time'></i> " + val.time + "</span></a>" );
             });
 
             $('.count').html(items.length);
 
             $('.count1').html(items.length);
 
+            $('.notifications').html('');
+
             $( items.join( "" ) ).appendTo( ".notifications" );
         });
     }
 
-    get_notification();
+    function lock_notification(id) {
 
+        $.getJSON( "/api/lockNotification/"+id)
+            .success(function() {  })
+            .error(function() { alert("Ошибка выполнения"); })
+            .complete(function() {  });
+
+        get_notification();
+    }
+
+    function get_status()
+    {
+        $.getJSON( "/api/getStatus", function( data ) {
+
+            $.each( data, function( key, val ) {
+                $('#ld'+val.id).html(val.text);
+            });
+
+        });
+    }
+
+    get_notification();
+    get_status()
     setInterval(function()
     {
         get_notification();
+        get_status();
 
     }, 10000);
+
+    $('body').on('click','[data-nid]', function(e){
+
+        lock_notification($(this).attr('data-nid'));
+
+    });
+
+    /*if(window.location.hash) {
+
+        var hash = parseInt(window.location.hash.slice(3));
+
+        lock_notification(hash);
+    }*/
+
+    //$('.fat-btn').click(function (e) {
+    $('body').on('click','[data-ind]', function(e){
+            e.preventDefault();
+
+            var btn = $(this);
+            btn.button('loading');
+            var href = $(this).attr('href')
+            var id = $(this).data("ind")
+
+            $('#ld'+id).html('');
+            $('#ld'+id).load(href);
+        })
 
     $(".wysihtml5").wysihtml5({
         "font-styles": false,
@@ -117,9 +165,10 @@ $(function () {
     var $dialog = $el.find(".pop-dialog");
     var $trigger = $el.find(".trigger");
     
-    $dialog.click(function (e) {
+    /*$dialog.click(function (e) {
         e.stopPropagation()
-    });
+    });*/
+
     $dialog.find(".close-icon").click(function (e) {
       e.preventDefault();
       $dialog.removeClass("is-visible");
@@ -227,15 +276,24 @@ $(function () {
   });
   
   $('body').tooltip({
-    selector: "[data-toggle=tooltip]"
+    selector: "[data-toggle=tooltip]",
+    html: "true"
   })
 
 	// build all tooltips from data-attributes
 	$("[data-toggle='tooltip']").each(function (index, el) {
 		$(el).tooltip({
-			placement: $(this).data("placement") || 'top'
+			placement: $(this).data("placement") || 'top',
+            html: "true"
 		});
 	});
+
+    $("[data-toggle1='tooltip']").each(function (index, el) {
+        $(el).tooltip({
+            placement: $(this).data("placement") || 'top',
+            html: "true"
+        });
+    });
 
 
   // custom uiDropdown element, example can be seen in user-list.html on the 'Filter users' button

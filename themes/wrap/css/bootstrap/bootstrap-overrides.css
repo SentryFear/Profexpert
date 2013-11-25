@@ -339,7 +339,7 @@ textarea::-webkit-input-placeholder {
 .table thead th{
 	font-weight: bold;
 	position: relative;
-	padding-bottom: 20px;
+	padding-bottom: 5px;
 	padding-top: 5px;
 	text-transform: uppercase;
 	font-size: 11px;
@@ -361,7 +361,7 @@ table tr.first td{
 table th span.line{
 	position: absolute;
 	top: 0;
-	left: -8px;
+	left: -1px;
 	border-left: 1px solid #dee3ea;
 	height: 10px;
 }

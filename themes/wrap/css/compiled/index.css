@@ -124,10 +124,11 @@
   .table-products .table td.description {
     vertical-align: middle;
     color: #516372; }
-  .table-products .table td a {
+  /*.table-products .table td a {
     text-decoration: underline;
     margin-top: 6px;
     display: inline-block; }
+    */
   .table-products .table th input[type="checkbox"] {
     margin-top: 4px; }
   .table-products .table input[type="checkbox"] {

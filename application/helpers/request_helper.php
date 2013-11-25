@@ -55,7 +55,7 @@ if (!function_exists('req_arr_to_table')) {
 
     function req_arr_to_table($data, $source, $extra)
     {
-        $result = "<table class='table table-hover'><thead><tr>";
+        $result = "<table class='table table-hover' id='fhead'><thead style='background-color: white;'><tr>";
 
         $g = 0;
 
@@ -82,7 +82,7 @@ if (!function_exists('req_arr_to_table')) {
 
             $n++;
 
-            $result .= "<tr>";
+            $result .= "<tr data-scroll-index='" . $i['id'] . "' id='i" . $i['id'] . "'>";
 
             foreach ($source as $q) {
 
@@ -101,26 +101,57 @@ if (!function_exists('req_arr_to_table')) {
 
                     $val = "<a href='/request/edit/" . $i['id'] . "/'>" . $i['id'] . "</a>";
 
-                    if($extra['role_id'] == 4 && $i['ikp'] != 1) $val = "" . $i['id'];
+                    //if($extra['role_id'] == 4 && $i['ikp'] != 1) $val = "" . $i['id'];
                 }
 
-                if ($q['value'] == 'fname') $val = '<span data-toggle="tooltip" data-original-title="Телефон:' . $i['phone'] . '  Email:' . $i['email'] . '">' . $i['fname'] . '</span>';
+                if ($q['value'] == 'fname') {
 
-                if ($q['value'] == 'address') $val = '<span data-toggle="tooltip" data-original-title="' . $i['region'] . '">' . $i['address'] . '</span>';
+                    $val = '<span data-toggle="tooltip" data-original-title="ФИО: ' . $i['fname'] . '<br> Телефон:' . $i['phone'] . '<br>Email:' . $i['email'] . '">' . $i['fname'] . '</span>';
+
+                }
+
+                if ($q['value'] == 'address') $val = '<span data-toggle="tooltip" data-original-title="Район: ' . $i['region'] . '<br> Адрес: ' . $i['address'] . '">' . $i['address'] . '</span>';
 
                 if ($val == 'vdocs') {
 
-                    $exist = '<span class="label label-important" data-toggle="tooltip" data-original-title="Файлы ещё не загружены">[ 0 ]</span>';
+                    $doclabel = 'label-warning';
 
-                    $send = '';
+                    $tself = ' style="white-space: initial;"';
 
-                    $rework = '';
+                    //$exist = '<span class="label label-important" data-toggle="tooltip" data-original-title="Файлы ещё не загружены">[ 0 ]</span>';
 
                     if (!empty($i['docs'])) {
 
-                        $exist = '<span class="label label-success" data-toggle="tooltip" data-original-title="Колличество загруженых файлов. Нажмите чтобы Добавить или обновить файлы.">[ ' . count($i['docs']) . ' ]</span>';
+                        $doclabel = 'label-success';
 
+                        //$exist = '<span class="label label-success" data-toggle="tooltip" data-original-title="Количество загруженых файлов. Нажмите чтобы Добавить или обновить файлы.">[ ' . count($i['docs']) . ' ]</span>';
+
+                    } else {
+
+                        $i['docs'] = array();
                     }
+
+                    $val = '<a href="/request/add/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl label '.$doclabel.'" data-toggle1="tooltip" data-original-title="Количество загруженых файлов. Нажмите чтобы Добавить или обновить файлы." id="' . $i['id'] . '">[ ' . count($i['docs']) . ' ]</a>';
+
+                }
+
+                if ($val == 'comments') {
+
+                    if(!empty($i['rework'])) $i['rework'] = unserialize($i['rework']);
+                    else $i['rework'] = array();
+
+                    $worklabel = '';
+
+                    if(count($i['rework']) > 0) $worklabel = 'label-important';
+
+                    //if($extra['req']['ikp'] == 9)
+                    $val = '<a href="/request/rework/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl label '.$worklabel.'" data-toggle1="tooltip" data-original-title="Колличество комментариев." id="' . $i['id'] . '">[ ' . count($i['rework']) . ' ]</a>';
+
+                }
+
+                if ($val == 'status') {
+
+                    $send = '';
 
                     $extra['id'] = $i['id'];
 
@@ -128,19 +159,7 @@ if (!function_exists('req_arr_to_table')) {
 
                     $send = req_get_status($extra['status'], $extra);
 
-                    if(!empty($i['rework'])) $i['rework'] = unserialize($i['rework']);
-                    else $i['rework'] = array();
-
-                    $worklabel = 'label-warning';
-
-                    if(count($i['rework']) > 0) $worklabel = 'label-important';
-
-                    //if($extra['req']['ikp'] == 9)
-                    $rework = '<a href="/request/rework/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl" id="' . $i['id'] . '"><span class="label '.$worklabel.'" data-toggle="tooltip" data-original-title="Колличество комментариев.">[ ' . count($i['rework']) . ' ]</span></a>';
-
-                    $val = '<a href="/request/add/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl" id="' . $i['id'] . '">' . $exist . '</a> ' . $send . ' ' . $rework;
-
-
+                    $val = '<span id="ld' . $i['id'] . '">' . $send . '</span>';
                 }
 
                 if ($val == 'workers') {
@@ -150,6 +169,8 @@ if (!function_exists('req_arr_to_table')) {
                     $CI->load->model('dx_auth/users_model', 'users_model');
 
                     $users = $CI->db->get('users')->result_array();
+
+                    $tself = ' style="white-space: nowrap;"';
 
                     //$users = $CI->users_model->get_all()->result_array();
 
@@ -169,7 +190,7 @@ if (!function_exists('req_arr_to_table')) {
                         }
                     }
 
-                    if ($i['mid'] == 0) $val .= '<span class="label label-important" data-toggle="tooltip" data-original-title="Менеджер не выбран">Не выбран</span> ';
+                    //if ($i['mid'] == 0) $val .= '<span class="label label-important" data-toggle="tooltip" data-original-title="Менеджер не выбран">[ 0 ]</span> ';
 
                     //$val .= "</select></div>";
 
@@ -187,7 +208,7 @@ if (!function_exists('req_arr_to_table')) {
                         }
                     }
 
-                    if ($i['uid'] == 0) $val .= '<span class="label label-important" data-toggle="tooltip" data-original-title="Проектировщик не выбран">Не выбран</span> ';
+                    //if ($i['uid'] == 0) $val .= '<span class="label label-important" data-toggle="tooltip" data-original-title="Проектировщик не выбран">[ 0 ]</span> ';
 
                     //$val .= "</select></div>";
 
@@ -199,23 +220,25 @@ if (!function_exists('req_arr_to_table')) {
 
                     $act = '';
 
+                    $tself = ' style="white-space: nowrap;"';
+
                     if($extra['role_id'] != 4) $act = '<li><a href="/request/edit/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Изменить"><i class="table-edit"></i></a></li>';
 
                     if($extra['role_id'] == 2 || $extra['role_id'] == 6 || $extra['role_id'] == 3) {
 
-                        $act .= '<li><a href="/request/review/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
+                        $act .= '<li><a href="/request/review/' . $i['id'] . '/" target="_blank" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
 
-                        $act .= '<li><a href="/request/review/' . $i['id'] . '/1/" data-toggle="tooltip" data-original-title="Печать только КП"><i class="table-settings"></i></a></li>';
+                        $act .= '<li><a href="/request/review/' . $i['id'] . '/1/" target="_blank" data-toggle="tooltip" data-original-title="Печать только КП"><i class="table-settings"></i></a></li>';
                     }
-
-                    if($extra['role_id'] == 4 && ($i['ikp'] == 1 || $i['ikp'] == 11)) {
+                    //&& ($i['ikp'] == 1 || $i['ikp'] == 11) && $i['uid'] != 0
+                    if($extra['role_id'] == 4 ) {
 
                         $act = '<li><a href="/request/edit/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Изменить"><i class="table-edit"></i></a></li>';
 
-                        $act .= '<li class="last"><a href="/request/prints/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
+                        $act .= '<li class="last"><a href="/request/review/' . $i['id'] . '/2/" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
                     }
 
-                    if($extra['role_id'] == 4 && $i['ikp'] > 1 && $i['ikp'] != 11) $act = '<li><a href="/request/prints/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
+                    //if($extra['role_id'] == 4 && $i['ikp'] > 1 && $i['ikp'] != 11) $act = '<li class="last"><a href="/request/review/' . $i['id'] . '/2/" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
 
                     if ($extra['is_admin']) $act .= '<li class="last"><a href="/request/delete/' . $i['id'] . '/" onClick="return confirm(\'Вы уверены что хотите удалить заявку?\')" data-toggle="tooltip" data-original-title="Удалить"><i class="table-delete"></i></a></li>';
 
@@ -528,8 +551,8 @@ if (!function_exists('req_arr_to_form')) {
             }
 
             if($val == 'kpname') $result .= '<br><h3>Генерация коммерческого предложения</h3><hr>
-                            <div class="alert alert-info" style="height: 235px;">
-                                <div style="float: left;">
+                            <div class="alert alert-info" style="height: 400px;">
+                                <div style="float: left; width: 27%;">
                                     <b>Основаная информация:</b><br>
                                      - Адрес: <b>'.$data['address'].'</b><br>
                                      - Район: <b>'.$extra['region'][$data['region']].'</b><br>
@@ -700,14 +723,19 @@ if (!function_exists('req_get_status')) {
     {
         $html_status = '';
 
+        //Берём по одному элементу из конфига
         foreach ($status as $i) {
 
+            //Распаковываем роли которым доступен этот статус
             $role = explode(',', $i['allow']);
 
+            //Проверяем подходит ли роль пользователя под разрешённые
             if (in_array($extra['role_id'], $role)) {
 
+                //Распаковывем логику
                 $logic = explode(',', $i['logic']);
 
+                //
                 foreach ($logic as $l) {
 
                     $data = explode('?', $l);
@@ -738,16 +766,16 @@ if (!function_exists('req_get_status')) {
 
                         if (!empty($i['self'])) $self = $i['self'];
 
-                        if (!empty($i['uri'])) $html_status .= '<a href="' . $i['uri'] . '' . $extra['id'] . '/" '.$self.' id="'.$extra['id'].'">';
+                        if (!empty($i['uri'])) $html_status .= '<a href="' . $i['uri'] . '' . $extra['id'] . '/" '.$self.' id="'.$extra['id'].'"  data-ind="' . $extra['id'] . '" data-loading-text="loading..." class="label label-' . $i['class'] . ' fat-btn"  data-toggle="tooltip" data-original-title="' . $i['fullname'] . '">' . $i['name'] . '</a> ';
 
-                        $html_status .= '<span class="label label-' . $i['class'] . '" data-toggle="tooltip" data-original-title="' . $i['fullname'] . '">' . $i['name'] . '</span> ';
+                        if (empty($i['uri'])) $html_status .= '<span class="label label-' . $i['class'] . '" data-toggle="tooltip" data-original-title="' . $i['fullname'] . '">' . $i['name'] . '</span> ';
 
-                        if (!empty($i['uri'])) $html_status .= '</a> ';
+                        //if (!empty($i['uri'])) $html_status .= '</a> ';
                     }
                 }
             }
         }
-
+//<div id="ld' . $i['id'] . '"><a href="/request/send/test/' . $i['id'] . '" data-ind="' . $i['id'] . '" data-loading-text="loading..." class="label label-important fat-btn">Loading state</a></div>
         return $html_status;
     }
 
