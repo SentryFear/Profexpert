@@ -623,7 +623,7 @@ if (!function_exists('req_arr_to_form')) {
                                 </div>
                                 <div class="row-fluid">
                                     <div class="span12">
-                                        <b><a href="javascript:void(0);" onclick="$(\'.rrp\').toggle();">Разработка проекта</a></b><br>
+                                        <b><a href="javascript:void(0);" onclick="$(\'.rrp\').toggle(); return false;">Разработка проекта</a></b><br>
                                         <table class="table table-hover hide rrp">
                                             <tr>
                                                <th class="span8">Наименование</th>
@@ -637,7 +637,7 @@ if (!function_exists('req_arr_to_form')) {
                                 </div>
                                 <div class="row-fluid">
                                     <div class="span12">
-                                        <b><a href="javascript:void(0);" onclick="$(\'.sgp\').toggle();">Согласование проекта</a></b><br>
+                                        <b><a href="javascript:void(0);" onclick="$(\'.sgp\').toggle(); return false;">Согласование проекта</a></b><br>
                                         <table class="table table-hover hide sgp">
                                              <tr>
                                                 <th class="span8">Наименование</th>

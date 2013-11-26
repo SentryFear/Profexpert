@@ -15,7 +15,9 @@
             $.getJSON( "/api/getNotification/"+lock, function( data ) {
                 var items = [];
                 $.each( data, function( key, val ) {
-                    items.push( "<a href='" + val.uri + "#hs" + val.rid + "' onclick='' data-nid='" + val.id + "' data-scroll-nav='" + val.rid + "' class='item' data-toggle='tooltip' data-original-title='" + val.text + "'><i class='icon-signin'></i> " + val.name + " <span class='time'><i class='icon-time'></i> " + val.time + "</span></a>" );
+                    var cls = '';
+                    if(val.lock == 1) cls = 'lock';
+                    items.push( "<a href='" + val.uri + "#hs" + val.rid + "' data-nid='" + val.id + "' data-scroll-nav='" + val.rid + "' class='item "+ cls +"' data-toggle='tooltip' data-original-title='" + val.text + "'><i class='icon-signin'></i> " + val.name + " <span class='time'><i class='icon-time'></i> " + val.time + "</span></a>" );
                 });
                 $('.count').html(items.length);
                 $('.count1').html(items.length);
@@ -58,9 +60,11 @@
 
         get_notification();
 
+        show_lock();
+
         setInterval(function()
         {
-            get_notification();
+            //get_notification();
 
         }, 10000);
     };

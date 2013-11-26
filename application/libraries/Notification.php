@@ -77,7 +77,9 @@ class Notification {
     {
         $this->CI->db->order_by('time', 'desc');
 
-        $notify = $this->CI->db->get_where('notification', array('lock' => $lock))->result_array();
+        if($lock != 1)  $this->CI->db->where('lock', $lock);
+
+        $notify = $this->CI->db->get('notification')->result_array();
 
         foreach($notify as $i) {
 

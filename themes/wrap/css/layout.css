@@ -67,6 +67,11 @@ input.search{
 	font-size: 21px;
 }
 
+.lock {
+    background-color: #F3F3F3;
+    text-decoration: line-through !important;
+    color: #999 !important;
+}
 
 /* notification menu with custom dropdowns */
 .navbar-inverse .notification-dropdown {

@@ -8,6 +8,8 @@ class Api extends CI_Controller
     function __construct()
     {
         parent::__construct();
+
+        $this->dx_auth->check_uri_permissions();
     }
 
     function getNotification() {
