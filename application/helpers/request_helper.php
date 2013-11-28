@@ -762,15 +762,19 @@ if (!function_exists('req_parse_sort')) {
 
                 if ($n <= count($data) - 1) $ext = ' AND ';
 
-                $data1 = explode(':', $q);
+                if(strpos($q, '>') !== false) $del = '>';
+                elseif(strpos($q, '<') !== false) $del = '<';
+                elseif(strpos($q, ':') !== false) $del = ':';
+
+                $data1 = explode($del, $q);
+
+                if(strpos($q, ':') !== false) $del = '=';
 
                 if ($data1[1] == 'usr') $data1[1] = $extra['user_id'];
 
                 if ($data1[0] == 'date') {
 
                     $data1[1] = time() -  $data1[1];
-
-                    $del = '<';
                 }
 
                 $quer .= $data1[0] . ' '.$del.' ' . $data1[1] . $ext;
