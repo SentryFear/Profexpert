@@ -29,7 +29,7 @@
         var lock_notification = function(ndx) {
             $.getJSON( "/api/lockNotification/"+ndx)
                 .success(function() {  })
-                .error(function() { alert("Ошибка выполнения"); })
+                .error(function() { /*alert("Ошибка выполнения");*/ })
                 .complete(function() {  });
             get_notification();
         };

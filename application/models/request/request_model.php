@@ -26,7 +26,7 @@ class request_model extends CI_Model
 
         //Карточка клиента
 		$form = $this->config->item('access');
-		
+
 		foreach($form as $i) {
 			
 			if(!isset($i['form']) || $i['form'] != 0) {
@@ -61,20 +61,22 @@ class request_model extends CI_Model
       
 		if($this->db->insert('request', $insert)) $suc+=1;
 		//end Заявка
-      
+
+        $rids = $this->db->insert_id();
+
 		//История
 		$kpstatus = $this->config->item('kpstatus');
       
 		$insert2 = array(
 			'name' => $kpstatus[0]['dbname'],
 			'date' => time(),
-			'rid' => $this->db->insert_id()
+			'rid' => $rids
 		);
       
 		if($this->db->insert('history', $insert2)) $suc+=1;
 		//end История
       
-		return $suc == 3 ? true : false;
+		return $suc == 3 ? $rids : false;
 	}
 
     /**
@@ -303,8 +305,6 @@ class request_model extends CI_Model
                 }
             }
 
-            //var_dump($traspr2);
-
             if(empty($traspr2)) {
 
                 $data['error'] = 'Произошла неожиданная ошибка, обратитесь к администратору.';
@@ -332,7 +332,17 @@ class request_model extends CI_Model
 			
 			$update['instance'] = $ains;
 		}
-		
+
+        if($data['mid'] == 0) {
+
+            $upd1 = array(
+                'mid' => $this->dx_auth->get_user_id()
+            );
+
+            $this->db->update('request', $upd1, array('id' => $id));
+        }
+
+
 		return $this->db->update('cCard', $update, array('id' => $data['cid']));
 		
 		/*$update = array(
@@ -398,11 +408,11 @@ class request_model extends CI_Model
             //печать
 			} else {
 				
-				$data['result']['ptype'] = $ntype[$data['result']['ptype']];
-				
-				$data['result']['ztype'] = $ntype[$data['result']['ztype']];
+				if(!empty($data['result']['ptype'])) $data['result']['ptype'] = $ntype[$data['result']['ptype']];
 
-                $data['result']['docs'] = unserialize($data['result']['docs']);
+                if(!empty($data['result']['ztype'])) $data['result']['ztype'] = $ntype[$data['result']['ztype']];
+
+                if(!empty($data['result']['docs'])) $data['result']['docs'] = unserialize($data['result']['docs']);
 
 				$razd = unserialize($data['result']['razd']);
 

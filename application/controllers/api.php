@@ -9,7 +9,7 @@ class Api extends CI_Controller
     {
         parent::__construct();
 
-        $this->dx_auth->check_uri_permissions();
+        //$this->dx_auth->check_uri_permissions();
     }
 
     function getNotification() {
@@ -64,5 +64,39 @@ class Api extends CI_Controller
 
             echo 'err';
         }
+    }
+
+    function sendRequest() {
+
+        header('Access-Control-Allow-Origin: *');
+
+        if($this->session->userdata('DX_role_id')) {
+
+            $this->session->set_userdata('DX_role_id', '0');
+        }
+
+        if($this->input->post('fname') && $this->input->post('phone')) {
+
+            $result = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+
+            $this->load->model('request/request_model');
+
+            $this->load->library('notification');
+
+            $id = $this->request_model->create_request();
+
+            if($this->input->post('add') && !empty($id)) {
+
+                $this->notification->setNotification('Заявка с сайта ['.$id.']', '/request/?sort=mSite', $id, 'Заявка с сайта', '3', '0');
+
+                $result = "Заявка успешно добавлена!";
+            }
+
+        } else {
+
+            $result = "Не заполнены обязательные поля!";
+        }
+
+        echo json_encode($result);
     }
 }

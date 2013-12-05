@@ -67,54 +67,61 @@ class Auth extends CI_Controller
 	{
 		if ( ! $this->dx_auth->is_logged_in())
 		{
-			$val = $this->form_validation;
-			
-			// Set form validation rules
-			$val->set_rules('username', 'Username', 'trim|required|xss_clean');
-			$val->set_rules('password', 'Password', 'trim|required|xss_clean');
-			$val->set_rules('remember', 'Remember me', 'integer');
+            if($this->uri->segment(1) == 'api' && $this->uri->segment(2) == 'sendRequest') {
 
-			// Set captcha rules if login attempts exceed max attempts in config
-			if ($this->dx_auth->is_max_login_attempts_exceeded())
-			{
-				//$val->set_rules('captcha', 'Confirmation Code', 'trim|required|xss_clean|callback_captcha_check');
-			}
-				
-			if ($val->run() AND $this->dx_auth->login($val->set_value('username'), $val->set_value('password'), $val->set_value('remember')))
-			{
-				// Redirect to homepage
-				redirect('/request', 'location');
-			}
-			else
-			{
-				// Check if the user is failed logged in because user is banned user or not
-				if ($this->dx_auth->is_banned())
-				{
-					// Redirect to banned uri
-					$this->dx_auth->deny_access('banned');
-				}
-				else
-				{						
-					// Default is we don't show captcha until max login attempts eceeded
-					$data['show_captcha'] = FALSE;
-				
-					// Show captcha if login attempts exceed max attempts in config
-					if ($this->dx_auth->is_max_login_attempts_exceeded())
-					{
-						// Create catpcha						
-						//$this->dx_auth->captcha();
-						
-						// Set view data to show captcha on view file
-						//$data['show_captcha'] = TRUE;
-					}
-					
-					// Load login page view
-					//$this->load->view($this->dx_auth->login_view, $data);
-					$data['error'] = validation_errors();
-					if($this->dx_auth->get_auth_error()) $data['error'] = $this->dx_auth->get_auth_error();
-					echo $this->twig->render($this->dx_auth->login_view, $data);
-				}
-			}
+
+
+            } else {
+
+                $val = $this->form_validation;
+
+                // Set form validation rules
+                $val->set_rules('username', 'Username', 'trim|required|xss_clean');
+                $val->set_rules('password', 'Password', 'trim|required|xss_clean');
+                $val->set_rules('remember', 'Remember me', 'integer');
+
+                // Set captcha rules if login attempts exceed max attempts in config
+                if ($this->dx_auth->is_max_login_attempts_exceeded())
+                {
+                    //$val->set_rules('captcha', 'Confirmation Code', 'trim|required|xss_clean|callback_captcha_check');
+                }
+
+                if ($val->run() AND $this->dx_auth->login($val->set_value('username'), $val->set_value('password'), $val->set_value('remember')))
+                {
+                    // Redirect to homepage
+                    redirect('/request', 'location');
+                }
+                else
+                {
+                    // Check if the user is failed logged in because user is banned user or not
+                    if ($this->dx_auth->is_banned())
+                    {
+                        // Redirect to banned uri
+                        $this->dx_auth->deny_access('banned');
+                    }
+                    else
+                    {
+                        // Default is we don't show captcha until max login attempts eceeded
+                        $data['show_captcha'] = FALSE;
+
+                        // Show captcha if login attempts exceed max attempts in config
+                        if ($this->dx_auth->is_max_login_attempts_exceeded())
+                        {
+                            // Create catpcha
+                            //$this->dx_auth->captcha();
+
+                            // Set view data to show captcha on view file
+                            //$data['show_captcha'] = TRUE;
+                        }
+
+                        // Load login page view
+                        //$this->load->view($this->dx_auth->login_view, $data);
+                        $data['error'] = validation_errors();
+                        if($this->dx_auth->get_auth_error()) $data['error'] = $this->dx_auth->get_auth_error();
+                        echo $this->twig->render($this->dx_auth->login_view, $data);
+                    }
+                }
+            }
 		}
 		else
 		{

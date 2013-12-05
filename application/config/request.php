@@ -56,12 +56,14 @@ $config['region'] = array(
 $config['sort'] = array(
                         // Отдел продаж - id = 3
                             array('name' => 'Все', 'uri' => 'mAll', 'allow' => '3', 'logic' => 'mid:usr?date>2419200', 'default' => '1'),
+                            array('name' => 'Заявки с сайта', 'uri' => 'mSite', 'allow' => '3', 'logic' => 'mid:0'),
                             array('name' => 'Новые', 'uri' => 'mNew', 'allow' => '3', 'logic' => 'kp:0?mid:usr'),
                             array('name' => 'Расчёт времени', 'uri' => 'mInDev', 'allow' => '3', 'logic' => 'kp:1?mid:usr,kp:2?mid:usr'),
                             array('name' => 'В работе', 'uri' => 'mInWork', 'allow' => '3', 'logic' => 'kp:3?mid:usr'),
                             array('name' => 'Предложение сделано', 'uri' => 'mSend', 'allow' => '3', 'logic' => 'kp:6?mid:usr'),
                             array('name' => 'Без ответа', 'uri' => 'mNoAns', 'allow' => '3', 'logic' => 'kp:6?date<259200?mid:usr'),
                             array('name' => 'Отказ', 'uri' => 'mFail', 'allow' => '3', 'logic' => 'kp:7?mid:usr'),
+                            array('name' => 'Согласился', 'uri' => 'mSucc', 'allow' => '3', 'logic' => 'kp:8?mid:usr'),
                             array('name' => 'Архив', 'uri' => 'mArh', 'allow' => '3', 'logic' => 'kp:6?date<2419200?mid:usr'),
                             array('name' => 'Договор подписан', 'uri' => 'mSuccess', 'allow' => '3', 'logic' => 'kp:13?mid:usr'),
                         // Проектный отдел - id = 4
@@ -73,6 +75,7 @@ $config['sort'] = array(
                             array('name' => 'Все', 'uri' => 'sAll', 'allow' => '5', 'logic' => 'id:0', 'default' => '1'),
                         // Руководство - id = 6
                             array('name' => 'Все', 'uri' => 'rAll', 'allow' => '2,6', 'logic' => 'date>2419200', 'default' => '1'),
+                            array('name' => 'Заявки с сайта', 'uri' => 'rSite', 'allow' => '2,6', 'logic' => 'mid:0'),
                             array('name' => 'В работе у менеджера', 'uri' => 'rmInDev', 'allow' => '2,6', 'logic' => 'kp:0,kp:3,kp:5,kp:9,kp:12'),
                             array('name' => 'В работе у проектировщиков', 'uri' => 'rpInDev', 'allow' => '2,6', 'logic' => 'kp:1,kp:2'),
                             array('name' => 'Согласование стоимости', 'uri' => 'rPrice', 'allow' => '2,6', 'logic' => 'kp:4'),
@@ -80,6 +83,7 @@ $config['sort'] = array(
                             array('name' => 'Без ответа', 'uri' => 'rNoAns', 'allow' => '2,6', 'logic' => 'kp:6?date<259200'),
                             array('name' => 'Архив', 'uri' => 'rArh', 'allow' => '2,6', 'logic' => 'kp:6?date<2419200'),
                             array('name' => 'Отказ', 'uri' => 'rFail', 'allow' => '2,6', 'logic' => 'kp:7'),
+                            array('name' => 'Согласился', 'uri' => 'rSucc', 'allow' => '2,6', 'logic' => 'kp:8'),
                             array('name' => 'Договор подписан', 'uri' => 'rSuccess', 'allow' => '2,6', 'logic' => 'kp:13'),
                     );
 
@@ -296,6 +300,8 @@ $config['instance'] = array(
                                 array('rname' => 'Экспертиза проекта', 'name' => 'ep', 'price' => '10000'),
                             array('rname' => 'Комитет по управлению городским имуществом Санкт-Петербурга', 'ins' => '1', 'names' => array('zvkygi')),
                                 array('rname' => 'Заявление в КУГИ', 'name' => 'zvkygi', 'price' => '2000'),
+                            array('rname' => 'Федеральное агенство по управлению государственным имуществом', 'ins' => '1', 'names' => array('sfaugi')),
+                                array('rname' => 'Согласование ФАУГИ', 'name' => 'sfaugi', 'price' => '10000'),
                             array('rname' => 'Районная Межведомственная комиссия', 'ins' => '1', 'names' => array('spvmvk', 'vove', 'suvpvmk')),
                                 array('rname' => 'Решение МВК', 'name' => 'spvmvk', 'price' => '10000'),
                                 array('rname' => 'АКТ МВК', 'name' => 'vove', 'price' => '10000'),
@@ -347,15 +353,15 @@ $config['instance'] = array(
 $config['access'] = array(
     array('name' => '№',                             'value' => 'loop.index',    'allow' => '2,3,4,6', 'self' => 'class="span1 number"', 'form' => 0),
     array('name' => 'Дата',                           'value' => 'date',          'allow' => '2,3,4,6', 'date-format' => 'd.m.y', 'self' => 'class="span1"', 'form' => 0),
-    array('name' => 'ФИО',                            'value' => 'fname',         'allow' => '2,3,6', 'self' => 'class="span2"'),
-    array('name' => 'Телефон',                        'value' => 'phone',         'allow' => '2,3,6', 'self' => 'class="span3"', 'view' => 0),
-    array('name' => 'Email адрес',                    'value' => 'email',         'allow' => '2,3,6', 'self' => 'class="span3"', 'view' => 0),
+    array('name' => 'ФИО',                            'value' => 'fname',         'allow' => '0,2,3,6', 'self' => 'class="span2"'),
+    array('name' => 'Телефон',                        'value' => 'phone',         'allow' => '0,2,3,6', 'self' => 'class="span3"', 'view' => 0),
+    array('name' => 'Email адрес',                    'value' => 'email',         'allow' => '0,2,3,6', 'self' => 'class="span3"', 'view' => 0),
     array('name' => 'Район',                          'value' => 'region',        'allow' => '2,3,6', 'type' => 'select', 'view' => 0),
     array('name' => 'Район',                          'value' => 'region',        'allow' => '4', 'type' => 'select', 'self' => 'class="span3"'),
     array('name' => 'Адрес',                          'value' => 'address',       'allow' => '2,3,6', 'self' => 'class="span4"'),
     array('name' => 'Адрес',                          'value' => 'address',       'allow' => '4', 'self' => 'class="span4"'),
-    array('name' => 'Откуда узнали',                  'value' => 'hear',          'allow' => '2,3,6', 'view' => 0),
-    array('name' => 'Дополнительная информация',      'value' => 'more',          'allow' => '2,3,4,6', 'view' => 0, 'type' => 'textarea', 'self' => 'class="span3 wysihtml5" rows="5"'),
+    array('name' => 'Откуда узнали',                  'value' => 'hear',          'allow' => '0,2,3,6', 'view' => 0),
+    array('name' => 'Дополнительная информация',      'value' => 'more',          'allow' => '0,2,3,4,6', 'view' => 0, 'type' => 'textarea', 'self' => 'class="span3 wysihtml5" rows="5"'),
     array('name' => 'Назначение здания',              'value' => 'ztype',         'allow' => '2,3,4,6', 'view' => 0, 'type' => 'select'),
     array('name' => 'Назначение помещения',           'value' => 'ptype',         'allow' => '2,3,4,6', 'view' => 0, 'type' => 'select'),
     array('name' => 'Название проекта',               'value' => 'name',          'allow' => '2,3,4,6', 'view' => 0, 'add' => 0, 'type' => 'textarea', 'self' => 'class="span3 wysihtml5" rows="5"'),

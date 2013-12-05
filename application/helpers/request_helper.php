@@ -106,7 +106,19 @@ if (!function_exists('req_arr_to_table')) {
 
                 if ($q['value'] == 'fname') {
 
-                    $val = '<span data-toggle="tooltip" data-original-title="ФИО: ' . $i['fname'] . '<br> Телефон:' . $i['phone'] . '<br>Email:' . $i['email'] . '">' . $i['fname'] . '</span>';
+                    $fio = '';
+
+                    $telphone = '';
+
+                    $emaile = '';
+
+                    if(!empty($i['fname'])) $fio = '<b><i>ФИО:</b></i> '.$i['fname'];
+
+                    if(!empty($i['phone'])) $telphone = '<br> <b><i>Телефон:</b></i> '.$i['phone'];
+
+                    if(!empty($i['email'])) $emaile = '<br><b><i>Email:</b></i> '.$i['email'];
+
+                    $val = '<span data-toggle="tooltip" data-original-title="' . $fio . ' ' . $telphone . ' ' . $emaile . '">' . $i['fname'] . '</span>';
 
                 }
 
@@ -601,6 +613,10 @@ if (!function_exists('req_arr_to_form')) {
 
                 $ttrazdtext .= '<tr><td style="text-align: right;"><b>Итого:</b></td><td><b>'.$data['atotal'].'</b> д.</td><td><b>'.number_format($ttrazdpr, '0', ',', ' ').'</b>  руб.</td><td><b>'.number_format($ttrazdpr*2, '0', ',', ' ').'</b>  руб.</td></tr>';
 
+                $rne = '';
+
+                if(!empty($data['region'])) $rne = $extra['region'][$data['region']];
+
                 $result .= '<br><h3>Генерация коммерческого предложения</h3><hr>
                             <div class="row-fluid">
                             <div class="alert alert-info">
@@ -608,7 +624,7 @@ if (!function_exists('req_arr_to_form')) {
                                     <div class="span3">
                                         <b>Основаная информация:</b><br>
                                          - Адрес: <b>'.$data['address'].'</b><br>
-                                         - Район: <b>'.$extra['region'][$data['region']].'</b><br>
+                                         - Район: <b>'.$rne.'</b><br>
                                          - Название проекта: <b>'.$data['name'].'</b><br>
                                          - Площадь объекта: <b>'.$data['footage'].'</b>м&sup2;<br><br>
                                     </div>
