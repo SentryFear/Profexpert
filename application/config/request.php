@@ -226,6 +226,8 @@ $config['razd'] = array(
                         array('name' => 'ar', 'rname' => 'Архитектурные Решения', 'sname' => 'АР', 'price' => '150'),
                         array('name' => 'vk', 'rname' => 'Водоснабжение и Канализация', 'sname' => 'ВК', 'price' => '70'),
                         array('name' => 'km', 'rname' => 'Конструкции Металлические', 'sname' => 'КМ', 'price' => '100'),
+                        array('name' => 'kr', 'rname' => 'Конструктивные Решения', 'sname' => 'КР', 'price' => '100'),
+                        array('name' => 'kj', 'rname' => 'Конструкции Железобетонные', 'sname' => 'КЖ', 'price' => '100'),
                         array('name' => 'kd', 'rname' => 'Конструкции Деревянные', 'sname' => 'КД', 'price' => '100'),
                         array('name' => 'ov', 'rname' => 'Отопление Вентиляция и Кондиционирование', 'sname' => 'ОВ', 'price' => '50'),
                         array('name' => 'eo', 'rname' => 'Электроосвещение', 'sname' => 'ЭО', 'price' => '70'),
