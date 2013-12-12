@@ -190,7 +190,7 @@ class Request extends CI_Controller
 			
 			echo '<div class="adds"></div>';
 			
-			echo '<hr><p><a href="#" class="btn btn-success btn-mini" id="add">Добавить файл</a></p>';
+			echo '<hr><p><a href="javascript:void(0);" class="btn btn-success btn-mini" id="add">Добавить файл</a></p>';
 			
 			echo '<div class="alert alert-info">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -312,6 +312,8 @@ class Request extends CI_Controller
 
                     $this->history->setHistory('dt20', $id);
 
+                    $this->notification->setNotification('Новая заявка ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/?sort=pAll', $id, 'Новая заявка от отдела продаж', '4', '0');
+
                     $this->db->update('request', array('kp' => 1), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена проектировщикам.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
                 //Проектировщик выбирает заявку как свою
@@ -326,7 +328,7 @@ class Request extends CI_Controller
 
                     $this->history->setHistory('dt22', $id);
 
-                    $this->notification->setNotification('Завершено ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/', $id, 'Проектный отдел завершил работу над заявкой', '0', $row['mid']);
+                    $this->notification->setNotification('Завершено ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/?sort=mAll', $id, 'Проектный отдел завершил работу над заявкой', '0', $row['mid']);
 
                     $this->db->update('request', array('kp' => 3), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
@@ -335,6 +337,8 @@ class Request extends CI_Controller
 
                     $this->history->setHistory('dt4', $id);
 
+                    $this->notification->setNotification('Завершено ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/?sort=rAll', $id, 'Отдел продаж отправил на согласование', '6', '0');
+
                     $this->db->update('request', array('kp' => 4), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена руководству.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
                 // Руководство согласовало сроки и отправляет заявку отделу продаж на отправку кп заказчикам
@@ -342,7 +346,7 @@ class Request extends CI_Controller
 
                     $this->history->setHistory('dt5', $id);
 
-                    $this->notification->setNotification('КП Согласовано ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/', $id, 'Руководство согласовало КП', '0', $row['mid']);
+                    $this->notification->setNotification('КП Согласовано ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/?sort=mAll', $id, 'Руководство согласовало КП', '0', $row['mid']);
 
                     $this->db->update('request', array('kp' => 5), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
@@ -372,7 +376,7 @@ class Request extends CI_Controller
 
                     $this->history->setHistory('dt9', $id);
 
-                    $this->notification->setNotification('Доработка ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/', $id, 'Руководство отправило заявку на доработку', '0', $row['mid']);
+                    $this->notification->setNotification('Доработка ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/?sort=mAll', $id, 'Руководство отправило заявку на доработку', '0', $row['mid']);
 
                     $this->db->update('request', array('kp' => 9), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
@@ -381,12 +385,16 @@ class Request extends CI_Controller
 
                     $this->history->setHistory('dt10', $id);
 
+                    $this->notification->setNotification('Завершено ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/?sort=rAll', $id, 'Отдел продаж завершил доработку и отправил на согласование', '6', '0');
+
                     $this->db->update('request', array('kp' => 10), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена руководству.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
                 // Менеджер отправил на доработку проектировщикам
                 } elseif($type == 'optopr') {
 
                     $this->history->setHistory('dt11', $id);
+
+                    $this->notification->setNotification('Доработка ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/?sort=pAll', $id, 'Отдел продаж отправил на доработку', '0', $row['uid']);
 
                     $this->db->update('request', array('kp' => 11), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена проектировщикам.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
@@ -395,10 +403,11 @@ class Request extends CI_Controller
 
                     $this->history->setHistory('dt12', $id);
 
-                    $this->notification->setNotification('Доработано ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/', $id, 'Проектный отдел доработал заявку', '0', $row['mid']);
+                    $this->notification->setNotification('Доработано ['.$id.'] ['.mb_substr($this->dx_auth->get_role_name(),0,1,'utf-8').']', '/request/?sort=mAll', $id, 'Проектный отдел доработал заявку', '0', $row['mid']);
 
                     $this->db->update('request', array('kp' => 12), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена отделу продаж.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
+                // Договор подписан
                 } elseif($type == 'zaytoproj') {
 
                     $this->history->setHistory('dt13', $id);

@@ -44,16 +44,34 @@ class Card extends CI_Controller
 		$request = $query->row_array();
 		
 		$data['result'] += $request;
-		
-		$query = $this->db->get_where('history', array('rid' => $request['id']));
+
+        $this->db->order_by('date', 'ASC');
+
+        $query = $this->db->get_where('history', array('rid' => $request['id']));
 		
 		$history = $query->result_array();
 		
 		$this->config->load('request');
 		
 		$kpstatus = array_merge($this->config->item('kpstatus'), $this->config->item('history'));
-		
-		foreach($kpstatus as $k => $i) {
+
+        foreach($history as $k => $q) {
+
+            $history1[$k] = $q;
+
+            foreach($kpstatus as $i) {
+
+                if($i['dbname'] == $q['name']) {
+
+                    $history1[$k]['name'] = $i['name'];
+
+                    $history1[$k]['date'] = $q['date'];
+                }
+            }
+
+        }
+
+		/*foreach($kpstatus as $k => $i) {
 		
 			$history1[$k] = $i;
 		
@@ -62,7 +80,7 @@ class Card extends CI_Controller
 				if($i['dbname'] == $q['name']) $history1[$k]['date'] = $q['date'];
 			}
 		
-		}
+		}*/
       
 		$data['result']['history'] = $history1;
 		

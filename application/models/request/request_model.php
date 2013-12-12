@@ -175,7 +175,7 @@ class request_model extends CI_Model
 
         $row = $this->db->get_where('request', array('id' => $id))->row_array();
 
-        $this->notification->setNotification('Новый комментарий ['.$id.']', '/request/', $id, 'Новый комментарий к заявке', '0', $row['mid']);
+        $this->notification->setNotification('Новый комментарий ['.$id.']', '/request/?sort=mAll', $id, 'Новый комментарий к заявке', '0', $row['mid']);
 
         $rework = unserialize($row['rework']);
 
@@ -381,7 +381,7 @@ class request_model extends CI_Model
 
 			$data['result'] = array_merge($query1, $query);
 			//end GetData
-			
+
 			$ntype = $this->config->item('ntype');
 			
 			$formdata['razd'] = $this->config->item('razd');

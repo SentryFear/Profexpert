@@ -55,7 +55,8 @@ $config['region'] = array(
 */
 $config['sort'] = array(
                         // Отдел продаж - id = 3
-                            array('name' => 'Все', 'uri' => 'mAll', 'allow' => '3', 'logic' => 'mid:usr?date>2419200', 'default' => '1'),
+                            array('name' => 'Все', 'uri' => 'mAll', 'allow' => '3', 'logic' => 'mid:usr'),
+                            array('name' => 'Актуальные заявки', 'uri' => 'mAkt', 'allow' => '3', 'logic' => 'mid:usr?date>2419200', 'default' => '1'),
                             array('name' => 'Заявки с сайта', 'uri' => 'mSite', 'allow' => '3', 'logic' => 'mid:0'),
                             array('name' => 'Новые', 'uri' => 'mNew', 'allow' => '3', 'logic' => 'kp:0?mid:usr'),
                             array('name' => 'Расчёт времени', 'uri' => 'mInDev', 'allow' => '3', 'logic' => 'kp:1?mid:usr,kp:2?mid:usr'),
@@ -74,7 +75,8 @@ $config['sort'] = array(
                         // Отдел согласования - id = 5
                             array('name' => 'Все', 'uri' => 'sAll', 'allow' => '5', 'logic' => 'id:0', 'default' => '1'),
                         // Руководство - id = 6
-                            array('name' => 'Все', 'uri' => 'rAll', 'allow' => '2,6', 'logic' => 'date>2419200', 'default' => '1'),
+                            array('name' => 'Все', 'uri' => 'rAll', 'allow' => '2,6', 'logic' => 'all'),
+                            array('name' => 'Актуальные заявки', 'uri' => 'rAkt', 'allow' => '2,6', 'logic' => 'date>2419200', 'default' => '1'),
                             array('name' => 'Заявки с сайта', 'uri' => 'rSite', 'allow' => '2,6', 'logic' => 'mid:0'),
                             array('name' => 'В работе у менеджера', 'uri' => 'rmInDev', 'allow' => '2,6', 'logic' => 'kp:0,kp:3,kp:5,kp:9,kp:12'),
                             array('name' => 'В работе у проектировщиков', 'uri' => 'rpInDev', 'allow' => '2,6', 'logic' => 'kp:1,kp:2'),
@@ -225,16 +227,16 @@ $config['ntype'] = array('Не выбрано', 'жилое', 'нежилое');
 $config['razd'] = array(
                         array('name' => 'ar', 'rname' => 'Архитектурные Решения', 'sname' => 'АР', 'price' => '150'),
                         array('name' => 'vk', 'rname' => 'Водоснабжение и Канализация', 'sname' => 'ВК', 'price' => '70'),
-                        array('name' => 'km', 'rname' => 'Конструкции Металлические', 'sname' => 'КМ', 'price' => '100'),
-                        array('name' => 'kr', 'rname' => 'Конструктивные Решения', 'sname' => 'КР', 'price' => '100'),
-                        array('name' => 'kj', 'rname' => 'Конструкции Железобетонные', 'sname' => 'КЖ', 'price' => '100'),
-                        array('name' => 'kd', 'rname' => 'Конструкции Деревянные', 'sname' => 'КД', 'price' => '100'),
+                        array('name' => 'km', 'rname' => 'Конструкции Металлические', 'sname' => 'КМ', 'price' => '100', 'time' => '3'),
+                        array('name' => 'kr', 'rname' => 'Конструктивные Решения', 'sname' => 'КР', 'price' => '100', 'time' => '3'),
+                        array('name' => 'kj', 'rname' => 'Конструкции Железобетонные', 'sname' => 'КЖ', 'price' => '100', 'time' => '3'),
+                        array('name' => 'kd', 'rname' => 'Конструкции Деревянные', 'sname' => 'КД', 'price' => '100', 'time' => '3'),
                         array('name' => 'ov', 'rname' => 'Отопление Вентиляция и Кондиционирование', 'sname' => 'ОВ', 'price' => '50'),
                         array('name' => 'eo', 'rname' => 'Электроосвещение', 'sname' => 'ЭО', 'price' => '70'),
                         array('name' => 'to', 'rname' => 'ТехОбследование', 'sname' => 'ТО', 'price' => '60'),
                         array('name' => 'th', 'rname' => 'ТеХнология', 'sname' => 'ТХ', 'price' => '120'),
                         array('name' => 'tz', 'rname' => 'Техническое Заключение', 'sname' => 'ТЗ', 'price' => '50'),
-                        array('name' => 'apz', 'rname' => 'Архитектурно-Планировочное Задание', 'sname' => 'АПЗ', 'price' => '150'),
+                        array('name' => 'apz', 'rname' => 'Архитектурно-Планировочное Задание', 'sname' => 'АПЗ', 'price' => '150', 'time' => '3'),
                         array('name' => 'aro', 'rname' => 'Архитектурные Решения Отдельный Вход', 'pname' => 'Архитектурные Решения', 'sname' => 'АР', 'price' => '150'),
                         array('name' => 'arop', 'rname' => 'Архитектурное Решение Отдельного Входа с Приямком', 'pname' => 'Архитектурные Решения', 'sname' => 'АР', 'price' => '150'),
                         array('name' => 'visit', 'rname' => 'Выезд на объект', 'price' => '0'),
@@ -356,7 +358,7 @@ $config['access'] = array(
     array('name' => '№',                             'value' => 'loop.index',    'allow' => '2,3,4,6', 'self' => 'class="span1 number"', 'form' => 0),
     array('name' => 'Дата',                           'value' => 'date',          'allow' => '2,3,4,6', 'date-format' => 'd.m.y', 'self' => 'class="span1"', 'form' => 0),
     array('name' => 'ФИО',                            'value' => 'fname',         'allow' => '0,2,3,6', 'self' => 'class="span2"'),
-    array('name' => 'Телефон',                        'value' => 'phone',         'allow' => '0,2,3,6', 'self' => 'class="span3"', 'view' => 0),
+    array('name' => 'Телефон',                        'value' => 'phone',         'allow' => '0,2,3,6', 'self' => 'class="span3" id="phone"', 'view' => 0),
     array('name' => 'Email адрес',                    'value' => 'email',         'allow' => '0,2,3,6', 'self' => 'class="span3"', 'view' => 0),
     array('name' => 'Район',                          'value' => 'region',        'allow' => '2,3,6', 'type' => 'select', 'view' => 0),
     array('name' => 'Район',                          'value' => 'region',        'allow' => '4', 'type' => 'select', 'self' => 'class="span3"'),

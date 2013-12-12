@@ -13,7 +13,8 @@
   <strong>{{ error }}</strong>
 </div>
 {% endif %}
-<table class="table table-hover table-bordered">
+        <div class="table-products">
+<table class="table table-hover" id="fhead">
   <thead>
     <tr>
       <th>#</th>
@@ -30,11 +31,21 @@
 			<td>{{ row.fname }} </td>
 			<td>{{ row.phone }} </td>
 			<td>{{ row.email }} </td>
-			<td><div class="btn-group"><a href="/card/view/{{ row.id }}/" class="btn btn-mini">Подробнее</a><a href="/card/edit/{{ row.id }}/" class="btn btn-mini">Изменить</a><a href="/card/delete/{{ row.id }}/" class="btn btn-mini btn-danger">Удалить</a></div></td>
+			<td>
+                <ul class="actions" style="float: left;">
+                    <li>
+                        <a href="/card/view/{{ row.id }}/" data-toggle="tooltip" data-original-title="Подробнее"><i class="table-settings"></i></a>
+                    </li>
+                    <li class="last">
+                        <a href="#/card/delete/{{ row.id }}/" onclick="return confirm('Вы уверены что хотите удалить заявку?')" data-toggle="tooltip" data-original-title="Удалить"><i class="table-delete"></i></a>
+                    </li>
+                </ul>
+            </td>
 		</tr>
 	{% endfor %}
   </tbody>
 </table>
+        </div>
 <!-- Modal -->
 <div id="upload" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">

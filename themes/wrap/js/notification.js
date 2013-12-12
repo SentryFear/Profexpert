@@ -9,6 +9,10 @@
 
         var lock = 0;
 
+        var title = $('title').text();
+
+        var newnotific = '';
+
         if($.cookie("lock")) lock = $.cookie("lock");
 
         var get_notification = function() {
@@ -23,13 +27,16 @@
                 $('.count1').html(items.length);
                 $('.notifications').html('');
                 $( items.join( "" ) ).appendTo( ".notifications" );
+
+                if(items.length > 0 && lock == 0) newnotific = "[ "+items.length+" ] Новая заявка! ";
+                else newnotific = '';
             });
         };
 
         var lock_notification = function(ndx) {
             $.getJSON( "/api/lockNotification/"+ndx)
                 .success(function() {  })
-                .error(function() { alert("Ошибка выполнения"); })
+                .error(function() { /*alert("Ошибка выполнения");*/ })
                 .complete(function() {  });
             get_notification();
         };
@@ -64,8 +71,26 @@
 
         setInterval(function()
         {
-            //get_notification();
+            get_notification();
 
         }, 10000);
+
+        var i = 0;
+
+        setInterval(function()
+        {
+            if(i == 0) {
+                $('title').text(newnotific+title);
+
+                i = 1;
+
+            } else if(i == 1) {
+
+                $('title').text(title);
+
+                i = 0;
+            }
+
+        }, 1000);
     };
 }(jQuery));
