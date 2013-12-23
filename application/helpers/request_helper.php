@@ -78,6 +78,12 @@ if (!function_exists('req_arr_to_table')) {
 
         $n = 0;
 
+        $CI =& get_instance();
+
+        $CI->load->model('dx_auth/users_model', 'users_model');
+
+        $users = $CI->db->get('users')->result_array();
+
         foreach ($data as $i) {
 
             $n++;
@@ -104,7 +110,7 @@ if (!function_exists('req_arr_to_table')) {
                     //if($extra['role_id'] == 4 && $i['ikp'] != 1) $val = "" . $i['id'];
                 }
 
-                if ($q['value'] == 'fname') {
+                if ($q['value'] == 'zname') {
 
                     $fio = '';
 
@@ -112,13 +118,17 @@ if (!function_exists('req_arr_to_table')) {
 
                     $emaile = '';
 
-                    if(!empty($i['fname'])) $fio = '<b><i>ФИО:</b></i> '.$i['fname'];
+                    if(!empty($i['zsurname'])) $fio = $i['zsurname'];
+
+                    if(!empty($i['zname'])) $fio .= ' '.$i['zname'];
+
+                    if(!empty($i['zmname'])) $fio .= ' '.$i['zmname'];
 
                     if(!empty($i['phone'])) $telphone = '<br> <b><i>Телефон:</b></i> '.$i['phone'];
 
                     if(!empty($i['email'])) $emaile = '<br><b><i>Email:</b></i> '.$i['email'];
 
-                    $val = '<span data-toggle="tooltip" data-original-title="' . $fio . ' ' . $telphone . ' ' . $emaile . '">' . $i['fname'] . '</span>';
+                    $val = '<a href="/card/view/'. $i['id'] .'/"><span data-toggle="tooltip" data-original-title="' . $fio . ' ' . $telphone . ' ' . $emaile . '">' . $i['zname'] . '</span></a>';
 
                 }
 
@@ -149,15 +159,15 @@ if (!function_exists('req_arr_to_table')) {
 
                 if ($val == 'comments') {
 
-                    if(!empty($i['rework'])) $i['rework'] = unserialize($i['rework']);
-                    else $i['rework'] = array();
+                    if(!empty($i['more'])) $i['more'] = unserialize($i['more']);
+                    else $i['more'] = array();
 
                     $worklabel = '';
 
-                    if(count($i['rework']) > 0) $worklabel = 'label-important';
+                    if(count($i['more']) > 0) $worklabel = 'label-important';
 
                     //if($extra['req']['ikp'] == 9)
-                    $val = '<a href="/request/rework/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl label '.$worklabel.'" data-toggle1="tooltip" data-original-title="Колличество комментариев." id="' . $i['id'] . '">[ ' . count($i['rework']) . ' ]</a>';
+                    $val = '<a href="/request/comments/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl label '.$worklabel.'" data-toggle1="tooltip" data-original-title="Колличество комментариев." id="' . $i['id'] . '">[ ' . count($i['more']) . ' ]</a>';
 
                 }
 
@@ -175,12 +185,6 @@ if (!function_exists('req_arr_to_table')) {
                 }
 
                 if ($val == 'workers') {
-
-                    $CI =& get_instance();
-
-                    $CI->load->model('dx_auth/users_model', 'users_model');
-
-                    $users = $CI->db->get('users')->result_array();
 
                     $tself = ' style="white-space: nowrap;"';
 
@@ -323,7 +327,7 @@ if (!function_exists('req_arr_to_form')) {
 
             $type = 'input';
 
-            if ($allow == 'add' && isset($q['add']) && $q['add'] == 0) $val = null;
+            //if ($allow == 'add' && isset($q['add']) && $q['add'] == 0) $val = null;
 
             if (!empty($data) && !empty($val) && !empty($data[$val])) $value = 'value="' . $data[$val] . '"'; else $value = "";
 
@@ -374,13 +378,36 @@ if (!function_exists('req_arr_to_form')) {
 
                 if (!empty($value)) $value = $data[$val];
 
-                $inp = '<div class="ui-select" style="width: auto;"><select name="' . $val . '">'; //{% for key,row in region %}<option value="{{ key }}">{{ row }}</option>{% endfor %}</select>';
+                if (!empty($q['self'])) $self = $q['self'];
+
+                $inp = '<div class="ui-select" style="width: auto;"><select name="' . $val . '" '.$self.'>';
 
                 foreach ($extra[$val] as $k => $i) {
 
                     if ($k == $value) $selected = "selected"; else $selected = "";
 
-                    $inp .= '<option value="' . $k . '" ' . $selected . '>' . $i . '</option>';
+                    if($val == 'cid') {
+
+                        isset($i['zsurname']) ? $sn = $i['zsurname'] : $sn='';
+
+                        isset($i['zname']) ? $n = $i['zname'] : $n='';
+
+                        isset($i['none']) ? $none = $i['none'] : $none='';
+
+                        isset($i['zmname']) ? $mn = $i['zmname'] : $mn='';
+
+                        isset($i['organization']) ? $org = $i['organization'] : $org='';
+
+                        isset($i['phone']) ? $phone = $i['phone'] : $phone='';
+
+                        isset($i['email']) ? $email = $i['email'] : $email='';
+
+                        isset($i['hear']) ? $hear = $i['hear'] : $hear='';
+
+                        $inp .= '<option value="' . $k . '" data-sn="'.$sn.'" data-n="'.$n.'" data-mn="'.$mn.'" data-org="'.$org.'" data-phone="'.$phone.'" data-email="'.$email.'" data-hear="'.$hear.'"  ' . $selected . '>'.$sn.' '.$n.' '.$mn .''.$none.'</option>';
+
+                    } else $inp .= '<option value="' . $k . '" ' . $selected . '>' . $i . '</option>';
+
                 }
 
                 $inp .= '</select></div>';
@@ -632,7 +659,7 @@ if (!function_exists('req_arr_to_form')) {
                                         <b>Примечание:</b><br>
                                         Стоимость проекта может измениться, если здание находится под охраной КГИОП.<br>
                                         Стоимость работ может измениться после получения подробного технического задания от Заказчика.<br>
-                                        Платежи за выдачу технической документации и согласование проектной документации, предусмотренные государственными инстанциями, оплачиваются Заказчиком отдельно по предъевляемой квитации.<br>
+                                        Платежи за выдачу технической документации и согласование проектной документации, предусмотренные государственными инстанциями, оплачиваются Заказчиком отдельно по предъявляемым квитациям.<br>
                                         В данный расчет не включена стоимость работ по вводу в эксплуатацию объекта после перепланировки и получению технического паспорта на образованный в результате перепланировки объект, получению дополнительной мощности и оформлению электропотребления. Услуги по вводу объекта в эксплуатацию осмечиваются отдельно и составляют 70-80% от данного коммерческого предложения.<br>
                                         Цены по коммерческому предложению действительны в течение месяца.<br>
                                     </div>
@@ -707,6 +734,8 @@ if (!function_exists('req_parse_data')) {
 
         foreach ($query['request'] as $i) {
 
+            $i = array_diff_key($i, array(''));
+
             $i['docs'] = unserialize($i['docs']);
 
             $i['ikp'] = $i['kp'];
@@ -715,13 +744,22 @@ if (!function_exists('req_parse_data')) {
 
             $result[$i['id']] = $i;
 
-            $result[$i['id']] = array_diff($result[$i['id']], array(''));
+            /*$q = $query['card'][$i['cid']];
 
-            foreach ($query['cCard'] as $q) {
+            if (!empty($q['region'])) $q['region'] = $extra['region'][$q['region']];
 
-                if (!empty($q['region'])) $q['region'] = $extra['region'][$q['region']];
+            if ($i['cid'] == $q['id']) $result[$i['id']] = array_merge($q, $result[$i['id']]);*/
 
-                if ($i['cid'] == $q['id']) $result[$i['id']] = array_merge($q, $result[$i['id']]);
+            foreach ($query['card'] as $q) {
+
+                if ($i['cid'] == $q['id']) {
+
+                    if (!empty($q['region'])) $q['region'] = $extra['region'][$q['region']];
+
+                    $result[$i['id']] = array_merge($q, $result[$i['id']]);
+
+                    break;
+                }
             }
         }
 

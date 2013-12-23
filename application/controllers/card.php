@@ -20,7 +20,7 @@ class Card extends CI_Controller
 		
 		$data['error'] = $this->session->flashdata('error');
 		
-		$query = $this->db->get('cCard');
+		$query = $this->db->get('card');
 		
 		$data['result'] = $query->result_array();
 		
@@ -33,56 +33,51 @@ class Card extends CI_Controller
 	   
 		$id = $this->uri->segment(3);
 		
-		$query = $this->db->get_where('cCard', array('id' => $id));
+		$query = $this->db->get_where('card', array('id' => $id));
 		
 		$card = $query->row_array();
 		
 		$data['result'] = $card;
-		
+
+        $data['result']['cсoments'] = unserialize($data['result']['cсoments']);
+
 		$query = $this->db->get_where('request', array('cid' => $card['id']));
 		
-		$request = $query->row_array();
-		
-		$data['result'] += $request;
+		$request = $query->result_array();
 
-        $this->db->order_by('date', 'ASC');
+        $this->config->load('request');
 
-        $query = $this->db->get_where('history', array('rid' => $request['id']));
-		
-		$history = $query->result_array();
-		
-		$this->config->load('request');
-		
-		$kpstatus = array_merge($this->config->item('kpstatus'), $this->config->item('history'));
+        $kpstatus = array_merge($this->config->item('kpstatus'), $this->config->item('history'));
 
-        foreach($history as $k => $q) {
+        foreach($request as $req) {
 
-            $history1[$k] = $q;
+            $req['more'] = unserialize($req['more']);
 
-            foreach($kpstatus as $i) {
+            $data['result']['req'][$req['id']] = $req;
 
-                if($i['dbname'] == $q['name']) {
+            $this->db->order_by('date', 'ASC');
 
-                    $history1[$k]['name'] = $i['name'];
+            $query = $this->db->get_where('history', array('rid' => $req['id']));
 
-                    $history1[$k]['date'] = $q['date'];
+            $history = $query->result_array();
+
+            foreach($history as $k => $q) {
+
+                $history1[$k] = $q;
+
+                foreach($kpstatus as $i) {
+
+                    if($i['dbname'] == $q['name']) {
+
+                        $history1[$k]['name'] = $i['name'];
+
+                        $history1[$k]['date'] = $q['date'];
+                    }
                 }
             }
 
+            $data['result']['req'][$req['id']]['history'] = $history1;
         }
-
-		/*foreach($kpstatus as $k => $i) {
-		
-			$history1[$k] = $i;
-		
-			foreach($history as $q) {
-		
-				if($i['dbname'] == $q['name']) $history1[$k]['date'] = $q['date'];
-			}
-		
-		}*/
-      
-		$data['result']['history'] = $history1;
 		
 		echo $this->twig->render('card/view.html', $data);
 	}

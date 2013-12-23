@@ -1,5 +1,7 @@
 {% extends "_main.html" %}
-{% set active = 'card' %}
+
+{% block title %}Клиенты{% endblock %}
+
 {% block content %}
 {% if success|length > 0 %}
 <div class="alert alert-success">
@@ -28,7 +30,7 @@
 	{% for row in result %}
 		<tr>
 			<td>{{ loop.index }} </td>
-			<td>{{ row.fname }} </td>
+			<td>{{ row.zsurname }} {{ row.zname }} {{ row.zmname }}</td>
 			<td>{{ row.phone }} </td>
 			<td>{{ row.email }} </td>
 			<td>

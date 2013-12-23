@@ -31,7 +31,7 @@ class Projects extends CI_Controller
     {
         $result = array();
 
-        $result['data'] = $this->db->select('*')->from('projects')->join('cCard', 'cCard.id = projects.cid')->get()->result_array();
+        $result['data'] = $this->db->select('*')->from('projects')->join('card', 'card.id = projects.cid')->get()->result_array();
 
         //$result = $this->db->get();
 

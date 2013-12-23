@@ -31,23 +31,27 @@
         <!-- Table -->
         <table class="table table-hover">
             <thead>
-                <th>№</th>
-                <th><span class="line"></span>Дата</th>
-                <th><span class="line"></span>Адрес</th>
-                <th><span class="line"></span>Заказчик</th>
-                <th><span class="line"></span>Статус</th>
-                <th><span class="line"></span>Работники</th>
-                <th><span class="line"></span>Действия</th>
+                <tr>
+                    <th>№</th>
+                    <th><span class="line"></span>Дата</th>
+                    <th><span class="line"></span>Адрес</th>
+                    <th><span class="line"></span>Заказчик</th>
+                    <th><span class="line"></span>Статус</th>
+                    <th><span class="line"></span>Работники</th>
+                    <th><span class="line"></span>Действия</th>
+                </tr>
             </thead>
             <tbody>
             {% for row in data %}
-                <td>{{ row.id }}</td>
-                <td>{{ row.date|date("d.m.Y") }}</td>
-                <td>{{ row.address }}</td>
-                <td>{{ row.fname }}</td>
-                <td>Статус</td>
-                <td>Работники</td>
-                <td>Действия</td>
+                <tr>
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.date|date("d.m.Y") }}</td>
+                    <td>{{ row.address }}</td>
+                    <td>{{ row.fname }}</td>
+                    <td>Статус</td>
+                    <td>Работники</td>
+                    <td>Действия</td>
+                </tr>
             {% endfor %}
             </tbody>
         </table>

@@ -3,8 +3,7 @@
 /**
  * Class request_model
  */
-class request_model extends CI_Model
-{
+class request_model extends CI_Model {
     /**
      * Инициализация
      */
@@ -24,7 +23,54 @@ class request_model extends CI_Model
 	   
 		$suc = 0;
 
-        //Карточка клиента
+        $more = array();
+
+        $cid = 0;
+
+        if($this->input->post('cid')) $cid = $this->input->post('cid');
+
+        if($cid == 0) {
+
+            $comment[] = array('author' => $this->dx_auth->get_username(), 'text'=> 'Создана карточка клиента', 'date' => time());
+
+            //Карточка клиента
+            $insert = array(
+                'cdate' => time(),
+                'zsurname' => $this->input->post('zsurname'),
+                'zname' => $this->input->post('zname'),
+                'zmname' => $this->input->post('zmname'),
+                'organization' => $this->input->post('organization'),
+                'phone' => $this->input->post('phone'),
+                'email' => $this->input->post('email'),
+                'hear' => $this->input->post('hear'),
+                'cсoments' => serialize($comment)
+            );
+
+            if($this->db->insert('card', $insert)) $suc+=1;
+
+            $cid = $this->db->insert_id();
+
+        } else {
+
+            $row = $this->db->get_where('card', array('id' => $cid))->row_array();
+
+            $comment = unserialize($row['cсoments']);
+
+            if(empty($comment)) $comment = array();
+
+            $comment[] = array('author' => $this->dx_auth->get_username(), 'text'=> 'Новая заявка от клиента', 'date' => time());
+
+            $update = array(
+                'cсoments' => serialize($comment)
+            );
+
+            if($this->db->update('card', $update, array('id' => $cid))) $suc+=1;
+        }
+
+
+		//end Карточка клиента
+		
+        //Заявка
 		$form = $this->config->item('access');
 
 		foreach($form as $i) {
@@ -36,30 +82,34 @@ class request_model extends CI_Model
                 if (in_array($this->dx_auth->get_role_id(), $access)) $insert1[$i['value']] = $this->input->post($i['value']);
 			}
 		}
-		
+
+        unset($insert1['hear']);
+
+        unset($insert1['organization']);
+
+        $more = array();
+
+        if($this->input->post('more')) $more[] = array('author' => $this->dx_auth->get_username(), 'text'=> $this->input->post('more'), 'date' => time());
+
+        $insert1['more'] = serialize($more);
+
 		$insert1['razd'] = '';
 		
 		$insert1['instance'] = '';
-
-		if($this->db->insert('cCard', $insert1)) $suc+=1;
-		//end карточка клиента
 		
-		//Заявка
+		$insert1['date'] = time();
+
+        $insert1['cid'] = $cid;
+
 		$mid = 0;
 		
 		$roleid = $this->dx_auth->get_role_id();
 		
 		if($roleid == 3) $mid = $this->dx_auth->get_user_id();
 		
-		$insert = array(
-			'date' => time(),
-			//'kp' => $this->input->post('kp'),
-			'mid' => $mid,
-			//'history' => $this->input->post('history'),
-			'cid' => $this->db->insert_id()
-		);
-      
-		if($this->db->insert('request', $insert)) $suc+=1;
+		$insert1['mid'] = $mid;
+
+		if($this->db->insert('request', $insert1)) $suc+=1;
 		//end Заявка
 
         $rids = $this->db->insert_id();
@@ -161,7 +211,7 @@ class request_model extends CI_Model
 		return $data;
 	}
 
-    function add_rework() {
+    function add_comments() {
 
         $this->load->library('history');
 
@@ -177,11 +227,11 @@ class request_model extends CI_Model
 
         $this->notification->setNotification('Новый комментарий ['.$id.']', '/request/?sort=mAll', $id, 'Новый комментарий к заявке', '0', $row['mid']);
 
-        $rework = unserialize($row['rework']);
+        $comments = unserialize($row['more']);
 
-        if(empty($rework)) $rework = array();
+        if(empty($comments)) $comments = array();
 
-        $rework[] = array('author' => $author, 'text'=> $text, 'date' => time());
+        $comments[] = array('author' => $author, 'text'=> $text, 'date' => time());
 
         if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
 
@@ -190,7 +240,7 @@ class request_model extends CI_Model
             //$this->history->setHistory('dt9', $id);
         }
 
-        $upd['rework'] = serialize($rework);
+        $upd['more'] = serialize($comments);
 
         return $this->db->update('request', $upd, array('id' => $id)) ? 1 : 0;
     }
@@ -258,7 +308,7 @@ class request_model extends CI_Model
 
             $traspr1 = array();
 
-            $row = $this->db->get_where('cCard', array('id' => $id))->row_array();
+            $row = $this->db->get_where('card', array('id' => $id))->row_array();
 
             if(!empty($row['traspr'])) $traspr2 = unserialize($row['traspr']);
 
@@ -335,15 +385,12 @@ class request_model extends CI_Model
 
         if($data['mid'] == 0) {
 
-            $upd1 = array(
-                'mid' => $this->dx_auth->get_user_id()
-            );
-
-            $this->db->update('request', $upd1, array('id' => $id));
+            $update['mid'] = $this->dx_auth->get_user_id();
+            //$this->db->update('request', $upd1, array('id' => $id));
         }
 
 
-		return $this->db->update('cCard', $update, array('id' => $data['cid']));
+		return $this->db->update('request', $update, array('id' => $id));
 		
 		/*$update = array(
 			//'docs' => $this->input->post('docs'),
@@ -363,7 +410,9 @@ class request_model extends CI_Model
      * @return array|string
      */
     function get_request($id = null, $view = 'FormTable', $sort = 'all')
-	{		
+	{
+        //$this->benchmark->mark('code_start');
+
 		$res = array(
 				'kpstatus' => $this->config->item('kpstatus'),
 				'region' => $this->config->item('region'),
@@ -377,7 +426,7 @@ class request_model extends CI_Model
 			//GetData
 			$query = $this->db->get_where('request', array('id' => $id))->row_array();
 			
-            (!empty($query)) ? $query1 = $this->db->get_where('cCard', array('id' => $query['cid']))->row_array() : redirect("/request");;
+            (!empty($query)) ? $query1 = $this->db->get_where('card', array('id' => $query['cid']))->row_array() : redirect("/request");;
 
 			$data['result'] = array_merge($query1, $query);
 			//end GetData
@@ -459,27 +508,29 @@ class request_model extends CI_Model
 			}
 			
 		} else {
-			
+
 			//$this->output->enable_profiler(TRUE);
-			
+
 			if($sort['logic'] != 'all' && $sort != 'all') $this->db->where(req_parse_sort($sort, $this->dx_auth->get_all_data()));
 			
 			//GetData
 			$this->db->order_by("date", "asc"); 
-			
-			$query = array(
-				       'request' => $this->db->get('request')->result_array(),
-				       'cCard' => $this->db->get('cCard')->result_array(),
-				       );
-			
+
+            $query = array(
+                'request' => $this->db->get('request')->result_array(),
+                'card' => $this->db->get('card')->result_array(),
+            );
+
 			$data['result'] = req_parse_data($query, $res);
 			//end GetData
-			
+
 			$alldata = $this->dx_auth->get_all_data();
 
 			$source = req_perm_in_view($this->config->item('access'), $type = 'view', $alldata);
 
 			$alldata['status'] = $this->config->item('status');
+
+            //$this->benchmark->mark('code_mid');
 
             if($view == 'json') {
 
@@ -497,9 +548,25 @@ class request_model extends CI_Model
                 $data['result'] = $json;
 
             } else $data['result'] = req_arr_to_table($data['result'], $source, $alldata);
+
+            //$this->benchmark->mark('code_end');
 		}
 		
 		return $data['result'];
 	}
+
+    function getCard() {
+
+        $result = array('0' => array('none' => 'Не выбрано'));
+
+        $client = $this->db->get_where('card')->result_array();
+
+        foreach($client as $i) {
+
+            $result[$i['id']] = $i;
+        }
+
+        return $result;
+    }
 }
 ?>

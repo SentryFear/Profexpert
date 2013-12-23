@@ -24,8 +24,8 @@ $(function() {
 
             var btn = $(this);
             btn.button('loading');
-            var href = $(this).attr('href')
-            var id = $(this).data("ind")
+            var href = $(this).attr('href');
+            var id = $(this).data("ind");
 
             $('#ld'+id).html('');
             $('#ld'+id).load(href);
@@ -44,12 +44,14 @@ $(function() {
 
     var q = 0;
 
-    $('#addstr1').click(function(e) {
+    $('#addstr1').click(function() {
 
         if(q<10) {
+
             $('table.addr').append(
                 '<tr><td>'+i+'</td><td><textarea class="span6 wysihtml5'+i+'" rows="5" id="trasprname'+i+'" name="trasprname'+i+'" placeholder="Наименование"></textarea></td><td><input class="inline-input" type="text" id="trasprpr'+i+'" name="trasprpr'+i+'" placeholder="Стоимость работ"/></td><td><input class="inline-input" type="text" id="trasprsr'+i+'" name="trasprsr'+i+'" placeholder="Сроки исполнения"/></td></tr> '
             );
+
             $(".wysihtml5"+i).wysihtml5({
                 "font-styles": false,
                 "emphasis": false,
@@ -58,13 +60,13 @@ $(function() {
                 "link": false,
                 "image": false
             });
+
             q++;
             i++;
+
         } else {
             alert('За один раз можно отправлять только 10 файлов!');
-        };
-
-
+        }
     });
 
     $(window).scroll(function() {
@@ -86,32 +88,36 @@ $(function() {
   }).bind("ajaxComplete", function(){
       $(this).hide(); // �������� �������
   });
-  
-  var $window = $(window)
-  
+
+  var $window = $(window);
+
   // fix sub nav on scroll
   var $win = $(window)
     , $nav = $('.subnav')
     , navTop = $('.subnav').length && $('.subnav').offset().top - 40
     , isFixed = 0
 
-  processScroll()
+  processScroll();
 
   // hack sad times - holdover until rewrite for 2.1
   $nav.on('click', function () {
-    if (!isFixed) setTimeout(function () {  $win.scrollTop($win.scrollTop() - 47) }, 10)
-  })
+      if (!isFixed) {
+          setTimeout(function () {
+              $win.scrollTop($win.scrollTop() - 47)
+          }, 10)
+      }
+  });
 
-  $win.on('scroll', processScroll)
+  $win.on('scroll', processScroll);
 
   function processScroll() {
-    var i, scrollTop = $win.scrollTop()
+    var scrollTop = $win.scrollTop();
     if (scrollTop >= navTop && !isFixed) {
-      isFixed = 1
-      $nav.addClass('subnav-fixed')
+      isFixed = 1;
+      $nav.addClass('subnav-fixed');
     } else if (scrollTop <= navTop && isFixed) {
-      isFixed = 0
-      $nav.removeClass('subnav-fixed')
+      isFixed = 0;
+      $nav.removeClass('subnav-fixed');
     }
   }
   // navbar notification popups
@@ -140,7 +146,7 @@ $(function() {
       
       // hide all other pop-dialogs
       $(".notification-dropdown .pop-dialog").removeClass("is-visible");
-      $(".notification-dropdown .trigger").removeClass("active")
+      $(".notification-dropdown .trigger").removeClass("active");
 
       $dialog.toggleClass("is-visible");
       if ($dialog.hasClass("is-visible")) {
@@ -151,8 +157,19 @@ $(function() {
     });
   });
 
+  $("#clnt").change(function () {
+      //$(this).html('test');
+      $('#zsurname').val($(this).find("option:selected").data("sn"));
+      $('#zname').val($(this).find("option:selected").data("n"));
+      $('#zmname').val($(this).find("option:selected").data("mn"));
+      $('#organization').val($(this).find("option:selected").data("org"));
+      $('#phone').val($(this).find("option:selected").data("phone"));
+      $('#email').val($(this).find("option:selected").data("email"));
+      $('#hear').val($(this).find("option:selected").data("hear"));
+  });
+
   $(".upl").click(function () {
-    var href = $(this).attr('href')
+    var href = $(this).attr('href');
     //$.get(href, function(data){
     //  $('#load').html(data);
     //});
@@ -166,7 +183,7 @@ $(function() {
   });
   
   $("#edt").click(function () {
-    alert('sdfasd')
+    alert('sdfasd');
     //var href = $(this).attr('href')
     //$.get(href, function(data){
     //  $('#load').html(data);
@@ -180,30 +197,8 @@ $(function() {
     //$("#ep").html($(this).data("ep"));
   });
 
-  // skin changer
-  $(".skins-nav .skin").click(function (e) {
-    e.preventDefault();
-    if ($(this).hasClass("selected")) {
-      return;
-    }
-    $(".skins-nav .skin").removeClass("selected");
-    $(this).addClass("selected");
-    
-    if (!$("#skin-file").length) {
-      $("head").append('<link rel="stylesheet" type="text/css" id="skin-file" href="">');
-    }
-    var $skin = $("#skin-file");
-    if ($(this).attr("data-file")) {
-      $skin.attr("href", $(this).data("file"));
-    } else {
-      $skin.attr("href", "");
-    }
-
-  });
-
-
   // sidebar menu dropdown toggle
-  $("#dashboard-menu .dropdown-toggle").click(function (e) {
+  $("#dashboard-menu").find(".dropdown-toggle").click(function (e) {
     e.preventDefault();
     var $item = $(this).parent();
     $item.toggleClass("active");
@@ -231,9 +226,9 @@ $(function() {
   });
   
   $('body').tooltip({
-    selector: "[data-toggle=tooltip]",
-    html: "true"
-  })
+      selector: "[data-toggle=tooltip]",
+      html: "true"
+  });
 
 	// build all tooltips from data-attributes
 	$("[data-toggle='tooltip']").each(function (index, el) {

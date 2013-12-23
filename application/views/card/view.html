@@ -1,9 +1,12 @@
 {% extends "_main.html" %}
+
 {% block title %}Просмотр профиля заказчика{% endblock %}
+
 {% block head %}
 {{ parent() }}
 <link rel="stylesheet" href="/themes/wrap/css/compiled/user-profile.css" type="text/css" media="screen">
 {% endblock %}
+
 {% block content %}
 
 <div id="pad-wrapper" class="user-profile">
@@ -11,7 +14,7 @@
     <div class="row-fluid header">
         <div class="span8">
             {#<img src="img/contact-profile.png" class="avatar img-circle">#}
-            <h3 class="name">{{ result.fname|raw }}</h3>
+            <h3 class="name">{{ result.zsurname }} {{ result.zname }} {{ result.zmname }}</h3>
             <div class="span3 address">
                 <ul>
                     {% if result.phone %}
@@ -47,9 +50,15 @@
                         <h6>Откуда узнали?</h6>
                         <p>{{ result.hear }}</p>
                     {% endif %}
-                    {% if result.more %}
-                        <h6>Дополнительная информация</h6>
-                        <p>{{ result.more|raw }}</p>
+                    {% if result.cсoments %}
+                        <h6>Комментарии к заказчику</h6>
+                        {% for row in result.cсoments %}
+                            <blockquote>
+                                <p>{{ row.text|raw }}</p>
+                                <small>Изменил <b>{{ row.author }}</b> {{ row.date|date("d.m.Y в H:i") }}</small>
+                            </blockquote>
+
+                        {% endfor %}
                     {% endif %}
                 </div>
 
@@ -60,27 +69,43 @@
                     <thead>
                     <tr>
                         <th class="span2">
-                            Название статуса
+                            Адрес
+                        </th>
+                        <th class="span2">
+                            <span class="line"></span>
+                            Дата добавления
                         </th>
                         <th class="span3">
                             <span class="line"></span>
-                            Дата изменения
+                            Изменения статуса
+                        </th>
+                        <th class="span3">
+                            <span class="line"></span>
+                            Комментарии
                         </th>
                     </tr>
                     </thead>
                     <tbody>
                     <!-- row -->
-                    {% for row in result.history %}
-                        {% if row.date|length > 0 %}
-                            <tr>
-                                <td>
-                                    {{ row.name }}
-                                </td>
-                                <td>
-                                    {{ row.date|date("d.m.Y H:i") }}
-                                </td>
-                            </tr>
-                        {% endif %}
+                    {% for row in result.req %}
+                        <tr>
+                            <td>
+                                {{ row.address }}
+                            </td>
+                            <td>
+                                {{ row.date|date("d.m.Y H:i") }}
+                            </td>
+                            <td>
+                                {% for his in row.history %}
+                                    <p>{{ his.name|raw }} - {{ his.date|date("d.m.Y H:i") }}</p>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for com in row.more %}
+                                    <p>{{ com.text|raw }} - {{ com.date|date("d.m.Y H:i") }}</p>
+                                {% endfor %}
+                            </td>
+                        </tr>
                     {% endfor %}
                     </tbody>
                 </table>

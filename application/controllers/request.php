@@ -32,6 +32,8 @@ class Request extends CI_Controller
      */
     function index()
 	{
+        //$this->output->enable_profiler(TRUE);
+
         if($this->dx_auth->is_admin() == 0 && $this->dev == 1) {
 
             echo $this->twig->render('indev.html');
@@ -90,9 +92,9 @@ class Request extends CI_Controller
                 $data = array_merge($data, $this->request_model->add_docs());
             }
 
-            if($this->input->post('rework') && $this->input->post('id')) {
+            if($this->input->post('comments') && $this->input->post('id')) {
 
-                $this->request_model->add_rework() ? $data['success'] = "Заявка успешно отправлена на доработку!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+                $this->request_model->add_comments() ? $data['success'] = "Заявка успешно отправлена на доработку!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
             }
 
             $data['result'] = $this->request_model->get_request(null, 'FormTable', $gsort);
@@ -101,13 +103,17 @@ class Request extends CI_Controller
 
             $ntype = $this->config->item('ntype');
 
+            $client = $this->request_model->getCard();
+
             $formdata['region'] = $data['region'];
 
             $formdata['ptype'] = $ntype;
 
             $formdata['ztype'] = $ntype;
 
-            $source = req_perm_in_view($this->config->item('access'), $type = 'form', $this->dx_auth->get_all_data());
+            $formdata['cid'] = $client;
+
+            $source = req_perm_in_view($this->config->item('access'), $type = 'add', $this->dx_auth->get_all_data());
 
             if($this->dx_auth->check_permissions('add')) $data['add'] = req_arr_to_form($source, $formdata);
 
@@ -115,9 +121,9 @@ class Request extends CI_Controller
         }
 	}
 
-    /*function test() {
+    function test() {
 
-        $ins = $this->config->item('instance');
+        /*$ins = $this->config->item('instance');
 
         echo '<table>';
 
@@ -132,8 +138,174 @@ class Request extends CI_Controller
             echo '</tr>';
         }
 
-        echo '</table>';
-    }*/
+        echo '</table>';*/
+        $DB2 = $this->load->database('default', TRUE);
+        $DB1 = $this->load->database('migrate', TRUE);
+
+
+
+        echo 'migrate strart...';
+
+        echo '<br> bd_card';
+
+        $row = $DB2->get_where('request')->row_array();
+
+        var_dump($row);
+
+        echo 'last bd';
+
+
+
+        $dbcard = $DB1->get_where('card')->result_array();
+
+        foreach($dbcard as $row) {
+
+            $row1 = $DB1->get_where('request', array('cid' => $row['id']))->row_array();
+
+            //new bd_card
+            $cсoments = serialize(array());
+
+            $card = array(
+                'id' => $row['id'],
+                'cdate' => time(),
+                'zsurname' => '',
+                'zname' => $row['fname'],
+                'zmname' => '',
+                'organization' => '',
+                'phone' => $row['phone'],
+                'email' => $row['email'],
+                'hear' => $row['hear'],
+                'cсoments' => $cсoments,
+            );
+
+            $DB2->insert('card', $card);
+            //end new bd_card
+
+            //new bd_request
+            $more = array();
+
+            if(!empty($row1['rework'])) $more += unserialize($row1['rework']);
+
+            if(!empty($row['more'])) $more[] = array('author' => 'none', 'text'=> $row['more'], 'date' => time());
+
+            if(!empty($row['pmore'])) $more[] = array('author' => 'none', 'text'=> $row['pmore'], 'date' => time());
+
+            if(!empty($row['smore'])) $more[] = array('author' => 'none', 'text'=> $row['smore'], 'date' => time());
+
+            $req = array(
+                'id' => $row1['id'],
+                'date' => $row1['date'],
+                'zsurname' => '',
+                'zname' => $row['fname'],
+                'zmname' => '',
+                'phone' => $row['phone'],
+                'email' => $row['email'],
+                'region' => $row['region'],
+                'address' => $row['address'],
+                'more' => serialize($more),
+                'ptype' => $row['ptype'],
+                'ztype' => $row['ztype'],
+                'name' => $row['name'],
+                'rtype' => $row['rtype'],
+                'footage' => $row['footage'],
+                'razd' => $row['razd'],
+                'total' => $row['total'],
+                'instance' => $row['instance'],
+                'atotal' => $row['atotal'],
+                'traspr' => $row['traspr'],
+                'kpname' => $row['kpname'],
+                'kpsale' => $row['kpsale'],
+                'kptotsale' => $row['kptotsale'],
+                'kpmore' => $row['kpmore'],
+                'docs' => $row1['docs'],
+                'kp' => $row1['kp'],
+                'mid' => $row1['mid'],
+                'uid' => $row1['uid'],
+                'cid' => $row1['cid'],
+            );
+
+            $DB2->insert('request', $req);
+
+            //end new bd_request
+
+        }
+
+
+
+        /*//new bd_card
+            $cсoments = serialize(array());
+
+            $card = array(
+                'id' => $row['id'],
+                'cdate' => time(),
+                'zsurname' => '',
+                'zname' => $row['fname'],
+                'zmname' => '',
+                'organization' => '',
+                'phone' => $row['phone'],
+                'email' => $row['email'],
+                'hear' => $row['hear'],
+                'cсoments' => $cсoments,
+            );
+
+            echo '<hr> raw new bd_card';
+            var_dump($card);
+            echo '<br> end raw new bd_card<hr>';
+        //end new bd_card
+
+        //new bd_request
+            $more = array();
+
+            if(!empty($row1['rework'])) $more[] = unserialize($row1['rework']);
+
+            if(!empty($row['more'])) $more[] = array('author' => 'none', 'text'=> $row['more'], 'date' => time());
+
+            if(!empty($row['pmore'])) $more[] = array('author' => 'none', 'text'=> $row['pmore'], 'date' => time());
+
+            if(!empty($row['smore'])) $more[] = array('author' => 'none', 'text'=> $row['smore'], 'date' => time());
+
+            $req = array(
+                'id' => $row1['id'],
+                'date' => $row1['date'],
+                'zsurname' => '',
+                'zname' => $row['fname'],
+                'zmname' => '',
+                'phone' => $row['phone'],
+                'email' => $row['email'],
+                'region' => $row['region'],
+                'address' => $row['address'],
+                'more' => serialize($more),
+                'ptype' => $row['ptype'],
+                'ztype' => $row['ztype'],
+                'name' => $row['name'],
+                'rtype' => $row['rtype'],
+                'footage' => $row['footage'],
+                'razd' => $row['razd'],
+                'total' => $row['total'],
+                'instance' => $row['instance'],
+                'atotal' => $row['atotal'],
+                'traspr' => $row['traspr'],
+                'kpname' => $row['kpname'],
+                'kpsale' => $row['kpsale'],
+                'kptotsale' => $row['kptotsale'],
+                'kpmore' => $row['kpmore'],
+                'docs' => $row1['docs'],
+                'kp' => $row1['kp'],
+                'mid' => $row1['mid'],
+                'uid' => $row1['uid'],
+                'cid' => $row1['cid'],
+            );
+
+            echo '<hr> raw new bd_request';
+            var_dump($req);
+            echo '<br> end raw new bd_request<hr>';
+        //end new bd_request
+
+        echo '<br> raw old bd_card';
+        var_dump($row);
+        echo '<br> raw old bd_request';
+        var_dump($row1);*/
+    }
 
     /**
      * Добавление файлов открывается с помощью AJAX
@@ -236,7 +408,7 @@ class Request extends CI_Controller
 		}
 	}
 
-    function rework() {
+    function comments() {
 
         $id = intval($this->uri->segment(3));
 
@@ -244,8 +416,8 @@ class Request extends CI_Controller
 
             $res = $this->db->get_where('request', array('id' => $id))->row_array();
 
-            if(!empty($res['rework'])) $rework = unserialize($res['rework']);
-            else $rework = array();
+            if(!empty($res['more'])) $more = unserialize($res['more']);
+            else $more = array();
 
             echo '<div class="modal-header">
                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -253,7 +425,7 @@ class Request extends CI_Controller
               </div>
               <div class="modal-body">';
 
-            foreach($rework as $i){
+            foreach($more as $i){
 
                 echo '<blockquote>
                           <p>'.$i['text'].'</p>
@@ -273,7 +445,7 @@ class Request extends CI_Controller
 
             //if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
 
-                echo '<input type="submit" class="btn btn-primary" name="rework" value="Отправить" />';
+                echo '<input type="submit" class="btn btn-primary" name="comments" value="Отправить" />';
             //}
             
             echo '</div></div>';
@@ -437,7 +609,7 @@ class Request extends CI_Controller
 
                     $query = array(
                         'request' => $this->db->get('request')->result_array(),
-                        'cCard' => $this->db->get('cCard')->result_array(),
+                        'card' => $this->db->get('card')->result_array(),
                     );
 
                     $data['result'] = req_parse_data($query, $res);
@@ -645,7 +817,7 @@ class Request extends CI_Controller
          
 			$req = $query->row_array();
          
-			$this->db->delete('cCard', array('id' => $req['cid']));
+			$this->db->delete('card', array('id' => $req['cid']));
          
 			$this->db->delete('history', array('rid' => $req['id']));
 
