@@ -83,6 +83,10 @@
                             <span class="line"></span>
                             Комментарии
                         </th>
+                        <th class="span1">
+                            <span class="line"></span>
+                            Работники
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -104,6 +108,10 @@
                                 {% for com in row.more %}
                                     <p>{{ com.text|raw }} - {{ com.date|date("d.m.Y H:i") }}</p>
                                 {% endfor %}
+                            </td>
+                            <td>
+                                Менеджер: {{ row.nmid }}<br>
+                                Проектировщик: {{ row.nuid }}
                             </td>
                         </tr>
                     {% endfor %}

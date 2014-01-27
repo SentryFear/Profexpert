@@ -123,6 +123,15 @@ class Request extends CI_Controller
 
     function test() {
 
+        $query = $this->db->get_where('request')->result_array();
+
+        foreach($query as $i) {
+
+            if(empty($i['email'])) continue;
+
+            echo $i['email']."; ".$i['address']."<br>";
+        }
+
         /*$ins = $this->config->item('instance');
 
         echo '<table>';
@@ -139,7 +148,8 @@ class Request extends CI_Controller
         }
 
         echo '</table>';*/
-        $DB2 = $this->load->database('default', TRUE);
+
+        /*$DB2 = $this->load->database('default', TRUE);
         $DB1 = $this->load->database('migrate', TRUE);
 
 
@@ -228,83 +238,8 @@ class Request extends CI_Controller
 
             //end new bd_request
 
-        }
+        }*/
 
-
-
-        /*//new bd_card
-            $cсoments = serialize(array());
-
-            $card = array(
-                'id' => $row['id'],
-                'cdate' => time(),
-                'zsurname' => '',
-                'zname' => $row['fname'],
-                'zmname' => '',
-                'organization' => '',
-                'phone' => $row['phone'],
-                'email' => $row['email'],
-                'hear' => $row['hear'],
-                'cсoments' => $cсoments,
-            );
-
-            echo '<hr> raw new bd_card';
-            var_dump($card);
-            echo '<br> end raw new bd_card<hr>';
-        //end new bd_card
-
-        //new bd_request
-            $more = array();
-
-            if(!empty($row1['rework'])) $more[] = unserialize($row1['rework']);
-
-            if(!empty($row['more'])) $more[] = array('author' => 'none', 'text'=> $row['more'], 'date' => time());
-
-            if(!empty($row['pmore'])) $more[] = array('author' => 'none', 'text'=> $row['pmore'], 'date' => time());
-
-            if(!empty($row['smore'])) $more[] = array('author' => 'none', 'text'=> $row['smore'], 'date' => time());
-
-            $req = array(
-                'id' => $row1['id'],
-                'date' => $row1['date'],
-                'zsurname' => '',
-                'zname' => $row['fname'],
-                'zmname' => '',
-                'phone' => $row['phone'],
-                'email' => $row['email'],
-                'region' => $row['region'],
-                'address' => $row['address'],
-                'more' => serialize($more),
-                'ptype' => $row['ptype'],
-                'ztype' => $row['ztype'],
-                'name' => $row['name'],
-                'rtype' => $row['rtype'],
-                'footage' => $row['footage'],
-                'razd' => $row['razd'],
-                'total' => $row['total'],
-                'instance' => $row['instance'],
-                'atotal' => $row['atotal'],
-                'traspr' => $row['traspr'],
-                'kpname' => $row['kpname'],
-                'kpsale' => $row['kpsale'],
-                'kptotsale' => $row['kptotsale'],
-                'kpmore' => $row['kpmore'],
-                'docs' => $row1['docs'],
-                'kp' => $row1['kp'],
-                'mid' => $row1['mid'],
-                'uid' => $row1['uid'],
-                'cid' => $row1['cid'],
-            );
-
-            echo '<hr> raw new bd_request';
-            var_dump($req);
-            echo '<br> end raw new bd_request<hr>';
-        //end new bd_request
-
-        echo '<br> raw old bd_card';
-        var_dump($row);
-        echo '<br> raw old bd_request';
-        var_dump($row1);*/
     }
 
     /**
@@ -427,9 +362,13 @@ class Request extends CI_Controller
 
             foreach($more as $i){
 
+                isset($i['author']) ? $author = $i['author'] : $author = 'none';
+
+                isset($i['rname']) ? $rname = $i['rname'] : $rname = 'none';
+
                 echo '<blockquote>
                           <p>'.$i['text'].'</p>
-                          <small>Создал <b>'.$i['author'].'</b> '.date("d.m.Y в H:i", $i['date']).'</small>
+                          <small>Создал <b>'.$author.' ('.$rname.')</b> '.date("d.m.Y в H:i", $i['date']).'</small>
                         </blockquote>';
             }
 

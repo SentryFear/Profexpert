@@ -13,9 +13,13 @@
 
         var newnotific = '';
 
+        var nextRequest = 10000;
+
+        var noActivity = 0;
+
         if($.cookie("lock")) lock = $.cookie("lock");
 
-        var get_notification = function() {
+        var get_notification = function(callback) {
             $.getJSON( "/api/getNotification/"+lock, function( data ) {
                 var items = [];
                 $.each( data, function( key, val ) {
@@ -28,8 +32,33 @@
                 $('.notifications').html('');
                 $( items.join( "" ) ).appendTo( ".notifications" );
 
-                if(items.length > 0 && lock == 0) newnotific = "[ "+items.length+" ] Новая заявка! ";
-                else newnotific = '';
+                if(items.length > 0 && lock == 0) {
+
+                    noActivity = 0;
+
+                    newnotific = "[ "+items.length+" ] Новая заявка! ";
+
+                } else {
+
+                    noActivity++;
+
+                    newnotific = '';
+                }
+
+                // 2 секунды
+                if(noActivity > 3){
+                    nextRequest = 2000;
+                }
+
+                if(noActivity > 10){
+                    nextRequest = 5000;
+                }
+
+                // 15 секунд
+                if(noActivity > 20){
+                    nextRequest = 15000;
+                }
+
             });
         };
 
@@ -73,7 +102,7 @@
         {
             get_notification();
 
-        }, 10000);
+        }, nextRequest);
 
         var i = 0;
 

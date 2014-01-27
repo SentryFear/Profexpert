@@ -176,7 +176,7 @@ class request_model extends CI_Model {
 				$data['success'] .= "Документ номер <b>$q[id]</b> с именем <b>$q[name]</b> успешно обновлён.<br>";
 			}
 			
-			$docs1[] = $q;
+			if(!empty($q['name'])) $docs1[] = $q;
 		}
 		
 		$docs = $docs1;
@@ -221,7 +221,11 @@ class request_model extends CI_Model {
 
         $text = $this->input->post('text');
 
-        $author = $this->dx_auth->get_username();
+        $author = $this->dx_auth->get_name();
+
+        $aid = $this->dx_auth->get_user_id();
+
+        $rname = $this->dx_auth->get_role_name();
 
         $row = $this->db->get_where('request', array('id' => $id))->row_array();
 
@@ -231,7 +235,7 @@ class request_model extends CI_Model {
 
         if(empty($comments)) $comments = array();
 
-        $comments[] = array('author' => $author, 'text'=> $text, 'date' => time());
+        $comments[] = array('aid' => $aid, 'rname' => $rname, 'author' => $author, 'text'=> $text, 'date' => time());
 
         if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
 
@@ -529,6 +533,8 @@ class request_model extends CI_Model {
 			$source = req_perm_in_view($this->config->item('access'), $type = 'view', $alldata);
 
 			$alldata['status'] = $this->config->item('status');
+
+            $alldata['region'] = $res['region'];
 
             //$this->benchmark->mark('code_mid');
 

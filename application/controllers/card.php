@@ -49,6 +49,8 @@ class Card extends CI_Controller
 
         $kpstatus = array_merge($this->config->item('kpstatus'), $this->config->item('history'));
 
+        $users = $this->db->get('users')->result_array();
+
         foreach($request as $req) {
 
             $req['more'] = unserialize($req['more']);
@@ -74,6 +76,13 @@ class Card extends CI_Controller
                         $history1[$k]['date'] = $q['date'];
                     }
                 }
+            }
+
+            foreach($users as $w) {
+
+                if($w['id'] == $req['mid']) $data['result']['req'][$req['id']]['nmid'] = $w['name'];
+
+                if($w['id'] == $req['uid']) $data['result']['req'][$req['id']]['nuid'] = $w['name'];
             }
 
             $data['result']['req'][$req['id']]['history'] = $history1;

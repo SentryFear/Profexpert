@@ -103,7 +103,7 @@
                         <p><strong><em>{{ result.kpname|raw }}</em></strong></p>
                     </td>
                     <td width="40%" valign="top" style="text-align: right;">
-                        {% if result.fname %}<p><strong><em>Заказчик:</em></strong> {{ result.fname|raw }}</p>{% endif %}
+                        {% if result.zname or result.zsurname or result.zmname %}<p><strong><em>Заказчик:</em></strong> {{ result.zsurname|raw }} {{ result.zname|raw }} {{ result.zmname|raw }}</p>{% endif %}
                         {% if result.phone %}<p><strong><em>Тел:</em></strong> {{ result.phone }}</p>{% endif %}
                         {% if result.email %}<p><strong><em>e-mail:</em></strong> {{ result.email }}</p>{% endif %}
                     </td>

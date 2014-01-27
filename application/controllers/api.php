@@ -77,6 +77,8 @@ class Api extends CI_Controller
 
         if($this->input->post('fname') && $this->input->post('phone')) {
 
+            $_POST['zname'] = $this->input->post('fname');
+
             $result = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
 
             $this->load->model('request/request_model');
@@ -90,6 +92,26 @@ class Api extends CI_Controller
                 $this->notification->setNotification('Заявка с сайта ['.$id.']', '/request/?sort=mSite', $id, 'Заявка с сайта', '3', '0');
 
                 $result = "Заявка успешно добавлена!";
+
+                $this->load->library('email');
+
+                $this->email->from('admin@profexpert.com', 'PROFEXPERT');
+                $this->email->to('df4210000@gmail.com');
+                $this->email->cc('df4210000@gmail.com');
+                $this->email->bcc('df4210000@gmail.com');
+
+                $this->email->subject('Заявка с сайта');
+                $message = '';
+                $message .= 'Имя: '.$this->input->post('fname')."\n\r";
+                $message .= 'EMail: '.$this->input->post('email')."\n\r";
+                $message .= 'Телефон: '.$this->input->post('phone')."\n\r";
+                $message .= 'Откуда узнали: '.$this->input->post('hear')."\n\r";
+                $message .= 'Комментарий: '.$this->input->post('more')."\n\r";
+
+                $this->email->message($message);
+
+                $this->email->send();
+
             }
 
         } else {

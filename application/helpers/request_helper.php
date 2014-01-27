@@ -98,16 +98,16 @@ if (!function_exists('req_arr_to_table')) {
 
                 if (isset($q['date-format'])) {
 
-                    $val = date($q['date-format'], $val);
+
 
                     $tself = ' data-sort-value="'.$n.'"';
+
+                    $val = '<span data-toggle="tooltip" data-original-title="'.date('d.m.y H:i:s', $val).'">'.date($q['date-format'], $val).'</span>';
                 }
 
                 if ($val == 'loop.index') {
 
                     $val = "<a href='/request/edit/" . $i['id'] . "/'>" . $i['id'] . "</a>";
-
-                    //if($extra['role_id'] == 4 && $i['ikp'] != 1) $val = "" . $i['id'];
                 }
 
                 if ($q['value'] == 'zname') {
@@ -132,7 +132,14 @@ if (!function_exists('req_arr_to_table')) {
 
                 }
 
-                if ($q['value'] == 'address') $val = '<span data-toggle="tooltip" data-original-title="Район: ' . $i['region'] . '<br> Адрес: ' . $i['address'] . '">' . $i['address'] . '</span>';
+                if ($q['value'] == 'address') {
+
+                    $regionad = '';
+
+                    if(!empty($extra['region'][$i['region']])) $regionad = 'Район: '.$extra['region'][$i['region']].'<br> ';
+
+                    $val = '<span data-toggle="tooltip" data-original-title="' . $regionad . 'Адрес: ' . $i['address'] . '">' . $i['address'] . '</span>';
+                }
 
                 if ($val == 'vdocs') {
 
@@ -140,13 +147,9 @@ if (!function_exists('req_arr_to_table')) {
 
                     $tself = ' style="white-space: initial;"';
 
-                    //$exist = '<span class="label label-important" data-toggle="tooltip" data-original-title="Файлы ещё не загружены">[ 0 ]</span>';
-
                     if (!empty($i['docs'])) {
 
                         $doclabel = 'label-success';
-
-                        //$exist = '<span class="label label-success" data-toggle="tooltip" data-original-title="Количество загруженых файлов. Нажмите чтобы Добавить или обновить файлы.">[ ' . count($i['docs']) . ' ]</span>';
 
                     } else {
 
@@ -166,14 +169,11 @@ if (!function_exists('req_arr_to_table')) {
 
                     if(count($i['more']) > 0) $worklabel = 'label-important';
 
-                    //if($extra['req']['ikp'] == 9)
                     $val = '<a href="/request/comments/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl label '.$worklabel.'" data-toggle1="tooltip" data-original-title="Колличество комментариев." id="' . $i['id'] . '">[ ' . count($i['more']) . ' ]</a>';
 
                 }
 
                 if ($val == 'status') {
-
-                    $send = '';
 
                     $extra['id'] = $i['id'];
 
@@ -188,10 +188,6 @@ if (!function_exists('req_arr_to_table')) {
 
                     $tself = ' style="white-space: nowrap;"';
 
-                    //$users = $CI->users_model->get_all()->result_array();
-
-                    //$val = '<div class="ui-select" style="width: auto;"><select><option>Не выбрано</option>';
-
                     $val = '';
 
                     foreach ($users as $h) {
@@ -200,17 +196,8 @@ if (!function_exists('req_arr_to_table')) {
 
                             if ($h['id'] == $i['mid']) $val .= '<span class="label label-success" data-toggle="tooltip" data-original-title="Менеджер: ' . $h['name'] . '">' . $h['username'] . '</span> ';
 
-                            //if($h['id'] == $i['mid']) $select = "selected"; else $select = '';
-                            //
-                            //$val .= "<option value='".$h['id']."' $select>".$h['username']."</option>";
                         }
                     }
-
-                    //if ($i['mid'] == 0) $val .= '<span class="label label-important" data-toggle="tooltip" data-original-title="Менеджер не выбран">[ 0 ]</span> ';
-
-                    //$val .= "</select></div>";
-
-                    //$val .= '<div class="ui-select" style="width: auto;"><select><option>Не выбрано</option>';
 
                     foreach ($users as $h) {
 
@@ -218,17 +205,8 @@ if (!function_exists('req_arr_to_table')) {
 
                             if ($h['id'] == $i['uid']) $val .= '<span class="label label-success" data-toggle="tooltip" data-original-title="Проектировщик: ' . $h['name'] . '">' . $h['username'] . '</span>';
 
-                            //if($h['id'] == $i['uid']) $select = "selected"; else $select = '';
-                            //
-                            //$val .= "<option value='".$h['id']."' $select>".$h['username']."</option>";
                         }
                     }
-
-                    //if ($i['uid'] == 0) $val .= '<span class="label label-important" data-toggle="tooltip" data-original-title="Проектировщик не выбран">[ 0 ]</span> ';
-
-                    //$val .= "</select></div>";
-
-                    //$val = "In Dev";
 
                 }
 
@@ -246,7 +224,7 @@ if (!function_exists('req_arr_to_table')) {
 
                         $act .= '<li><a href="/request/review/' . $i['id'] . '/1/" target="_blank" data-toggle="tooltip" data-original-title="Печать только КП"><i class="table-settings"></i></a></li>';
                     }
-                    //&& ($i['ikp'] == 1 || $i['ikp'] == 11) && $i['uid'] != 0
+
                     if($extra['role_id'] == 4 ) {
 
                         $act = '<li><a href="/request/edit/' . $i['id'] . '/" data-toggle="tooltip" data-original-title="Изменить"><i class="table-edit"></i></a></li>';
@@ -254,11 +232,8 @@ if (!function_exists('req_arr_to_table')) {
                         $act .= '<li class="last"><a href="/request/review/' . $i['id'] . '/2/" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
                     }
 
-                    //if($extra['role_id'] == 4 && $i['ikp'] > 1 && $i['ikp'] != 11) $act = '<li class="last"><a href="/request/review/' . $i['id'] . '/2/" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>';
-
                     if ($extra['is_admin']) $act .= '<li class="last"><a href="/request/delete/' . $i['id'] . '/" onClick="return confirm(\'Вы уверены что хотите удалить заявку?\')" data-toggle="tooltip" data-original-title="Удалить"><i class="table-delete"></i></a></li>';
 
-                    //$val = '<div class="btn-group">'.$act.'</div>';
                     $val = '<ul class="actions" style="float: left;">' . $act . '</ul>';
                 }
 
@@ -433,6 +408,8 @@ if (!function_exists('req_arr_to_form')) {
 
                     $all = 0;
 
+                    $clrz = "var rzd = {};\n";
+
                     foreach ($extra[$val] as $i) {
 
                         $sel = "";
@@ -482,6 +459,8 @@ if (!function_exists('req_arr_to_form')) {
                                         </td>
                                      </tr>';
 
+                            $clrz .= "rzd.".$i['name']." = '".$val1."';\n";
+
                         } elseif ($extra['user_info']['role_id'] != 6 && $extra['user_info']['role_id'] != 3 && $extra['user_info']['role_id'] != 2 ) {
 
                             $inp .= '<tr>
@@ -498,12 +477,16 @@ if (!function_exists('req_arr_to_form')) {
                                         </div>
                                         </td>
                                     </tr>';
+
+                            $clrz .= "rzd.".$i['name']." = '".$val1."';\n";
                         }
                     }
 
                     //$inp .= '<tr><td><div class="input-prepend input-append"><span class="add-on">Всего</span><input id="all" name="all" class="span2" id="appendedPrependedInput" type="text" placeholder="Всего чел./час" value="'.$all.'"></div></td></tr>';
 
                     $inp .= "</tbody></table>";
+
+                    $inp .= "<script>".$clrz."</script>";
 
                 } elseif ($val == 'instance') {
 
@@ -635,7 +618,11 @@ if (!function_exists('req_arr_to_form')) {
 
                     $ttrazdpr += $ttrazd['price'];
 
-                    $ttrazdtext .= '<tr><td>'.$ttrazd['sname'].' - '.$ttrazd['rname'].'</td><td>'.$ttrazd['srok'].' чел./час.</td><td>'.number_format($ttrazd['price'], '0', ',', ' ').' руб.</td><td>'.number_format($ttrazd['price']*2, '0', ',', ' ').' руб.</td></tr>';
+                    $ttrdr = number_format($ttrazd['price'], '0', ',', ' ');
+
+                    $ttrdr2 = number_format($ttrazd['price']*2, '0', ',', ' ');
+
+                    $ttrazdtext .= '<tr><td>'.$ttrazd['sname'].' - '.$ttrazd['rname'].'</td><td>'.$ttrazd['srok'].' чел./час.</td><td>'.$ttrdr.' руб.</td><td>'.$ttrdr2.' руб.</td></tr>';
                 }
 
                 $ttrazdtext .= '<tr><td style="text-align: right;"><b>Итого:</b></td><td><b>'.$data['atotal'].'</b> д.</td><td><b>'.number_format($ttrazdpr, '0', ',', ' ').'</b>  руб.</td><td><b>'.number_format($ttrazdpr*2, '0', ',', ' ').'</b>  руб.</td></tr>';
@@ -659,7 +646,7 @@ if (!function_exists('req_arr_to_form')) {
                                         <b>Примечание:</b><br>
                                         Стоимость проекта может измениться, если здание находится под охраной КГИОП.<br>
                                         Стоимость работ может измениться после получения подробного технического задания от Заказчика.<br>
-                                        Платежи за выдачу технической документации и согласование проектной документации, предусмотренные государственными инстанциями, оплачиваются Заказчиком отдельно по предъявляемым квитациям.<br>
+                                        Платежи за выдачу технической документации и согласование проектной документации, предусмотренные государственными инстанциями, оплачиваются Заказчиком отдельно по предъявляемым квитанциям.<br>
                                         В данный расчет не включена стоимость работ по вводу в эксплуатацию объекта после перепланировки и получению технического паспорта на образованный в результате перепланировки объект, получению дополнительной мощности и оформлению электропотребления. Услуги по вводу объекта в эксплуатацию осмечиваются отдельно и составляют 70-80% от данного коммерческого предложения.<br>
                                         Цены по коммерческому предложению действительны в течение месяца.<br>
                                     </div>
@@ -821,10 +808,12 @@ if (!function_exists('req_parse_sort')) {
                 if(strpos($q, '>') !== false) $del = '>';
                 elseif(strpos($q, '<') !== false) $del = '<';
                 elseif(strpos($q, ':') !== false) $del = ':';
+                elseif(strpos($q, '!') !== false) $del = '!';
 
                 $data1 = explode($del, $q);
 
                 if(strpos($q, ':') !== false) $del = '=';
+                elseif(strpos($q, '!') !== false) $del = '!=';
 
                 if ($data1[1] == 'usr') $data1[1] = $extra['user_id'];
 

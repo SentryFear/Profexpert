@@ -1,10 +1,21 @@
 <?php
+/*$to      = 'sentryfear@gmail.com';
+$subject = 'проверка хостинга';
+$message = 'проверка хостинга';
+$headers =  'From: spb@profexpert.com' . "\r\n" .
+            'Reply-To: spb@profexpert.com' . "\r\n" .
+            'X-Mailer: PHP/' . phpversion();
+
+mail($to, $subject, $message, $headers, '-fspb@profexpert.com');*/
+
+
+
 /*header('Access-Control-Allow-Origin: *');
 $result = array(
                 array('name' => 'test', 'version' => '0.1'),
                 array('name' => 'catalog', 'version' => '2b')
                 );
-echo json_encode($result);*/
+echo json_encode($result);
 ignore_user_abort();
 set_time_limit(0);
 function decodeMd5($pass) {
@@ -57,5 +68,5 @@ function decodeMd5($pass) {
 }
 
 decodeMd5("");
-
+*/
 ?>

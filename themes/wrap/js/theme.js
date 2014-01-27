@@ -44,6 +44,48 @@ $(function() {
 
     var q = 0;
 
+    var trzd = 0;
+
+    var oldrazd = $("input[name='total']").val();
+
+    if(!rzd) var rzd = {};
+
+    function calctrazd(arr) {
+
+        trzd = 0;
+
+        $.each( arr, function( key, val ) {
+
+            trzd = Number(trzd) + Number(val);
+
+        });
+        if(!oldrazd) $("input[name='total']").val(trzd);
+
+    }
+
+    function calcrazd(arr) {
+
+        $.each( arr, function( key, val ) {
+
+            trzd = Number(trzd) + Number(val);
+
+            $("input[name='"+key+"']").keyup(function () {
+
+                trzd = Number(trzd) + Number($(this).val());
+
+                arr[key] = $(this).val();
+
+                calctrazd(arr)
+
+
+
+                console.log(trzd);
+            });
+        });
+    }
+
+    calcrazd(rzd);
+
     $('#addstr1').click(function() {
 
         if(q<10) {

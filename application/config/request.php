@@ -56,7 +56,7 @@ $config['region'] = array(
 $config['sort'] = array(
                         // Отдел продаж - id = 3
                             array('name' => 'Все', 'uri' => 'mAll', 'allow' => '3', 'logic' => 'mid:usr'),
-                            array('name' => 'Актуальные заявки', 'uri' => 'mAkt', 'allow' => '3', 'logic' => 'mid:usr?date>2419200', 'default' => '1'),
+                            array('name' => 'Актуальные заявки', 'uri' => 'mAkt', 'allow' => '3', 'logic' => 'mid:usr?date>2419200?kp!13', 'default' => '1'),
                             array('name' => 'Заявки с сайта', 'uri' => 'mSite', 'allow' => '3', 'logic' => 'mid:0'),
                             array('name' => 'Новые', 'uri' => 'mNew', 'allow' => '3', 'logic' => 'kp:0?mid:usr'),
                             array('name' => 'Расчёт времени', 'uri' => 'mInDev', 'allow' => '3', 'logic' => 'kp:1?mid:usr,kp:2?mid:usr'),
@@ -76,7 +76,7 @@ $config['sort'] = array(
                             array('name' => 'Все', 'uri' => 'sAll', 'allow' => '5', 'logic' => 'id:0', 'default' => '1'),
                         // Руководство - id = 6
                             array('name' => 'Все', 'uri' => 'rAll', 'allow' => '2,6', 'logic' => 'all'),
-                            array('name' => 'Актуальные заявки', 'uri' => 'rAkt', 'allow' => '2,6', 'logic' => 'date>2419200', 'default' => '1'),
+                            array('name' => 'Актуальные заявки', 'uri' => 'rAkt', 'allow' => '2,6', 'logic' => 'date>2419200?kp!13', 'default' => '1'),
                             array('name' => 'Заявки с сайта', 'uri' => 'rSite', 'allow' => '2,6', 'logic' => 'mid:0'),
                             array('name' => 'В работе у менеджера', 'uri' => 'rmInDev', 'allow' => '2,6', 'logic' => 'kp:0,kp:3,kp:5,kp:9,kp:12'),
                             array('name' => 'В работе у проектировщиков', 'uri' => 'rpInDev', 'allow' => '2,6', 'logic' => 'kp:1,kp:2'),
