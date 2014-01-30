@@ -89,7 +89,22 @@ class request_model extends CI_Model {
 
         $more = array();
 
-        if($this->input->post('more')) $more[] = array('author' => $this->dx_auth->get_username(), 'text'=> $this->input->post('more'), 'date' => time());
+        if($this->input->post('more')) {
+
+            $aid = $this->dx_auth->get_user_id();
+
+            $rname = $this->dx_auth->get_role_name();
+
+            $aid = !empty($aid) ? $aid : '0';
+
+            $rname = !empty($rname) ? $rname : 'С сайта';
+
+            $name = $this->dx_auth->get_name();
+
+            $name = !empty($name) ? $name : 'Заказчик';
+
+            $more[] = array('aid' => $aid, 'rname' => $rname, 'author' => $name, 'text'=> $this->input->post('more'), 'date' => time());
+        }
 
         $insert1['more'] = serialize($more);
 
@@ -213,40 +228,47 @@ class request_model extends CI_Model {
 
     function add_comments() {
 
-        $this->load->library('history');
+        $ok = 0;
 
-        $this->load->library('notification');
+        if($this->input->post('text')) {
 
-        $id = $this->input->post('id');
+            $this->load->library('history');
 
-        $text = $this->input->post('text');
+            $this->load->library('notification');
 
-        $author = $this->dx_auth->get_name();
+            $id = $this->input->post('id');
 
-        $aid = $this->dx_auth->get_user_id();
+            $text = $this->input->post('text');
 
-        $rname = $this->dx_auth->get_role_name();
+            $author = $this->dx_auth->get_name();
 
-        $row = $this->db->get_where('request', array('id' => $id))->row_array();
+            $aid = $this->dx_auth->get_user_id();
 
-        $this->notification->setNotification('Новый комментарий ['.$id.']', '/request/?sort=mAll', $id, 'Новый комментарий к заявке', '0', $row['mid']);
+            $rname = $this->dx_auth->get_role_name();
 
-        $comments = unserialize($row['more']);
+            $row = $this->db->get_where('request', array('id' => $id))->row_array();
 
-        if(empty($comments)) $comments = array();
+            $this->notification->setNotification('Новый комментарий ['.$id.']', '/request/?sort=mAll', $id, 'Новый комментарий к заявке', '0', $row['mid']);
 
-        $comments[] = array('aid' => $aid, 'rname' => $rname, 'author' => $author, 'text'=> $text, 'date' => time());
+            $comments = unserialize($row['more']);
 
-        if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
+            if(empty($comments)) $comments = array();
 
-            //$upd['kp'] = 9;
+            $comments[] = array('aid' => $aid, 'rname' => $rname, 'author' => $author, 'text'=> $text, 'date' => time());
 
-            //$this->history->setHistory('dt9', $id);
+            if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
+
+                //$upd['kp'] = 9;
+
+                //$this->history->setHistory('dt9', $id);
+            }
+
+            $upd['more'] = serialize($comments);
+
+            $ok = $this->db->update('request', $upd, array('id' => $id)) ? 1 : 0;
         }
 
-        $upd['more'] = serialize($comments);
-
-        return $this->db->update('request', $upd, array('id' => $id)) ? 1 : 0;
+        return $ok;
     }
 
     /**
@@ -564,6 +586,8 @@ class request_model extends CI_Model {
     function getCard() {
 
         $result = array('0' => array('none' => 'Не выбрано'));
+
+        $this->db->order_by('zsurname asc, zname asc, zmname asc');
 
         $client = $this->db->get_where('card')->result_array();
 

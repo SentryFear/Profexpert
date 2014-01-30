@@ -363,21 +363,23 @@ if (!function_exists('req_arr_to_form')) {
 
                     if($val == 'cid') {
 
-                        isset($i['zsurname']) ? $sn = $i['zsurname'] : $sn='';
+                        !empty($i['zsurname']) ? $sn = $i['zsurname'] : $sn='';
 
-                        isset($i['zname']) ? $n = $i['zname'] : $n='';
+                        !empty($i['zname']) ? $n = $i['zname'] : $n='';
 
-                        isset($i['none']) ? $none = $i['none'] : $none='';
+                        !empty($i['none']) ? $none = $i['none'] : $none='';
 
-                        isset($i['zmname']) ? $mn = $i['zmname'] : $mn='';
+                        !empty($i['zmname']) ? $mn = $i['zmname'] : $mn='';
 
-                        isset($i['organization']) ? $org = $i['organization'] : $org='';
+                        !empty($i['organization']) ? $org = $i['organization'] : $org='';
 
-                        isset($i['phone']) ? $phone = $i['phone'] : $phone='';
+                        !empty($i['phone']) ? $phone = $i['phone'] : $phone='';
 
-                        isset($i['email']) ? $email = $i['email'] : $email='';
+                        !empty($i['email']) ? $email = $i['email'] : $email='';
 
-                        isset($i['hear']) ? $hear = $i['hear'] : $hear='';
+                        !empty($i['hear']) ? $hear = $i['hear'] : $hear='';
+
+                        if(empty($sn) && empty($n) && empty($mn)) $sn = $email;
 
                         $inp .= '<option value="' . $k . '" data-sn="'.$sn.'" data-n="'.$n.'" data-mn="'.$mn.'" data-org="'.$org.'" data-phone="'.$phone.'" data-email="'.$email.'" data-hear="'.$hear.'"  ' . $selected . '>'.$sn.' '.$n.' '.$mn .''.$none.'</option>';
 

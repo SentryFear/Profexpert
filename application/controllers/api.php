@@ -97,8 +97,6 @@ class Api extends CI_Controller
 
                 $this->email->from('admin@profexpert.com', 'PROFEXPERT');
                 $this->email->to('df4210000@gmail.com');
-                $this->email->cc('df4210000@gmail.com');
-                $this->email->bcc('df4210000@gmail.com');
 
                 $this->email->subject('Заявка с сайта');
                 $message = '';

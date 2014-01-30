@@ -357,7 +357,7 @@ $config['instance'] = array(
 $config['access'] = array(
     array('name' => '№',                             'value' => 'loop.index',    'allow' => '2,3,4,6', 'self' => 'width="1%" class="number"', 'form' => 0, 'add' => 0),
     array('name' => 'Дата',                           'value' => 'date',          'allow' => '2,3,4,6', 'date-format' => 'd.m.y', 'self' => 'width="1%" align="center"', 'form' => 0, 'add' => 0),
-    array('name' => 'Клиент',                         'value' => 'cid',        'allow' => '2,3,4,6', 'self' => 'id="clnt"', 'type' => 'select', 'form' => 0, 'view' => 0),
+    array('name' => 'Клиент',                         'value' => 'cid',           'allow' => '2,3,4,6', 'self' => 'id="clnt"', 'type' => 'select', 'form' => 0, 'view' => 0),
     //array('name' => 'ФИО',                            'value' => 'fname',         'allow' => '0,2,3,6', 'self' => 'class="span2"', 'add' => 0),
 	array('name' => 'Фамилия',                        'value' => 'zsurname',      'allow' => '0,2,3,6', 'self' => 'class="span2"', 'view' => 0),
 	array('name' => 'Имя',                            'value' => 'zname',         'allow' => '0,2,3,6', 'self' => 'class="span2"'),
