@@ -1,0 +1,73 @@
+<div id="aNewReq" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Добавить проект</h3>
+    </div>
+    <form class="form-horizontal" method="POST" enctype="multipart/form-data" autocomplete="off">
+        <div class="modal-body">
+            <div class="control-group">
+                <label class="control-label" for="cnumber">№ договора</label>
+                <div class="controls">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="projects" data-tpol="cnumber" id="cnumber" name="cnumber" placeholder="№ договора">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="cnumber">Дата заключения договора</label>
+                <div class="controls">
+                    <input class="inline-input datepicker" type="text" data-date-format="dd.mm.yyyy" id="dogdate" name="dogdate" placeholder="Дата заключения договора">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="work">Работа</label>
+                <div class="controls">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="projects" data-tpol="work" id="work" name="work" placeholder="Работа">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="city">Адрес</label>
+                <div class="controls">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="projects" data-tpol="city" id="city" name="city" placeholder="Город">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="projects" data-tpol="region" id="region" name="region" placeholder="Район">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="projects" data-tpol="street" id="street" name="street" placeholder="Улица">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="projects" data-tpol="building" id="building" name="building" placeholder="Дом">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="projects" data-tpol="buildingAdd" id="buildingAdd" name="buildingAdd" placeholder="Корп/Лит">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="projects" data-tpol="apartment" id="apartment" name="apartment" placeholder="кв/пом.">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="client">Клиент</label>
+                <div class="controls">
+                    <div class="ui-select" style="width: auto;">
+                        <select name="cid" id="clnt">
+                            {% for key, clnt in client %}
+                                <option value="{{ key }}" data-sn="{{ clnt.zsurname }}" data-n="{{ clnt.zname }}" data-mn="{{ clnt.zmname }}" data-org="{{ clnt.organization }}" data-phone="{{ clnt.phone }}" data-email="{{ clnt.email }}" data-hear="{{ clnt.hear }}">{{ clnt.zsurname }} {{ clnt.zname }} {{ clnt.zmname }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="card" data-tpol="zsurname" id="zsurname" name="zsurname" placeholder="Фамилия" autocomplete="off">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="card" data-tpol="zname" id="zname" name="zname" placeholder="Имя" autocomplete="off">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="card" data-tpol="zmname" id="zmname" name="zmname" placeholder="Отчество" autocomplete="off">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="card" data-tpol="organization" id="organization" name="organization" placeholder="Организация" autocomplete="off">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="card" data-tpol="phone" id="phone" name="phone" placeholder="Телефон" autocomplete="off">
+                    <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="card" data-tpol="email" id="email" name="email" placeholder="Email" autocomplete="off">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="rtype">Виды работ</label>
+                <div class="controls">
+                    <table class="table table-hover worktype">
+                        <tbody>
+                            {{ wktp|raw }}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="btn-group">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <input type="submit" class="btn btn-primary" name="add" value="Добавить" />
+            </div>
+        </div>
+    </form>
+</div>

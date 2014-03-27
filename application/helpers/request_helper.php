@@ -57,6 +57,10 @@ if (!function_exists('req_arr_to_table')) {
     {
         $result = "<table class='table table-hover' id='fhead'><thead style='background-color: white;'><tr>";
 
+        //$pr = 0;
+
+        //if($this->input->get('print')) $pr = 1;
+
         $g = 0;
 
         foreach ($source as $i) {
@@ -132,13 +136,41 @@ if (!function_exists('req_arr_to_table')) {
 
                 }
 
+                if ($q['value'] == 'region') {
+
+                    $val = '';
+
+                    if(!empty($extra['region'][$i['region']])) $val = $extra['region'][$i['region']];
+                    elseif(!empty($i['region'])) $val = $i['region'];
+
+                }
+
                 if ($q['value'] == 'address') {
 
                     $regionad = '';
 
                     if(!empty($extra['region'][$i['region']])) $regionad = 'Район: '.$extra['region'][$i['region']].'<br> ';
+                    elseif(!empty($i['region'])) $regionad = 'Район: '.$i['region'];
 
-                    $val = '<span data-toggle="tooltip" data-original-title="' . $regionad . 'Адрес: ' . $i['address'] . '">' . $i['address'] . '</span>';
+                    if(!empty($i['city']) || !empty($i['street']) || !empty($i['building']) || !empty($i['buildingAdd']) || !empty($i['apartment'])) {
+
+                        $street = (!empty($i['street'])) ? $i['street'] : '';
+
+                        $building = (!empty($i['building'])) ? ', д.'.$i['building'] : '';
+
+                        $buildingAdd = (!empty($i['buildingAdd'])) ? ', корп.'.$i['buildingAdd'] : '';
+
+                        $apartment = (!empty($i['apartment'])) ? ', кв.'.$i['apartment'] : '';
+
+                        $val = '<span data-toggle="tooltip" data-original-title="Город: '.$i['city'].'<br>'.$regionad.'<br>Улица: '.$i['street'].'<br>Дом: '.$i['building'].'<br>Корпус\Лит: '.$i['buildingAdd'].'<br>Квартира/Помещение: '.$i['apartment'].'">'.$street.''.$building.''.$buildingAdd.''.$apartment.'</span>';
+
+                    } else {
+
+                        $val = '<span data-toggle="tooltip" data-original-title="' . $regionad . 'Адрес: ' . $i['address'] . '">' . $i['address'] . '</span>';
+                    }
+
+                    //if(!empty($i['address'])) $val = '<span data-toggle="tooltip" data-original-title="' . $regionad . 'Адрес: ' . $i['address'] . '">' . $i['address'] . '</span>';
+                    //else $val = '<span data-toggle="tooltip" data-original-title="Город: '.$i['city'].'<br>Улица: '.$i['street'].'<br>Дом: '.$i['building'].'<br>Корпус\Лит: '.$i['buildingAdd'].'<br>Квартира/Помещение: '.$i['apartment'].'">'.$i['street'].', д.'.$i['building'].', корп.'.$i['buildingAdd'].', кв.'.$i['apartment'].'</span>';
                 }
 
                 if ($val == 'vdocs') {
@@ -169,7 +201,7 @@ if (!function_exists('req_arr_to_table')) {
 
                     if(count($i['more']) > 0) $worklabel = 'label-important';
 
-                    $val = '<a href="/request/comments/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl label '.$worklabel.'" data-toggle1="tooltip" data-original-title="Колличество комментариев." id="' . $i['id'] . '">[ ' . count($i['more']) . ' ]</a>';
+                    $val = '<a href="/request/comments/' . $i['id'] . '" data-target="#upload" data-type-form="commentsform" data-toggle="modal" class="upl label '.$worklabel.'" data-toggle1="tooltip" data-original-title="Колличество комментариев." id="' . $i['id'] . '">[ ' . count($i['more']) . ' ]</a>';
 
                 }
 
@@ -320,7 +352,7 @@ if (!function_exists('req_arr_to_form')) {
 
                 }
 
-                $inp .= '<input class="' . $iclass . '" type="text" id="' . $val . '" name="' . $val . '" placeholder="' . $q['name'] . '" ' . $value . '/>';
+                $inp .= '<input class="' . $iclass . ' autocomp" type="text" data-tbl="request" data-tpol="' . $val . '" id="' . $val . '" name="' . $val . '" placeholder="' . $q['name'] . '" ' . $value . '/>';
 
                 if(isset($q['add-on'])) $inp .= '<span class="add-on">' . $q['add-on'] . '</span></div>';
 
@@ -347,6 +379,35 @@ if (!function_exists('req_arr_to_form')) {
                     $inp .= '</tbody></table><div class="addstr" data-count="'.(count($value)+1).'"></div>';
 
                     $inp .= '<br><br><p><a href="javascript:void();" class="btn btn-success btn-mini" id="addstr1">Добавить строку</a></p>';
+
+                } elseif($val == 'address') {
+
+                    $inp = '';
+
+                    if(!empty($data['address'])) $inp .= $data['address']."<br>";
+
+                    $city = (isset($data['city'])) ? $data['city'] : "";
+
+                    $region = "";
+
+                    if(!empty($data['region'])) {
+
+                        if(is_numeric($data['region'])) $region = $extra['region'][$data['region']];
+                        else $region = $data['region'];
+
+                    }
+
+                    $street = (isset($data['street'])) ? $data['street'] : "";
+                    $building = (isset($data['building'])) ? $data['building'] : "";
+                    $buildingAdd = (isset($data['buildingAdd'])) ? $data['buildingAdd'] : "";
+                    $apartment = (isset($data['apartment'])) ? $data['apartment'] : "";
+
+                    $inp .= '<input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="request5projects" data-tpol="city" id="city" name="city" placeholder="Город" value="' . $city . '"><br>
+                            <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="request5projects" data-tpol="region" id="region" name="region" placeholder="Район" value="' . $region . '"><br>
+                            <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="request5projects" data-tpol="street" id="street" name="street" placeholder="Улица" value="' . $street . '"><br>
+                            <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="request5projects" data-tpol="building" id="building" name="building" placeholder="Дом" value="' . $building . '"><br>
+                            <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="request5projects" data-tpol="buildingAdd" id="buildingAdd" name="buildingAdd" placeholder="Корп/Лит" value="' . $buildingAdd . '"><br>
+                            <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="request5projects" data-tpol="apartment" id="apartment" name="apartment" placeholder="кв/пом." value="' . $apartment . '">';
                 }
 
             } elseif ($type == 'select') {
@@ -363,23 +424,25 @@ if (!function_exists('req_arr_to_form')) {
 
                     if($val == 'cid') {
 
-                        !empty($i['zsurname']) ? $sn = $i['zsurname'] : $sn='';
+                        $sn = (!empty($i['zsurname'])) ? $i['zsurname'] : '';
 
-                        !empty($i['zname']) ? $n = $i['zname'] : $n='';
+                        $n = (!empty($i['zname'])) ? $i['zname'] : '';
 
-                        !empty($i['none']) ? $none = $i['none'] : $none='';
+                        $none = (!empty($i['none'])) ? $i['none'] : '';
 
-                        !empty($i['zmname']) ? $mn = $i['zmname'] : $mn='';
+                        $mn = (!empty($i['zmname'])) ? $i['zmname'] : '';
 
-                        !empty($i['organization']) ? $org = $i['organization'] : $org='';
+                        $org = (!empty($i['organization'])) ? $i['organization'] : '';
 
-                        !empty($i['phone']) ? $phone = $i['phone'] : $phone='';
+                        $phone = (!empty($i['phone'])) ? $i['phone'] : '';
 
-                        !empty($i['email']) ? $email = $i['email'] : $email='';
+                        $email = (!empty($i['email'])) ? $i['email'] : '';
 
-                        !empty($i['hear']) ? $hear = $i['hear'] : $hear='';
+                        $hear = (!empty($i['hear'])) ? $i['hear'] : '';
 
                         if(empty($sn) && empty($n) && empty($mn)) $sn = $email;
+
+                        if(empty($sn)) $sn = $org;
 
                         $inp .= '<option value="' . $k . '" data-sn="'.$sn.'" data-n="'.$n.'" data-mn="'.$mn.'" data-org="'.$org.'" data-phone="'.$phone.'" data-email="'.$email.'" data-hear="'.$hear.'"  ' . $selected . '>'.$sn.' '.$n.' '.$mn .''.$none.'</option>';
 
@@ -581,6 +644,146 @@ if (!function_exists('req_arr_to_form')) {
                     //$inp .= '<tr><td><div class="input-prepend input-append"><span class="add-on">Всего</span><input id="all" name="all" class="span2" id="appendedPrependedInput" type="text" placeholder="Всего чел./час" value="'.$all.'"></div></td></tr>';
 
                     $inp .= "</tbody></table>";
+
+                } elseif ($val == 'worktype') {
+
+                    if (!empty($value)) {
+
+                        $value = unserialize($data[$val]);
+                    }
+
+                    $inp = '<table class="table table-hover worktype"><tbody><tr><td><a href="javascript:void(0);" onclick="$(\'.worktype1\').toggle();">Показать/Скрыть не отмеченные</a></td></tr>';
+
+                    $all = 0;
+
+                    $st = '';
+
+                    foreach ($extra[$val] as $i) {
+
+                        $sel = "";
+
+                        $sel1 = "";
+
+                        //$st = 'style="display:none;"';
+
+                        $st = '';
+
+                        if (isset($value[$i['name']])) {
+
+                            $sel1 = 'checked';
+
+                            $st = '';
+                        }
+
+                        $inp .= '<tr class="worktype1" '.$st.'><td>';
+
+                        $inp .= '   <div class="input-prepend input-append">
+                                        <span class="add-on" style="line-height: 17px;">
+                                            <input type="checkbox" onclick="$(\'.'.$i['name'].'\').toggle();" id="' . $i['name'] . 'ch" name="' . $i['name'] . 'ch" value="1" style="margin: 0;" ' . $sel1 . '/>
+                                        </span>
+                                        <span class="add-on">' . $i['rname'] . '</span>
+                                    </div>';
+
+                        $st = 'style="display:none;"';
+
+                        if(isset($i['names'])) {
+
+                            foreach($i['names'] as $w) {
+
+                                $sel2 = "";
+
+                                if (isset($value[$w['name']])) {
+
+                                    $sel2 = 'checked';
+
+                                    $st = '';
+                                }
+
+                                if($sel1 == 'checked') $st = '';
+
+                                $inp .= '   <div class="'.$i['name'].'" '.$st.'><div class="input-prepend input-append" style="margin-left: 32px;">
+                                                <span class="add-on" style="line-height: 17px;">
+                                                    <input type="checkbox" onclick="$(\'.'.$w['name'].'\').toggle();" id="' . $w['name'] . 'ch" name="' . $w['name'] . 'ch" value="1" style="margin: 0;" ' . $sel2 . '/>
+                                                </span>
+                                                <span class="add-on">' . $w['rname'] . '</span>
+                                            </div></div>';
+
+                                $st = 'style="display:none;"';
+
+                                if(isset($w['names'])) {
+
+                                    foreach($w['names'] as $e) {
+
+                                        $sel = "";
+
+                                        $vl = '';
+
+                                        if (isset($value[$e['name']])) {
+
+                                            $vl = $value[$e['name']]['value'];
+
+                                            $sel = 'checked';
+
+                                            $st = '';
+                                        }
+
+                                        if($sel2 == 'checked') $st = '';
+
+                                        $workinp = '';
+
+                                        if($e['type'] == 'date') $workinp = '<input id="' . $e['name'] . '" name="' . $e['name'] . '" class="span2 datepicker" data-date-format="dd.mm.yyyy" id="appendedPrependedInput" type="text" placeholder="' . $e['rname'] . '" value="'.$vl.'">';
+
+                                        $inp .= '   <div class="'.$w['name'].'" '.$st.'><div class="input-prepend input-append"  style="margin-left: 64px;">
+                                                    <span class="add-on" style="line-height: 17px;">
+                                                        <input type="checkbox" onclick="$(\'.'.$e['name'].'\').toggle();" id="' . $e['name'] . 'ch" name="' . $e['name'] . 'ch" value="1" style="margin: 0;" ' . $sel . '/>
+                                                    </span>
+                                                    '.$workinp.'
+                                                    <span class="add-on">' . $e['rname'] . '</span>
+                                                </div></div>';
+
+                                        $st = 'style="display:none;"';
+
+                                        if(isset($e['names'])) {
+
+                                            foreach($e['names'] as $r) {
+
+                                                $sel = "";
+
+                                                $vl = '';
+
+                                                if (isset($value[$r['name']])) {
+
+                                                    $vl = $value[$r['name']]['value'];
+
+                                                    $sel = 'checked';
+
+                                                    $st = '';
+                                                }
+
+                                                $workinp = '';
+
+                                                if($r['type'] == 'date') $workinp = '<input id="' . $r['name'] . '" name="' . $r['name'] . '" class="span2 datepicker" data-date-format="dd.mm.yyyy" id="appendedPrependedInput" type="text" placeholder="' . $r['rname'] . '" value="'.$vl.'">';
+
+                                                $inp .= '   <div class="'.$e['name'].'" '.$st.'><div class="input-prepend input-append"  style="margin-left: 96px;">
+                                                    <span class="add-on" style="line-height: 17px;">
+                                                        <input type="checkbox" id="' . $r['name'] . 'ch" name="' . $r['name'] . 'ch" value="1" style="margin: 0;" ' . $sel . '/>
+                                                    </span>
+                                                    '.$workinp.'
+                                                    <span class="add-on">' . $r['rname'] . '</span>
+                                                </div></div>';
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        $inp .= '</td></tr>';
+                    }
+
+                    //$inp .= '<tr><td><div class="input-prepend input-append"><span class="add-on">Всего</span><input id="all" name="all" class="span2" id="appendedPrependedInput" type="text" placeholder="Всего чел./час" value="'.$all.'"></div></td></tr>';
+
+                    $inp .= "</tbody></table>";
                 }
             }
 
@@ -603,10 +806,10 @@ if (!function_exists('req_arr_to_form')) {
                         $arrnames .= '- '.$arrtpr['name'].'<br>';
                     }
 
-                    $arrtext .= '<tr><td><span data-toggle="tooltip" data-original-title="'.$arrnames.'">'.$arrpr['name'].'</span></td><td>0 д.</td><td>'.number_format($arrpr['price'], '0', ',', ' ').' руб.</td><td>'.number_format($arrpr['price']*2, '0', ',', ' ').' руб.</td></tr>';
+                    $arrtext .= '<tr><td><span data-toggle="tooltip" data-original-title="'.$arrnames.'">'.$arrpr['name'].'</span></td><td>0 д.</td><td>'.number_format($arrpr['price'], '0', ',', ' ').' руб.</td><td>'.number_format($arrpr['price']/0.5, '0', ',', ' ').' руб.</td></tr>';
                 }
 
-                $arrtext .= '<tr><td style="text-align: right;"><b>Итого:</b></td><td><b>60</b> д.</td><td><b>'.number_format($ttarrpr, '0', ',', ' ').'</b>  руб.</td><td><b>'.number_format($ttarrpr*2, '0', ',', ' ').'</b>  руб.</td></tr>';
+                $arrtext .= '<tr><td style="text-align: right;"><b>Итого:</b></td><td><b>60</b> д.</td><td><b>'.number_format($ttarrpr, '0', ',', ' ').'</b>  руб.</td><td><b>'.number_format($ttarrpr/0.5, '0', ',', ' ').'</b>  руб.</td></tr>';
 
                 $ttrazdtext = '';
 
@@ -622,16 +825,21 @@ if (!function_exists('req_arr_to_form')) {
 
                     $ttrdr = number_format($ttrazd['price'], '0', ',', ' ');
 
-                    $ttrdr2 = number_format($ttrazd['price']*2, '0', ',', ' ');
+                    $ttrdr2 = number_format($ttrazd['price']/0.8, '0', ',', ' ');
 
                     $ttrazdtext .= '<tr><td>'.$ttrazd['sname'].' - '.$ttrazd['rname'].'</td><td>'.$ttrazd['srok'].' чел./час.</td><td>'.$ttrdr.' руб.</td><td>'.$ttrdr2.' руб.</td></tr>';
                 }
 
-                $ttrazdtext .= '<tr><td style="text-align: right;"><b>Итого:</b></td><td><b>'.$data['atotal'].'</b> д.</td><td><b>'.number_format($ttrazdpr, '0', ',', ' ').'</b>  руб.</td><td><b>'.number_format($ttrazdpr*2, '0', ',', ' ').'</b>  руб.</td></tr>';
+                $ttrazdtext .= '<tr><td style="text-align: right;"><b>Итого:</b></td><td><b>'.$data['atotal'].'</b> д.</td><td><b>'.number_format($ttrazdpr, '0', ',', ' ').'</b>  руб.</td><td><b>'.number_format($ttrazdpr/0.8, '0', ',', ' ').'</b>  руб.</td></tr>';
 
                 $rne = '';
 
-                if(!empty($data['region'])) $rne = $extra['region'][$data['region']];
+                if(!empty($data['region'])) {
+
+                    if(is_numeric($data['region'])) $rne = $extra['region'][$data['region']];
+                    else $rne = $data['region'];
+
+                }
 
                 $result .= '<br><h3>Генерация коммерческого предложения</h3><hr>
                             <div class="row-fluid">
@@ -896,9 +1104,9 @@ if (!function_exists('req_get_status')) {
 
                         if (!empty($i['self'])) $self = $i['self'];
 
-                        if (!empty($i['uri'])) $html_status .= '<a href="' . $i['uri'] . '' . $extra['id'] . '/" '.$self.' id="'.$extra['id'].'"  data-ind="' . $extra['id'] . '" data-loading-text="loading..." class="label label-' . $i['class'] . ' fat-btn"  data-toggle="tooltip" data-original-title="' . $i['fullname'] . '">' . $i['name'] . '</a> ';
+                        if (!empty($i['uri'])) $html_status .= '<a href="' . $i['uri'] . '' . $extra['id'] . '/" '.$self.' id="'.$extra['id'].'"  data-ind="' . $extra['id'] . '" data-loading-text="loading..." class="label label-' . $i['class'] . ' fat-btn"  data-toggle="tooltip" data-original-title="' . $i['fullname'] . '">' . $i['name'] . '</a>&nbsp;';
 
-                        if (empty($i['uri'])) $html_status .= '<span class="label label-' . $i['class'] . '" data-toggle="tooltip" data-original-title="' . $i['fullname'] . '">' . $i['name'] . '</span> ';
+                        if (empty($i['uri'])) $html_status .= '<span class="label label-' . $i['class'] . '" data-toggle="tooltip" data-original-title="' . $i['fullname'] . '">' . $i['name'] . '</span>&nbsp;';
 
                         //if (!empty($i['uri'])) $html_status .= '</a> ';
                     }
@@ -911,5 +1119,54 @@ if (!function_exists('req_get_status')) {
 
 }
 
+if (!function_exists('req_get_stats')) {
 
+    function req_get_stats($request)
+    {
+        $result = array('yan' => array('request' => 0, 'contract' => 0), 'feb' => array('request' => 0, 'contract' => 0), 'month' => array('request' => 0, 'contract' => 0), 'total' => array('request' => 0, 'contract' => 0));
+
+        foreach($request as $i) {
+
+            $result['total']['request']++;
+
+            if($i['ikp'] == 13) {
+
+                $result['total']['contract']++;
+            }
+
+            if($i['date'] < 1391212740 && $i['date'] > 1388534400) {
+
+                $result['yan']['request']++;
+
+                if($i['ikp'] == 13) {
+
+                    $result['yan']['contract']++;
+                }
+            }
+
+            if($i['date'] < 1393631940 && $i['date'] > 1391212800) {
+
+                $result['feb']['request']++;
+
+                if($i['ikp'] == 13) {
+
+                    $result['feb']['contract']++;
+                }
+            }
+
+            if($i['date'] < time() && $i['date'] > time() - 2592000) {
+
+                $result['month']['request']++;
+
+                if($i['ikp'] == 13) {
+
+                    $result['month']['contract']++;
+                }
+            }
+
+        }
+
+        return $result;
+    }
+}
 ?>

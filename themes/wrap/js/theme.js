@@ -19,6 +19,46 @@ $(function() {
 
     }, 10000);
 
+    $("#commentsform").submit(function() {
+        var str = $(this).serialize();
+
+        $. ajax ({
+            type: 'POST',
+            url: '/request',
+            data: str,
+            success: function(msg) {
+
+                $('#load').load('/request/comments/'+$("#ths").val(), function() {
+                    $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
+                })
+
+
+            }
+        });
+
+        return false;
+    });
+
+    $("#workform").submit(function() {
+        var str = $(this).serialize();
+
+        $. ajax ({
+            type: 'POST',
+            url: '/projects',
+            data: str,
+            success: function(msg) {
+
+                $('#load').load('/projects/work/'+$("#ths").val(), function() {
+                    $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
+                })
+
+
+            }
+        });
+
+        return false;
+    });
+
     $('body').on('click','[data-ind]', function(e){
             e.preventDefault();
 
@@ -39,6 +79,60 @@ $(function() {
         "link": false,
         "image": false
     });
+
+    var cache = {};
+
+    $("#hint")
+        .click(function(){
+            alert($(this).data("tpol"));
+        })
+        .autocomplete({
+             source: function( request, response ) {
+                 var term = request.term;
+                 if ( term in cache ) {
+                     response( cache[ term ] );
+                     return;
+                 }
+
+                 $.getJSON( "/api/getAutocomplete/address", request, function( data, status, xhr ) {
+                     cache[ term ] = data;
+                     response( data );
+                 });
+             },
+             //source: '/api/getAutocomplete/address',
+             delay:10,
+             cacheLength:10
+        });
+
+    $( ".datepicker" ).datepicker();
+
+    var tpol = 'address';
+
+    var tbl = 'address';
+
+    $(".autocomp")
+        .focus(function(){
+            tpol = $(this).data("tpol");
+            //console.log(tpol);
+            tbl = $(this).data("tbl");
+        })
+        .autocomplete({
+            source: function( request, response ) {
+                var term = request.term;
+                if ( term+tpol in cache ) {
+                    response( cache[ term+tpol ] );
+                    return;
+                }
+
+                $.getJSON( "/api/getAutocomplete/"+tbl+"/"+tpol, request, function( data, status, xhr ) {
+                    cache[ term+tpol ] = data;
+                    response( data );
+                });
+            },
+            //source: '/api/getAutocomplete/address',
+            delay:10,
+            cacheLength:10
+        });
 
     var i = $(".addstr").data("count");
 
@@ -212,16 +306,10 @@ $(function() {
 
   $(".upl").click(function () {
     var href = $(this).attr('href');
-    //$.get(href, function(data){
-    //  $('#load').html(data);
-    //});
-    $('#load').html('');
+    //$('#load').html('');
     $('#load').load(href);
     $("#ths").val(this.id);
-   	//alert(this.id)
-    //$("#ps").html($(this).data("ps"));
-    //$("#tp").html($(this).data("tp"));
-    //$("#ep").html($(this).data("ep"));
+
   });
   
   $("#edt").click(function () {

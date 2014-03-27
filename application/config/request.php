@@ -57,6 +57,7 @@ $config['sort'] = array(
                         // Отдел продаж - id = 3
                             array('name' => 'Все', 'uri' => 'mAll', 'allow' => '3', 'logic' => 'mid:usr'),
                             array('name' => 'Актуальные заявки', 'uri' => 'mAkt', 'allow' => '3', 'logic' => 'mid:usr?date>2419200?kp!13', 'default' => '1'),
+                            array('name' => 'За 30 дней', 'uri' => 'mz3dn', 'allow' => '3', 'logic' => 'mid:usr?date>2419200'),
                             array('name' => 'Заявки с сайта', 'uri' => 'mSite', 'allow' => '3', 'logic' => 'mid:0'),
                             array('name' => 'Новые', 'uri' => 'mNew', 'allow' => '3', 'logic' => 'kp:0?mid:usr'),
                             array('name' => 'Расчёт времени', 'uri' => 'mInDev', 'allow' => '3', 'logic' => 'kp:1?mid:usr,kp:2?mid:usr'),
@@ -77,6 +78,7 @@ $config['sort'] = array(
                         // Руководство - id = 6
                             array('name' => 'Все', 'uri' => 'rAll', 'allow' => '2,6', 'logic' => 'all'),
                             array('name' => 'Актуальные заявки', 'uri' => 'rAkt', 'allow' => '2,6', 'logic' => 'date>2419200?kp!13', 'default' => '1'),
+                            array('name' => 'За 30 дней', 'uri' => 'rz3dn', 'allow' => '2,6', 'logic' => 'date>2419200'),
                             array('name' => 'Заявки с сайта', 'uri' => 'rSite', 'allow' => '2,6', 'logic' => 'mid:0'),
                             array('name' => 'В работе у менеджера', 'uri' => 'rmInDev', 'allow' => '2,6', 'logic' => 'kp:0,kp:3,kp:5,kp:9,kp:12'),
                             array('name' => 'В работе у проектировщиков', 'uri' => 'rpInDev', 'allow' => '2,6', 'logic' => 'kp:1,kp:2'),
@@ -119,8 +121,8 @@ $config['status'] = array(
                                 array('name' => 'Руководству', 'fullname' => 'Отправить заявку руководству для согласование стоимости', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:0,ikp:2,ikp:3,ikp:12', 'uri' => '/request/send/optor/'),
                                 array('name' => 'Согласовывается', 'fullname' => 'Заявка у руководства', 'class' => 'success', 'allow' => '3', 'logic' => 'ikp:4'),
                                 array('name' => 'Заказчику', 'fullname' => 'Нажмите чтобы отправить заявку заказчику', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:5', 'uri' => '/request/send/optoz/'),
-                                array('name' => 'Отказался', 'fullname' => 'Нажмите если заказчик отказался', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:6', 'uri' => '/request/send/otkaz/'),
-                                array('name' => 'Согласился', 'fullname' => 'Нажмите если заказчик согласился', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:6', 'uri' => '/request/send/inwork/'),
+                                array('name' => 'Отказался', 'fullname' => 'Нажмите если заказчик отказался', 'class' => 'important', 'allow' => '3', 'logic' => 'ikp:6', 'uri' => '/request/send/otkaz/'),
+                                array('name' => 'Согласился', 'fullname' => 'Нажмите если заказчик согласился', 'class' => 'success', 'allow' => '3', 'logic' => 'ikp:6', 'uri' => '/request/send/inwork/'),
                                 array('name' => 'Отказано', 'fullname' => 'Заказчик отказался', 'class' => 'important', 'allow' => '3', 'logic' => 'ikp:7'),
                                 array('name' => 'Согласился', 'fullname' => 'Заказчик согласился', 'class' => 'success', 'allow' => '3', 'logic' => 'ikp:8'),
                                 array('name' => 'Подписать договор', 'fullname' => 'Заказчик подписал договор', 'class' => 'warning', 'allow' => '3', 'logic' => 'ikp:8', 'uri' => '/request/send/zaytoproj/'),
@@ -302,8 +304,9 @@ $config['instance'] = array(
                             array('rname' => 'Проектные, экспертно-технические и строительные организации', 'ins' => '1', 'names' => array('dsrodnp', 'ep')),
                                 array('rname' => 'Пакет документов для ввода объекта в эксплуатацию', 'name' => 'dsrodnp', 'price' => '8000'),
                                 array('rname' => 'Экспертиза проекта', 'name' => 'ep', 'price' => '10000'),
-                            array('rname' => 'Комитет по управлению городским имуществом Санкт-Петербурга', 'ins' => '1', 'names' => array('zvkygi')),
+                            array('rname' => 'Комитет по управлению городским имуществом Санкт-Петербурга', 'ins' => '1', 'names' => array('zvkygi', 'soglkygi')),
                                 array('rname' => 'Заявление в КУГИ', 'name' => 'zvkygi', 'price' => '2000'),
+                                array('rname' => 'Согласование КУГИ', 'name' => 'soglkygi', 'price' => '10000'),
                             array('rname' => 'Федеральное агенство по управлению государственным имуществом', 'ins' => '1', 'names' => array('sfaugi')),
                                 array('rname' => 'Согласование ФАУГИ', 'name' => 'sfaugi', 'price' => '10000'),
                             array('rname' => 'Районная Межведомственная комиссия', 'ins' => '1', 'names' => array('spvmvk', 'vove', 'suvpvmk')),
@@ -318,7 +321,298 @@ $config['instance'] = array(
                             array('rname' => 'Федеральная кадастровая палата по Санкт-Петербургу', 'ins' => '1', 'names' => array('pkadpas')),
                                 array('rname' => 'Получение кадастрового паспорта', 'name' => 'pkadpas', 'price' => '2000'),
                         );
-
+/*
+|--------------------------------------------------------------------------
+| Виды работ
+|--------------------------------------------------------------------------
+|
+|  rname = string
+|    - Название на русском
+|
+|  ins = bool
+|    - Инстанция (да\нет)
+|
+|  names = array
+|    - Если (ins = 1) обязательное поле
+}    - Список полей которые вхлжят в эту инстанцию
+|
+|  name = string
+|    - Короткое название на английском как индентификатор
+|
+|  price = string
+|    - Цена по умолчанию, если есть
+|
+*/
+$config['worktype'] = array(
+    array('rname' => 'правоустанавливающие документы', 'name' => 'pravodoki', 'type' => 'bool', 'names' => array(
+        array('rname' => 'свидетельство ФРС', 'name' => 'svidetalstvofrs', 'type' => 'bool', 'names' => array(
+            //array('rname' => 'статус', 'name' => 'svidetalstvofrsstatus', 'type' => 'bool'),
+            array('rname' => 'дата', 'name' => 'svidetalstvofrsdata', 'type' => 'date'),
+        )),
+        array('rname' => 'договор основания', 'name' => 'dogovorosnovaniya', 'type' => 'bool', 'names' => array(
+            //array('rname' => 'статус', 'name' => 'dogovorosnovaniyastatus', 'type' => 'bool'),
+            array('rname' => 'дата', 'name' => 'dogovorosnovaniyadata', 'type' => 'date'),
+        )),
+        array('rname' => 'доверенность / срок окончания', 'name' => 'doverennstsrokokonchaniya', 'type' => 'bool', 'names' => array(
+            //array('rname' => 'статус', 'name' => 'doverennstsrokokonchaniyastatus', 'type' => 'bool'),
+            array('rname' => 'дата', 'name' => 'doverennstsrokokonchaniyadata', 'type' => 'date'),
+        )),
+        array('rname' => 'кад. паспорт', 'name' => 'kadpassport', 'type' => 'bool', 'names' => array(
+            //array('rname' => 'статус', 'name' => 'kadpassportstatus', 'type' => 'bool'),
+            array('rname' => 'дата', 'name' => 'kadpassportdata', 'type' => 'date'),
+        )),
+        array('rname' => 'тех. паспорт ПИБ', 'name' => 'tehpassportpib', 'type' => 'bool', 'names' => array(
+            //array('rname' => 'статус', 'name' => 'tehpassportpibstatus', 'type' => 'bool'),
+            array('rname' => 'дата', 'name' => 'tehpassportpibdata', 'type' => 'date'),
+        )),
+    )),
+    array('rname' => 'Получение ИРД', 'name' => 'pird', 'type' => 'bool', 'names' => array(
+        array('rname' => 'акт вентканалов', 'name' => 'aktventkanalov', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'aktventzak', 'type' => 'date'),
+            array('rname' => 'Оплачен', 'name' => 'aktventopl', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'aktventpol', 'type' => 'date'),
+        )),
+        array('rname' => 'Ф-7, Ф-9', 'name' => 'f7f8', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'f7f9zak', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'f7f9pol', 'type' => 'date'),
+        )),
+        array('rname' => 'поэтажные планы выше/ниже', 'name' => 'poetazhplan', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'poetazhplanzak', 'type' => 'date'),
+            array('rname' => 'Оплачен', 'name' => 'poetazhplanopl', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'poetazhplanpol', 'type' => 'date'),
+        )),
+        array('rname' => 'топосъемка (планы под/над коммуникаций)', 'name' => 'pirdtoposemka', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'pirdtoposemkazak', 'type' => 'date'),
+            array('rname' => 'Оплачен', 'name' => 'pirdtoposemkaopl', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'pirdtoposemkapol', 'type' => 'date'),
+        )),
+        array('rname' => 'выписка тех. состояния', 'name' => 'vipiskatehsostoyaniya', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'vipiskatehsostoyaniyazak', 'type' => 'date'),
+            array('rname' => 'Оплачен', 'name' => 'vipiskatehsostoyaniyaopl', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'vipiskatehsostoyaniyapol', 'type' => 'date'),
+        )),
+        array('rname' => 'тех. паспорт ПИБ', 'name' => 'tehplannakvartiry', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'tehplannakvartiryzak', 'type' => 'date'),
+            array('rname' => 'Оплачен', 'name' => 'tehplannakvartiryopl', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'tehplannakvartirypol', 'type' => 'date'),
+        )),
+        array('rname' => 'справка о статуссе здания КГиОП', 'name' => 'spravkaostatusezdaniya', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'spravkaostatusezdaniyazak', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'spravkaostatusezdaniyapol', 'type' => 'date'),
+        )),
+        array('rname' => 'разрешительное письмо КГА', 'name' => 'razreshitelnoepismokga', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'razreshitelnoepismokgazak', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'razreshitelnoepismokgapol', 'type' => 'date'),
+        )),
+        array('rname' => 'задание КГиОП', 'name' => 'zadaniekgiop', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'zadaniekgiopzak', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'zadaniekgioppol', 'type' => 'date'),
+        )),
+    )),
+    array('rname' => 'Проектирование', 'name' => 'proekti', 'type' => 'bool', 'names' => array(
+        array('rname' => 'перепланировка квартиры', 'name' => 'proektipereplankvart', 'type' => 'bool', 'names' => array(
+            array('rname' => 'техническое задание', 'name' => 'proektipereplankvarttz', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Заказан', 'name' => 'proektipereplankvarttzzak', 'type' => 'date'),
+                array('rname' => 'Получен', 'name' => 'proektipereplankvarttzpol', 'type' => 'date'),
+            )),
+            array('rname' => 'АР', 'name' => 'proektipereplankvartar', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplankvartarvp', 'type' => 'date'),
+            )),
+            array('rname' => 'ВК', 'name' => 'proektipereplankvartvk', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplankvartvkvp', 'type' => 'date'),
+            )),
+            array('rname' => 'ЭО', 'name' => 'proektipereplankvarteo', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplankvarteovp', 'type' => 'date'),
+            )),
+            array('rname' => 'КР', 'name' => 'proektipereplankvartkr', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplankvartkrvp', 'type' => 'date'),
+            )),
+            array('rname' => 'ОВ', 'name' => 'proektipereplankvartov', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplankvartovvp', 'type' => 'date'),
+            )),
+            array('rname' => 'ОПС', 'name' => 'proektipereplankvartops', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplankvartopsvp', 'type' => 'date'),
+            )),
+        )),
+        array('rname' => 'перепланировка нежилого помещения', 'name' => 'proektipereplannezil', 'type' => 'bool', 'names' => array(
+            array('rname' => 'техническое задание', 'name' => 'proektipereplanneziltz', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Заказан', 'name' => 'proektipereplanneziltzzak', 'type' => 'date'),
+                array('rname' => 'Получен', 'name' => 'proektipereplanneziltzpol', 'type' => 'date'),
+            )),
+            array('rname' => 'ТО/ТЗ', 'name' => 'proektipereplanneziltotz', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplanneziltotzvk', 'type' => 'date'),
+            )),
+            array('rname' => 'АР', 'name' => 'proektipereplannezilar', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplannezilarvp', 'type' => 'date'),
+            )),
+            array('rname' => 'ВК', 'name' => 'proektipereplannezilvk', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplannezilvkvp', 'type' => 'date'),
+            )),
+            array('rname' => 'ЭО', 'name' => 'proektipereplannezileo', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplannezileovp', 'type' => 'date'),
+            )),
+            array('rname' => 'КР', 'name' => 'proektipereplannezilkr', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplannezilkrvp', 'type' => 'date'),
+            )),
+            array('rname' => 'ОВ', 'name' => 'proektipereplannezilov', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplannezilovvp', 'type' => 'date'),
+            )),
+            array('rname' => 'ОПС', 'name' => 'proektipereplannezilops', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplannezilopsvp', 'type' => 'date'),
+            )),
+            array('rname' => 'ТХ', 'name' => 'proektipereplannezilth', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektipereplannezilthvp', 'type' => 'date'),
+            )),
+        )),
+        array('rname' => 'Концепция кондиционеры', 'name' => 'proektikonchepkondich', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Выполнен', 'name' => 'proektikonchepkondichvp', 'type' => 'date'),
+        )),
+        array('rname' => 'Паспорт фасада здания', 'name' => 'proektipassport', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Выполнен', 'name' => 'proektipassportvp', 'type' => 'date'),
+        )),
+        array('rname' => 'Проект устройства отдельного входа', 'name' => 'proektizmeneniefasad', 'type' => 'bool', 'names' => array(
+            array('rname' => 'КЖ', 'name' => 'proektizmeneniefasadkj', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektizmeneniefasadkjvp', 'type' => 'date'),
+            )),
+            array('rname' => 'КМ', 'name' => 'proektizmeneniefasadkm', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektizmeneniefasadkmvp', 'type' => 'date'),
+            )),
+            array('rname' => 'АР', 'name' => 'proektizmeneniefasadar', 'type' => 'bool', 'names' => array(
+                array('rname' => 'Выполнен', 'name' => 'proektizmeneniefasadarvp', 'type' => 'date'),
+            )),
+        )),
+    )),
+    array('rname' => 'Согласование', 'name' => 'soglasovan', 'type' => 'bool', 'names' => array(
+        array('rname' => 'КГА Архитектура', 'name' => 'soglasovankgaar', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'soglasovankgaarzak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'soglasovankgaarvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'soglasovankgaarpol', 'type' => 'date'),
+        )),
+        array('rname' => 'КГА Отдел подземных сооружений', 'name' => 'soglasovankgaops', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'soglasovankgaopszak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'soglasovankgaopsvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'soglasovankgaopspol', 'type' => 'date'),
+        )),
+        array('rname' => 'КГА Эстетики и городской среды', 'name' => 'soglasovankgaestetigorsred', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'soglasovankgaestetigorsredzak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'soglasovankgaestetigorsredvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'soglasovankgaestetigorsredpol', 'type' => 'date'),
+        )),
+        array('rname' => 'КГИОП', 'name' => 'soglasovankgiop', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'soglasovankgiopzak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'soglasovankgiopdtvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'soglasovankgioppol', 'type' => 'date'),
+        )),
+        array('rname' => 'ОГПН', 'name' => 'soglasovanogpn', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'soglasovanogpnzak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'soglasovanogpndtvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'soglasovanogpnpol', 'type' => 'date'),
+        )),
+        array('rname' => 'Администрация района', 'name' => 'soglasovanadministratraion', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'soglasovanadministratraionzak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'soglasovanadministratraionvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'soglasovanadministratraionpol', 'type' => 'date'),
+        )),
+        array('rname' => 'Балансодержатель дома', 'name' => 'soglasovanbalansoderzatdom', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'soglasovanbalansoderzatdomzak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'soglasovanbalansoderzatdomvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'soglasovanbalansoderzatdompol', 'type' => 'date'),
+        )),
+        array('rname' => 'КУГИ', 'name' => 'soglasovankugi', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'soglasovankugizak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'soglasovankugidtvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'soglasovankugipol', 'type' => 'date'),
+        )),
+        array('rname' => 'ФГУЗ (СЭС)', 'name' => 'soglasovanfguzses', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'soglasovanfguzseszak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'soglasovanfguzsesdtvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'soglasovanfguzsespol', 'type' => 'date'),
+        )),
+        array('rname' => 'Экспертиза проекта', 'name' => 'soglasovanekspertizaproekta', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'soglasovanekspertizaproektazak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'soglasovanekspertizaproektadtvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'soglasovanekspertizaproektapol', 'type' => 'date'),
+        )),
+        array('rname' => 'МВК', 'name' => 'soglasovanmvk', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'soglasovanmvkzak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'soglasovanmvkdtvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'soglasovanmvkpol', 'type' => 'date'),
+        )),
+    )),
+    array('rname' => 'Приемка', 'name' => 'priemka', 'type' => 'bool', 'names' => array(
+        array('rname' => 'акты скрытых работ', 'name' => 'priemkaaktyskrityhrabot', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'priemkaaktyskrityhrabotzak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'priemkaaktyskrityhrabotvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'priemkaaktyskrityhrabotpol', 'type' => 'date'),
+        )),
+        array('rname' => 'переобмер ПИБ', 'name' => 'priemkapereobmerpib', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'priemkapereobmerpibzak', 'type' => 'date'),
+            array('rname' => 'Оплачен', 'name' => 'priemkapereobmerpibopl', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'priemkapereobmerpibpol', 'type' => 'date'),
+        )),
+        array('rname' => 'ОГПН', 'name' => 'priemkaogpn', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'priemkaogpnzak', 'type' => 'date'),
+            array('rname' => 'Дата выполнения', 'name' => 'priemkaogpnvip', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'priemkaogpnpol', 'type' => 'date'),
+        )),
+        array('rname' => 'КГИОП', 'name' => 'priemkakgiop', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'priemkakgiopzak', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'priemkakgioppol', 'type' => 'date'),
+        )),
+        array('rname' => 'акт МВК', 'name' => 'priemkaaktmvk', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'priemkaaktmvkzak', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'priemkaaktmvkpol', 'type' => 'date'),
+        )),
+        array('rname' => 'тех. паспорт ПИБ', 'name' => 'priemkapatehpassportpib', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'priemkapatehpassportpibzak', 'type' => 'date'),
+            array('rname' => 'Оплачен', 'name' => 'priemkapatehpassportpibopl', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'priemkapatehpassportpibpol', 'type' => 'date'),
+        )),
+        array('rname' => 'тех. план', 'name' => 'priemkatehplan', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'priemkatehplanzak', 'type' => 'date'),
+            array('rname' => 'Оплачен', 'name' => 'priemkatehplanopl', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'priemkatehplanpol', 'type' => 'date'),
+        )),
+        array('rname' => 'кадастровый паспорт', 'name' => 'priemkakadastroviypasport', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'priemkakadastroviypasportzak', 'type' => 'date'),
+            array('rname' => 'Оплачен', 'name' => 'priemkakadastroviypasportopl', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'priemkakadastroviypasportpol', 'type' => 'date'),
+        )),
+        array('rname' => 'УФРС', 'name' => 'priemkayfms', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'priemkayfmszak', 'type' => 'date'),
+            array('rname' => 'Оплачен', 'name' => 'priemkayfmsopl', 'type' => 'date'),
+            array('rname' => 'Получен', 'name' => 'priemkayfmspol', 'type' => 'date'),
+        )),
+    )),
+    array('rname' => 'Работа с заказчиком', 'name' => 'rabotaszak', 'type' => 'bool', 'names' => array(
+        array('rname' => 'предоплата', 'name' => 'rabotaszakpredoplata', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Нал', 'name' => 'rabotaszakpredoplatanal', 'type' => 'bool'),
+            array('rname' => 'Безнал', 'name' => 'rabotaszakpredoplatabeznal', 'type' => 'bool'),
+            array('rname' => 'Дата', 'name' => 'rabotaszakpredoplatadata', 'type' => 'date'),
+        )),
+        array('rname' => 'предоплата', 'name' => 'rabotaszakpredoplata1', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Нал', 'name' => 'rabotaszakpredoplata1nal', 'type' => 'bool'),
+            array('rname' => 'Безнал', 'name' => 'rabotaszakpredoplata1beznal', 'type' => 'bool'),
+            array('rname' => 'Дата', 'name' => 'rabotaszakpredoplata1data', 'type' => 'date'),
+        )),
+        array('rname' => 'оплата квитанций', 'name' => 'rabotaszakoplatakvit', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Заказчик', 'name' => 'rabotaszakoplatakvitzak', 'type' => 'bool'),
+            array('rname' => 'Профэксперт', 'name' => 'rabotaszakoplatakvitprof', 'type' => 'bool'),
+            array('rname' => 'Дата', 'name' => 'rabotaszakoplatakvitdata', 'type' => 'date'),
+        )),
+        array('rname' => 'акт приема выполненных работ', 'name' => 'rabotaszakaktpriemavipolnrabot', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Дата', 'name' => 'rabotaszakaktpriemavipolnrabotdata', 'type' => 'date'),
+        )),
+        array('rname' => 'окончательный расчет', 'name' => 'rabotaszakokonchatelniyraschet', 'type' => 'bool', 'names' => array(
+            array('rname' => 'Нал', 'name' => 'rabotaszakokonchatelniyraschetnal', 'type' => 'bool'),
+            array('rname' => 'Безнал', 'name' => 'rabotaszakokonchatelniyraschetbeznal', 'type' => 'bool'),
+            array('rname' => 'Дата', 'name' => 'rabotaszakokonchatelniyraschetdata', 'type' => 'date'),
+        )),
+    )),
+    /*array('rname' => '', 'name' => '', 'type' => '', 'names' => array(
+        array('rname' => '', 'name' => '', 'type' => '')
+    )),*/
+);
 /*
 |--------------------------------------------------------------------------
 | Генерация таблицы
@@ -365,8 +659,9 @@ $config['access'] = array(
     array('name' => 'Организация',                    'value' => 'organization',  'allow' => '0,2,3,6', 'self' => 'class="span3"', 'view' => 0, 'form' => 0),
     array('name' => 'Телефон',                        'value' => 'phone',         'allow' => '0,2,3,6', 'self' => 'class="span3" id="phone"', 'view' => 0),
     array('name' => 'Email адрес',                    'value' => 'email',         'allow' => '0,2,3,6', 'self' => 'class="span3"', 'view' => 0),
-    array('name' => 'Район',                          'value' => 'region',        'allow' => '2,3,6', 'type' => 'select', 'view' => 0),
-    array('name' => 'Район',                          'value' => 'region',        'allow' => '4', 'type' => 'select', 'self' => 'class="span3"'),
+    array('name' => 'Вид работ',                      'value' => 'worktype',      'allow' => '2,3,6', 'type' => 'checkbox', 'self' => 'class="span3"', 'view' => 0),
+    //array('name' => 'Район',                          'value' => 'region',        'allow' => '2,3,6', 'type' => 'select', 'view' => 0),
+    array('name' => 'Район',                          'value' => 'region',        'allow' => '4', 'type' => 'select', 'self' => 'class="span3"', 'form' => 0),
     array('name' => 'Адрес',                          'value' => 'address',       'allow' => '2,3,4,6', 'self' => 'class="span4"'),
     array('name' => 'Откуда узнали',                  'value' => 'hear',          'allow' => '0,2,3,6', 'view' => 0, 'form' => 0),
     array('name' => 'Дополнительная информация',      'value' => 'more',          'allow' => '0,2,3,4,6', 'view' => 0, 'type' => 'textarea', 'self' => 'class="span3 wysihtml5" rows="5"', 'add' => 1, 'form' => 0),

@@ -25,6 +25,7 @@ class request_model extends CI_Model {
 
         $more = array();
 
+        //Карточка клиента
         $cid = 0;
 
         if($this->input->post('cid')) $cid = $this->input->post('cid');
@@ -33,7 +34,7 @@ class request_model extends CI_Model {
 
             $comment[] = array('author' => $this->dx_auth->get_username(), 'text'=> 'Создана карточка клиента', 'date' => time());
 
-            //Карточка клиента
+
             $insert = array(
                 'cdate' => time(),
                 'zsurname' => $this->input->post('zsurname'),
@@ -66,8 +67,6 @@ class request_model extends CI_Model {
 
             if($this->db->update('card', $update, array('id' => $cid))) $suc+=1;
         }
-
-
 		//end Карточка клиента
 		
         //Заявка
@@ -78,6 +77,8 @@ class request_model extends CI_Model {
 			if(!isset($i['form']) || $i['form'] != 0) {
 
                 $access = explode(",", $i['allow']);
+
+                if($i['value'] == 'worktype') $owork = 1;
 
                 if (in_array($this->dx_auth->get_role_id(), $access)) $insert1[$i['value']] = $this->input->post($i['value']);
 			}
@@ -106,6 +107,54 @@ class request_model extends CI_Model {
             $more[] = array('aid' => $aid, 'rname' => $rname, 'author' => $name, 'text'=> $this->input->post('more'), 'date' => time());
         }
 
+        $work = $this->config->item('worktype');
+
+        if(!empty($owork)) {
+
+            $awork = array();
+
+            foreach($work as $i) {
+
+                if($this->input->post($i['name']."ch")) {
+
+                    $value = $this->input->post($i['name']) ? $this->input->post($i['name']) : '0';
+
+                    $awork[$i['name']] = array('value' => $value);
+
+                    if(isset($i['names'])) {
+
+                        foreach($i['names'] as $q) {
+
+                            if($this->input->post($q['name']."ch")) {
+
+                                $value = $this->input->post($q['name']) ? $this->input->post($q['name']) : '0';
+
+                                $awork[$q['name']] = array('value' => $value);
+
+                                if(isset($q['names'])) {
+
+                                    foreach($q['names'] as $w) {
+
+                                        if($this->input->post($w['name']."ch")) {
+
+                                            $value = $this->input->post($w['name']) ? $this->input->post($w['name']) : '0';
+
+                                            $awork[$w['name']] = array('value' => $value);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            $awork = serialize($awork);
+
+            $insert1['worktype'] = $awork;
+
+        }
+
         $insert1['more'] = serialize($more);
 
 		$insert1['razd'] = '';
@@ -115,6 +164,15 @@ class request_model extends CI_Model {
 		$insert1['date'] = time();
 
         $insert1['cid'] = $cid;
+
+        //address
+        $insert1['city'] = $this->input->post('city');
+        $insert1['region'] = $this->input->post('region');
+        $insert1['street'] = $this->input->post('street');
+        $insert1['building'] = $this->input->post('building');
+        $insert1['buildingAdd'] = $this->input->post('buildingAdd');
+        $insert1['apartment'] = $this->input->post('apartment');
+        //end address
 
 		$mid = 0;
 		
@@ -196,7 +254,7 @@ class request_model extends CI_Model {
 		
 		$docs = $docs1;
 		
-		for($i=count($docs)+1;$i<=10;$i++) {
+		for($i=count($docs)+1;$i<=20;$i++) {
 			
 			if ($this->upload->do_upload('doc'.$i)) {
 				
@@ -309,6 +367,8 @@ class request_model extends CI_Model {
 
                     if($i['value'] == 'traspr') $traspr = 1;
 
+                    if($i['value'] == 'worktype') $owork = 1;
+
                     $update[$i['value']] = str_replace('&nbsp;', ' ', $this->input->post($i['value']));
 
                 }
@@ -367,7 +427,7 @@ class request_model extends CI_Model {
 
             $traspr2 = $traspr1;
 
-            for($i=$ct+1;$i<=10;$i++) {
+            for($i=$ct+1;$i<=15;$i++) {
 
                 if($this->input->post('trasprname'.$i) && !empty($_POST['trasprname'.$i])) {
 
@@ -392,6 +452,54 @@ class request_model extends CI_Model {
             }
         }
 
+        $work = $this->config->item('worktype');
+
+        if(!empty($owork)) {
+
+            $awork = array();
+
+            foreach($work as $i) {
+
+                if($this->input->post($i['name']."ch")) {
+
+                    $value = $this->input->post($i['name']) ? $this->input->post($i['name']) : '0';
+
+                    $awork[$i['name']] = array('value' => $value);
+
+                    if(isset($i['names'])) {
+
+                        foreach($i['names'] as $q) {
+
+                            if($this->input->post($q['name']."ch")) {
+
+                                $value = $this->input->post($q['name']) ? $this->input->post($q['name']) : '0';
+
+                                $awork[$q['name']] = array('value' => $value);
+
+                                if(isset($q['names'])) {
+
+                                    foreach($q['names'] as $w) {
+
+                                        if($this->input->post($w['name']."ch")) {
+
+                                            $value = $this->input->post($w['name']) ? $this->input->post($w['name']) : '0';
+
+                                            $awork[$w['name']] = array('value' => $value);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            $awork = serialize($awork);
+
+            $update['worktype'] = $awork;
+
+        }
+
 		if(!empty($oins)) {
 			
 			$ains = array();
@@ -414,6 +522,15 @@ class request_model extends CI_Model {
             $update['mid'] = $this->dx_auth->get_user_id();
             //$this->db->update('request', $upd1, array('id' => $id));
         }
+
+        //address
+        $update['city'] = $this->input->post('city');
+        $update['region'] = $this->input->post('region');
+        $update['street'] = $this->input->post('street');
+        $update['building'] = $this->input->post('building');
+        $update['buildingAdd'] = $this->input->post('buildingAdd');
+        $update['apartment'] = $this->input->post('apartment');
+        //end address
 
 
 		return $this->db->update('request', $update, array('id' => $id));
@@ -472,8 +589,10 @@ class request_model extends CI_Model {
 				
 				$formdata['ptype'] = $ntype;
 				
+				$formdata['worktype'] = $this->config->item('worktype');
+
 				$formdata['ztype'] = $ntype;
-				
+
 				$formdata['user_info'] = $this->dx_auth->get_all_data();
 				
 				$source = req_perm_in_view($this->config->item('access'), $type = 'form', $this->dx_auth->get_all_data());
@@ -560,7 +679,31 @@ class request_model extends CI_Model {
 
             //$this->benchmark->mark('code_mid');
 
-            if($view == 'json') {
+            if($view == 'prnt') {
+
+                $return = array();
+
+                foreach($data['result'] as $df) {
+
+                    $df['more'] = unserialize($df['more']);
+
+                    //if(isset($df['region'])) $df['region'] = $res['region'][$df['region']];
+
+                    if(!empty($df['region'])) {
+
+                        if(is_numeric($df['region'])) $df['region'] = $res['region'][$df['region']];
+                        else $df['region'] = $df['region'];
+
+                    }
+
+                    $return[] = $df;
+
+                }
+
+                $data['result'] = $return;
+                //var_dump();
+
+            } elseif($view == 'json') {
 
                 foreach($data['result'] as $r) {
 

@@ -1,0 +1,30 @@
+<table style="background-color: #969696;">
+    <thead>
+        <tr>
+            <th width="1%" style="background-color: white;">№</th>
+            <th width="1%" style="background-color: white;">Дата</th>
+            <th style="background-color: white;">ФИО</th>
+            <th style="background-color: white;">Район</th>
+            <th style="background-color: white;">Адрес</th>
+            <th width="20%" style="background-color: white;">Название проекта</th>
+            <th width="50%" style="background-color: white;">Комент</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in result %}
+        <tr>
+            <td style="background-color: white;">{{ row.id }}</td>
+            <td style="background-color: white;">{{ row.date|date('d.m.y H:i:s') }}</td>
+            <td style="background-color: white;">{{ row.zsurname }} {{ row.zname }} {{ row.zmname }}</td>
+            <td style="background-color: white;">{{ row.region }}</td>
+            <td style="background-color: white;">{{ row.address }}</td>
+            <td style="background-color: white;">{{ row.name|raw }}</td>
+            <td style="background-color: white;">
+                {% for com in row.more %}
+                    {{ com.text }} ({{ com.author }} - {{ com.date|date('d.m.y H:i:s') }})<hr>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

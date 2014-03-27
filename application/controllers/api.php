@@ -66,6 +66,78 @@ class Api extends CI_Controller
         }
     }
 
+    function getAutocomplete() {
+
+        //$this->output->enable_profiler(TRUE);
+
+        if($this->input->is_ajax_request()) {
+
+           if($this->uri->segment(3)) {
+
+               $tbl = $this->uri->segment(3);
+
+               if(strpos($tbl, '5') !== FALSE) {
+
+                   $tbl = explode('5', $tbl);
+
+               } else {
+
+                   $tbl = array();
+
+                   $tbl[] = $this->uri->segment(3);
+               }
+
+           } else {
+
+               exit('err');
+           }
+
+            if($this->uri->segment(4)) {
+
+                $pole = $this->uri->segment(4);
+
+            } else {
+
+                exit('err');
+            }
+
+            if($this->input->get('term')) {
+
+                $term = $this->input->get('term');
+
+            } else {
+
+                exit('err');
+            }
+
+            $result = array();
+
+            foreach($tbl as $i) {
+
+                $this->db->select($pole);
+
+                $this->db->like($pole, $term);
+
+                $this->db->order_by($pole, 'asc');
+
+                $res = $this->db->get($i, 20, 0);
+
+                foreach($res->result_array() as $row) {
+
+                    $result[] = $row[$pole];
+                }
+            }
+
+            $result = array_unique($result);
+
+            echo json_encode($result);
+
+        } else {
+
+            echo 'err';
+        }
+    }
+
     function sendRequest() {
 
         header('Access-Control-Allow-Origin: *');
@@ -79,6 +151,8 @@ class Api extends CI_Controller
 
             $_POST['zname'] = $this->input->post('fname');
 
+            if(empty($_POST['more'])) $_POST['more'] = 'Обратный звонок';
+
             $result = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
 
             $this->load->model('request/request_model');
@@ -91,7 +165,7 @@ class Api extends CI_Controller
 
                 $this->notification->setNotification('Заявка с сайта ['.$id.']', '/request/?sort=mSite', $id, 'Заявка с сайта', '3', '0');
 
-                $result = "Заявка успешно добавлена!";
+                $result = "<b>СПАСИБО!</b><br>Наш менеджер свяжется с Вами в ближайшее время.";
 
                 $this->load->library('email');
 

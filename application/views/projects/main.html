@@ -3,9 +3,56 @@
 {% block title %}Проекты{% endblock %}
 
 {% block content %}
+    <style>
+        .sort .btn {
+            font-size: 11px;
+            font-family: "Open sans", Helvetica, Arial;
+            color: #313d4c;
+            font-weight: 700;
+            padding: 5px 10px;
+            line-height: 14px;
+            background: #fefefe;
+            background: -moz-linear-gradient(top, #fefefe 0%, #f7f7f7 100%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefefe), color-stop(100%,#f7f7f7));
+            background: -webkit-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
+            background: -o-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
+            background: -ms-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
+            background: linear-gradient(to bottom, #fefefe 0%,#f7f7f7 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#f7f7f7',GradientType=0 );
+            border: 1px solid #d0dde9;
+            transition: color .1s linear;
+            -moz-transition: color .1s linear;
+            -webkit-transition: color .1s linear;
+            -o-transition: color .1s linear;
+        }
+        .sort a:hover {
+            color: #a8b5c7;
+        }
+        .sort a:active, .btn-group a.active {
+            -webkit-box-shadow:0 1px 0 rgba(0,0,0,0.2) inset;
+            -moz-box-shadow:0 1px 0 rgba(0,0,0,0.2) inset;
+            box-shadow:0 1px 0 rgba(0,0,0,0.2) inset;
+            color: #a8b5c7;
+        }
+        .sort .btn:hover, .sort .btn:focus, .sort .btn:active, .sort .btn.active, .sort .btn.disabled, .sort .btn[disabled] {
+            background: #fefefe;
+            background: -moz-linear-gradient(top, #fefefe 0%, #f7f7f7 100%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefefe), color-stop(100%,#f7f7f7));
+            background: -webkit-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
+            background: -o-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
+            background: -ms-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
+            background: linear-gradient(to bottom, #fefefe 0%,#f7f7f7 100%);
+        }
+        td{
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
 <div class="table-products section">
-    {#<div class="row-fluid filter-block">
-        <div class="pull-left">
+    <div class="row-fluid filter-block">
+        {#<div class="pull-left">
             <div class="btn-group">
                 {% set act = '' %}
                 {% for i in sort %}
@@ -24,20 +71,27 @@
                     {% endfor %}
                 </ul>
             </div>
+        </div>#}
+        <div class="pull-right">
+            {#<input type="text" class="search">#}
+            <a href="#aNewReq" data-target="#aNewReq" data-toggle="modal" class="btn-flat success new-product"><i class="icon-plus"></i> <span>Добавить</span></a>
         </div>
-    </div>#}
+    </div>
 
     <div class="row-fluid">
         <!-- Table -->
-        <table class="table table-hover">
+        <table class="table table-hover" id='fhead'>
             <thead>
                 <tr>
-                    <th>№</th>
-                    <th><span class="line"></span>Дата</th>
+                    <th width="1%">№</th>
+                    <th width="1%"><span class="line"></span>Дата</th>
+                    <th><span class="line"></span>Работа</th>
+                    <th width="1%"><span class="line"></span>Работа</th>
                     <th><span class="line"></span>Адрес</th>
                     <th><span class="line"></span>Заказчик</th>
-                    <th><span class="line"></span>Статус</th>
-                    <th><span class="line"></span>Работники</th>
+                    <th width="7%"><span class="line"></span>Срок оконч. дов.</th>
+                    <th><span class="line"></span>Текущая задача</th>
+                    <th><span class="line"></span>Следующая задача</th>
                     <th><span class="line"></span>Действия</th>
                 </tr>
             </thead>
@@ -46,26 +100,52 @@
                 <tr>
                     <td>{{ row.id }}</td>
                     <td>{{ row.date|date("d.m.Y") }}</td>
-                    <td>{{ row.address }}</td>
-                    <td>{{ row.fname }}</td>
-                    <td>Статус</td>
-                    <td>Работники</td>
-                    <td>Действия</td>
+                    <td>{{ row.work }}</td>
+                    <td><a href="/projects/work/{{ row.id }}" data-target="#upload" data-toggle="modal" class="upl label {% if row.zadach|length > 0  %}label-important{% else %}label-success{% endif %}" data-toggle1="tooltip" data-original-title="Задачи по проекту" id="{{ row.id }}">[ {{ row.zadach|length }} ]</a></td>
+                    <td><span data-toggle="tooltip" data-original-title="Город: {{ row.city }}<br>Район: {{ row.region }}<br>Улица: {{ row.street }}<br>Дом: {{ row.building }}<br>Корпус\Лит: {{ row.buildingAdd }}<br>Квартира/Помещение: {{ row.apartment }}">{% if row.street|length > 0 %}{{ row.street }}, {% endif %}{% if row.building|length > 0 %}д.{{ row.building }}, {% endif %}{% if row.buildingAdd|length > 0 %}корп.{{ row.buildingAdd }}, {% endif %}{% if row.apartment|length > 0 %}кв.{{ row.apartment }}{% endif %}</span></td>
+                    <td>{{ row.zsurname }} {{ row.zname }} {{ row.zmname }}</td>
+                    <td>{{ row.worktype.doverennstsrokokonchaniyadata.value }}</td>
+                    <td>{% if row.zadach.0.rname|length > 0 %}
+                            <a href="/projects/work/{{ row.id }}/{{ row.zadach.0.last.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.0.last.rname }}<br>({{ row.zadach.0.last1 }})" id="{{ row.id }}">{{ row.zadach.0.last.rname }}</a>
+                        {% endif %}</td>
+                    <td>
+                        {% set tttl = '' %}
+                        {% for zads in row.zadach %}
+                            {% if row.zadach.0.last.rname != zads.last.rname and tttl == '' %}
+                                {% set tttl = zads %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if tttl.rname|length > 0 %}
+                            <a href="/projects/work/{{ row.id }}/{{ tttl.last.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ tttl.last.rname }}<br>({{ tttl.last1 }})" id="{{ row.id }}">{{ tttl.last.rname }}</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <ul class="actions" style="float: left;">
+                            <li><a href="/projects/edit/{{ row.id }}/" data-target="#upload" data-toggle="modal" class="upl" data-toggle1="tooltip" data-original-title="Изменить проект" id="{{ row.id }}"><i class="table-edit"></i></a></li>
+                            {#<li><a href="/request/review/309/" target="_blank" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>
+                            <li><a href="/request/review/309/1/" target="_blank" data-toggle="tooltip" data-original-title="Печать только КП"><i class="table-settings"></i></a></li>#}
+                            <li class="last"><a href="/projects/delete/{{ row.id }}/" onclick="return confirm('Вы уверены что хотите удалить проект?')" data-toggle="tooltip" data-original-title="Удалить"><i class="table-delete"></i></a></li>
+                        </ul>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-        {#{ result|raw }#}
+        <div class="row-fluid filter-block">
+            <div class="pull-right">
+                {#<input type="text" class="search">#}
+                <a href="#aNewReq" data-target="#aNewReq" data-toggle="modal" class="btn-flat success new-product"><i class="icon-plus"></i> <span>Добавить</span></a>
+            </div>
+        </div>
         <!-- EndTable -->
     </div>
 </div>
 
 <!-- Modal Upload -->
-{% include 'request/upload.html' %}
+{% include 'projects/upload.html' %}
 <!-- EndModal Upload -->
 
 <!-- Modal Add -->
-{# include 'request/add.html' #}
-{{ add|raw }}
+{% include 'projects/add.html' %}
 <!-- EndModal Add -->
 {% endblock %}

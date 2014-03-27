@@ -39,7 +39,7 @@ class Card extends CI_Controller
 		
 		$data['result'] = $card;
 
-        $data['result']['cсoments'] = unserialize($data['result']['cсoments']);
+        if(!empty($data['result']['cсoments'])) $data['result']['cсoments'] = unserialize($data['result']['cсoments']);
 
 		$query = $this->db->get_where('request', array('cid' => $card['id']));
 		

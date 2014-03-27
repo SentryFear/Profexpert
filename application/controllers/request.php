@@ -97,7 +97,8 @@ class Request extends CI_Controller
                 $this->request_model->add_comments() ? $data['success'] = "Заявка успешно отправлена на доработку!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
             }
 
-            $data['result'] = $this->request_model->get_request(null, 'FormTable', $gsort);
+            if($this->input->get('print')) $data['result'] = $this->request_model->get_request(null, 'prnt', $gsort);
+            else $data['result'] = $this->request_model->get_request(null, 'FormTable', $gsort);
 
             $data['table'] = $this->config->item('access');
 
@@ -111,134 +112,29 @@ class Request extends CI_Controller
 
             $formdata['ztype'] = $ntype;
 
+            $formdata['worktype'] = $this->config->item('worktype');
+
             $formdata['cid'] = $client;
 
             $source = req_perm_in_view($this->config->item('access'), $type = 'add', $this->dx_auth->get_all_data());
 
             if($this->dx_auth->check_permissions('add')) $data['add'] = req_arr_to_form($source, $formdata);
 
-            echo $this->twig->render('request/main.html', $data);
+            $data['stats'] = req_get_stats($this->request_model->get_request(null, 'prnt'));
+
+            $tpl = 'request/main.html';
+
+            if($this->input->get('print')) $tpl = 'request/prints.html';
+
+            echo $this->twig->render($tpl, $data);
         }
 	}
 
     function test() {
 
-        $query = $this->db->get_where('request')->result_array();
+        $data = array();
 
-        foreach($query as $i) {
-
-            if(empty($i['email'])) continue;
-
-            echo $i['email']."; ".$i['address']."<br>";
-        }
-
-        /*$ins = $this->config->item('instance');
-
-        echo '<table>';
-
-        foreach($ins as $i) {
-
-            echo '<tr>';
-
-            if(empty($i['price'])) $i['price'] = '';
-
-            echo '<td>'.$i['rname'].'</td><td>'.$i['price'].'</td>';
-
-            echo '</tr>';
-        }
-
-        echo '</table>';*/
-
-        /*$DB2 = $this->load->database('default', TRUE);
-        $DB1 = $this->load->database('migrate', TRUE);
-
-
-
-        echo 'migrate strart...';
-
-        echo '<br> bd_card';
-
-        $row = $DB2->get_where('request')->row_array();
-
-        var_dump($row);
-
-        echo 'last bd';
-
-
-
-        $dbcard = $DB1->get_where('card')->result_array();
-
-        foreach($dbcard as $row) {
-
-            $row1 = $DB1->get_where('request', array('cid' => $row['id']))->row_array();
-
-            //new bd_card
-            $cсoments = serialize(array());
-
-            $card = array(
-                'id' => $row['id'],
-                'cdate' => time(),
-                'zsurname' => '',
-                'zname' => $row['fname'],
-                'zmname' => '',
-                'organization' => '',
-                'phone' => $row['phone'],
-                'email' => $row['email'],
-                'hear' => $row['hear'],
-                'cсoments' => $cсoments,
-            );
-
-            $DB2->insert('card', $card);
-            //end new bd_card
-
-            //new bd_request
-            $more = array();
-
-            if(!empty($row1['rework'])) $more += unserialize($row1['rework']);
-
-            if(!empty($row['more'])) $more[] = array('author' => 'none', 'text'=> $row['more'], 'date' => time());
-
-            if(!empty($row['pmore'])) $more[] = array('author' => 'none', 'text'=> $row['pmore'], 'date' => time());
-
-            if(!empty($row['smore'])) $more[] = array('author' => 'none', 'text'=> $row['smore'], 'date' => time());
-
-            $req = array(
-                'id' => $row1['id'],
-                'date' => $row1['date'],
-                'zsurname' => '',
-                'zname' => $row['fname'],
-                'zmname' => '',
-                'phone' => $row['phone'],
-                'email' => $row['email'],
-                'region' => $row['region'],
-                'address' => $row['address'],
-                'more' => serialize($more),
-                'ptype' => $row['ptype'],
-                'ztype' => $row['ztype'],
-                'name' => $row['name'],
-                'rtype' => $row['rtype'],
-                'footage' => $row['footage'],
-                'razd' => $row['razd'],
-                'total' => $row['total'],
-                'instance' => $row['instance'],
-                'atotal' => $row['atotal'],
-                'traspr' => $row['traspr'],
-                'kpname' => $row['kpname'],
-                'kpsale' => $row['kpsale'],
-                'kptotsale' => $row['kptotsale'],
-                'kpmore' => $row['kpmore'],
-                'docs' => $row1['docs'],
-                'kp' => $row1['kp'],
-                'mid' => $row1['mid'],
-                'uid' => $row1['uid'],
-                'cid' => $row1['cid'],
-            );
-
-            $DB2->insert('request', $req);
-
-            //end new bd_request
-
-        }*/
+        echo $this->twig->render('request/test.html', $data);
 
     }
 
@@ -257,7 +153,11 @@ class Request extends CI_Controller
 			
 			$docs = unserialize($res['docs']);
 
-            echo '<div class="modal-header">
+            echo '
+<form method="POST" enctype="multipart/form-data" class="form-horizontal" id="addform">
+      <input type="hidden" name="id" value="'.$id.'" id="ths" />
+      <input type="hidden" name="upload" value="Отправить"/>
+<div class="modal-header">
                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                      <h3 id="myModalLabel">Загрузить документы</h3>
                   </div>
@@ -279,7 +179,12 @@ class Request extends CI_Controller
 				      </div>';
 				
 			} else {
-				
+
+                echo '<div class="alert alert-success" style="display:none" id="alrt">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <b id="resp"></b>
+					  </div>';
+
 				foreach($docs as $i) {
 
 					echo '<blockquote><table class="table table-hover" style="margin-bottom: 0px;"><tr><td style="vertical-align: top;">
@@ -312,7 +217,7 @@ class Request extends CI_Controller
                       <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
                       <input type="submit" class="btn btn-primary" name="upload" value="Добавить" />
                     </div>
-                  </div>';
+                  </div></form>';
 			
 			echo "<script>  
 				(function($) {  
@@ -336,6 +241,59 @@ class Request extends CI_Controller
 				})  
 				})(jQuery)  
 				</script>  ";
+
+            echo "<script>
+				(function($) {
+				$(function() {
+				    $('#addform').submit(function() {
+
+                        $( '#loading' ).show();
+
+                        var str = $(this).serialize();
+
+                        var form = document.forms.addform;
+
+                        var formData = new FormData(form);
+
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('POST', '/request');
+
+                        xhr.onreadystatechange = function() {
+
+                            if (xhr.readyState == 4) {
+                                if(xhr.status == 200) {
+                                    data = xhr.responseText;
+                                    $('#load').load('/request/add/'+$('#ths').val(), function() {
+                                        $( '#loading' ).hide();
+                                        $( '#alrt' ).show();
+                                        $( '#resp' ).html('Файлы успешно добалены');
+                                        $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
+                                    })
+                                }
+                            }
+                        };
+
+                        xhr.send(formData);
+
+                        /*$. ajax ({
+                            type: 'POST',
+                            url: '/request',
+                            data: str,
+                            success: function(msg) {
+
+                                $('#load').load('/request/add/'+$('#ths').val(), function() {
+                                        $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
+                                })
+
+
+                            }
+                        });*/
+
+                        return false;
+                    });
+				})
+				})(jQuery)
+				</script>";
 			
 		} else {
 			
@@ -354,11 +312,15 @@ class Request extends CI_Controller
             if(!empty($res['more'])) $more = unserialize($res['more']);
             else $more = array();
 
-            echo '<div class="modal-header">
+            echo '
+<form method="POST" enctype="multipart/form-data" class="form-horizontal" id="commentsform">
+      <input type="hidden" name="id" value="'.$id.'" id="ths" />
+      <input type="hidden" name="comments" value="Отправить"/>
+<div class="modal-header">
                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                  <h3 id="myModalLabel">Комментарии к проекту</h3>
               </div>
-              <div class="modal-body">';
+              <div class="modal-body" id="scrl">';
 
             foreach($more as $i){
 
@@ -374,11 +336,12 @@ class Request extends CI_Controller
 
             //if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
 
-                echo '<textarea class="span5 wysihtml5" rows="5" name="text" id="text" placeholder="Комментарий к проекту"></textarea>';
+                //echo '';
             //}
 
             echo '</div>
               <div class="modal-footer">
+                <textarea class="span5 wysihtml5" rows="5" name="text" id="text" placeholder="Комментарий к проекту" style="float: left; width: 515px; margin-bottom: 15px;"></textarea>
                 <div class="btn-group">
                   <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>';
 
@@ -387,7 +350,33 @@ class Request extends CI_Controller
                 echo '<input type="submit" class="btn btn-primary" name="comments" value="Отправить" />';
             //}
             
-            echo '</div></div>';
+            echo '</div></div></form>';
+
+            echo "<script>
+				(function($) {
+				$(function() {
+				    $('#commentsform').submit(function() {
+                        var str = $(this).serialize();
+
+                        $. ajax ({
+                            type: 'POST',
+                            url: '/request',
+                            data: str,
+                            success: function(msg) {
+
+                                $('#load').load('/request/comments/'+$('#ths').val(), function() {
+                                        $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
+                                })
+
+
+                            }
+                        });
+
+                        return false;
+                    });
+				})
+				})(jQuery)
+				</script>";
 
         } else {
 
@@ -525,6 +514,13 @@ class Request extends CI_Controller
 
                     $InsProject = array(
                         'date' => time(),
+                        'city' => $row['city'],
+                        'region' => $row['region'],
+                        'street' => $row['street'],
+                        'building' => $row['building'],
+                        'buildingAdd' => $row['buildingAdd'],
+                        'apartment' => $row['apartment'],
+                        'rid' => $id,
                         'cid' => $row['cid'],
                     );
 

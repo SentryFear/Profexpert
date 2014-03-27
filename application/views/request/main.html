@@ -50,7 +50,38 @@
           white-space: nowrap;
       }
   </style>
-  
+    <div id="main-stats">
+        <div class="row-fluid stats-row">
+            <div class="span3 stat">
+                <div class="data">
+                    <span class="number">{{ stats.yan.request }}</span> Заявок<br>
+                    <span class="number">{{ stats.yan.contract }}</span> Договоров
+                </div>
+                <span class="date">Январь 2014</span>
+            </div>
+            <div class="span3 stat">
+                <div class="data">
+                    <span class="number">{{ stats.feb.request }}</span> Заявок<br>
+                    <span class="number">{{ stats.feb.contract }}</span> Договоров
+                </div>
+                <span class="date">Февраль 2014</span>
+            </div>
+            <div class="span3 stat">
+                <div class="data">
+                    <span class="number">{{ stats.month.request }}</span> Заявок<br>
+                    <span class="number">{{ stats.month.contract }}</span> Договоров
+                </div>
+                <span class="date">За последние 30 дней</span>
+            </div>
+            <div class="span3 stat last">
+                <div class="data">
+                    <span class="number">{{ stats.total.request }}</span> Заявок<br>
+                    <span class="number">{{ stats.total.contract }}</span> Договоров
+                </div>
+                <span class="date">Всего</span>
+            </div>
+        </div>
+    </div>
   <div class="table-products section">
     <div class="row-fluid filter-block">
         <div class="pull-left">

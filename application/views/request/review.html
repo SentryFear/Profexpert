@@ -139,7 +139,12 @@
                             <p>{{ traspr.name|raw }}</p>
                         </td>
                         <td style="border:solid windowtext 1.0pt; padding: 4px; text-align: center;" valign="middle">
-                            {{ traspr.price|number_format(2, ',', ' ') }}
+                            {% if traspr.price|number_format == 0 %}
+                                {{ traspr.price }}
+                            {% else %}
+                                {{ traspr.price|number_format(2, ',', ' ') }}
+                            {% endif %}
+
                         </td>
                         <td style="border:solid windowtext 1.0pt; padding: 4px; text-align: center;" valign="middle">
                             {{ traspr.srok }}
@@ -245,13 +250,13 @@
                 <tr>
                     <td colspan="2"></td>
                     <td><p align="right"><em>Наценка</em></p></td>
-                    <td><p align="right"><em>0,50</em></p></td>
+                    <td><p align="right"><em>0,80</em></p></td>
                     <td><p align="right">{{ allpr|number_format(2, ',', ' ') }}</p></td>
                 </tr>
                 <tr>
                     <td colspan="3"></td>
                     <td><b>ИТОГО: </b></td>
-                    <td><p align="right">{{ (allpr*2)|number_format(2, ',', ' ') }}</p></td>
+                    <td><p align="right">{{ (allpr/0.8)|number_format(2, ',', ' ') }}</p></td>
                 </tr>
                 <tr><td colspan="5"><br></td></tr>
                 <tr>
@@ -280,11 +285,11 @@
                 </tr>
                 <tr>
                     <td colspan="4"><p align="right"><b>ИТОГО: </b></p></td>
-                    <td><p align="right"><b>{{ (allip*2)|number_format(2, ',', ' ') }}</b></p></td>
+                    <td><p align="right"><b>{{ (allip/0.5)|number_format(2, ',', ' ') }}</b></p></td>
                 </tr>
                 <tr>
                     <td colspan="4"><p align="right"><b><em style="text-decoration: underline;">ВСЕ РАБОТЫ</em></b></p></td>
-                    <td><p align="right"><b><em style="text-decoration: underline;">{{ (allip*2+allpr*2)|number_format(2, ',', ' ') }}</em></b></p></td>
+                    <td><p align="right"><b><em style="text-decoration: underline;">{{ (allip/0.5+allpr/0.8)|number_format(2, ',', ' ') }}</em></b></p></td>
                 </tr>
             </table>
         </div>

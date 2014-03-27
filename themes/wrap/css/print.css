@@ -1,0 +1,27 @@
+.filter-block {
+    display: none;
+}
+.navbar-inverse {
+    display: none;
+}
+#sidebar-nav {
+    display: none;
+}
+.FixedHeader_Cloned {
+    display: none;
+}
+.table-products {
+    padding: 0;
+}
+#pad-wrapper {
+    display: none;
+}
+.content {
+    margin: 0 !important;
+}
+.alert {
+    display: none;
+}
+.container-fluid {
+    padding: 0;
+}

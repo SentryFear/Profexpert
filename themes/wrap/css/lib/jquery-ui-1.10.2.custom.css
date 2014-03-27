@@ -52,7 +52,7 @@
 }
 
 .ui-front {
-	z-index: 100;
+	z-index: 1051;
 }
 
 
@@ -166,14 +166,14 @@
 	font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
 	font-size: 1em;
 }
-.ui-widget-content {
+/*.ui-widget-content {
 	border: 1px solid #dddddd;
 	background: #eeeeee url(../../img/jquery-ui/ui-bg_highlight-soft_100_eeeeee_1x100.png) 50% top repeat-x;
 	color: #333333;
 }
 .ui-widget-content a {
 	color: #333333;
-}
+}*/
 .ui-widget-header {
 	border: 1px solid #e78f08;
 	background: #f6a828 url(../../img/jquery-ui/ui-bg_gloss-wave_35_f6a828_500x100.png) 50% 50% repeat-x;
@@ -200,7 +200,7 @@
 	color: #1c94c4;
 	text-decoration: none;
 }
-.ui-state-hover,
+/*.ui-state-hover,
 .ui-widget-content .ui-state-hover,
 .ui-widget-header .ui-state-hover,
 .ui-state-focus,
@@ -210,7 +210,7 @@
 	background: #fdf5ce url(../img/jquery-ui/ui-bg_glass_100_fdf5ce_1x400.png) 50% 50% repeat-x;
 	font-weight: bold;
 	color: #c77405;
-}
+}*/
 .ui-state-hover a,
 .ui-state-hover a:hover,
 .ui-state-hover a:link,
@@ -503,7 +503,7 @@
 ----------------------------------*/
 
 /* Corner radius */
-.ui-corner-all,
+/*.ui-corner-all,
 .ui-corner-top,
 .ui-corner-left,
 .ui-corner-tl {
@@ -526,7 +526,7 @@
 .ui-corner-right,
 .ui-corner-br {
 	border-bottom-right-radius: 4px;
-}
+}*/
 
 /* Overlays */
 .ui-widget-overlay {

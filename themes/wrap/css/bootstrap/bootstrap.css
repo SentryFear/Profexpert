@@ -2902,7 +2902,7 @@ table th[class*="span"],
   margin-left: 2px;
 }
 
-.dropdown-menu {
+.dropdown-menu, .ui-autocomplete {
   position: absolute;
   top: 100%;
   left: 0;
@@ -2944,7 +2944,7 @@ table th[class*="span"],
   border-bottom: 1px solid #ffffff;
 }
 
-.dropdown-menu > li > a {
+.dropdown-menu > li > a, .ui-autocomplete > li > a {
   display: block;
   padding: 3px 20px;
   clear: both;
@@ -2956,6 +2956,8 @@ table th[class*="span"],
 
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus,
+.ui-autocomplete > li > a:hover,
+.ui-autocomplete > li > a:focus,
 .dropdown-submenu:hover > a,
 .dropdown-submenu:focus > a {
   color: #ffffff;
@@ -2972,7 +2974,10 @@ table th[class*="span"],
 
 .dropdown-menu > .active > a,
 .dropdown-menu > .active > a:hover,
-.dropdown-menu > .active > a:focus {
+.dropdown-menu > .active > a:focus,
+.ui-autocomplete > .active > a,
+.ui-autocomplete > .active > a:hover,
+.ui-autocomplete > .active > a:focus{
   color: #ffffff;
   text-decoration: none;
   background-color: #0081c2;
