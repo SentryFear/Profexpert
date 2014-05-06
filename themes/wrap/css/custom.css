@@ -7,3 +7,32 @@
 #edt:hover {
    background: red;
 }
+
+.bordbt {
+    border-bottom: 1px solid #ffffff;
+    border-collapse: collapse;
+    -webkit-transition: border linear 0.2s, background linear 0.2s;
+    -moz-transition: border linear 0.2s, background linear 0.2s;
+    -o-transition: border linear 0.2s, background linear 0.2s;
+    transition: border linear 0.2s, background linear 0.2s;
+}
+
+.bordbt:hover {
+    border-bottom: 1px solid #959FB0;
+    background-color: #ECF9FF;
+}
+
+#chatErrorMessage {
+    width:100%;
+    top:0;
+    left:0;
+    position:fixed;
+    background-color:#ab0909;
+    border-bottom:1px solid #d32a2a;
+    font-size:23px;
+    padding:16px;
+    text-align:center;
+    color:#fff;
+    text-shadow:1px 1px 0 #940f0f;
+    z-index: 1031;
+}

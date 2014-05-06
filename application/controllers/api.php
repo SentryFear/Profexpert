@@ -138,6 +138,11 @@ class Api extends CI_Controller
         }
     }
 
+    function getChat() {
+
+
+    }
+
     function sendRequest() {
 
         header('Access-Control-Allow-Origin: *');

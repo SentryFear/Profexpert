@@ -201,7 +201,7 @@ if (!function_exists('req_arr_to_table')) {
 
                     if(count($i['more']) > 0) $worklabel = 'label-important';
 
-                    $val = '<a href="/request/comments/' . $i['id'] . '" data-target="#upload" data-type-form="commentsform" data-toggle="modal" class="upl label '.$worklabel.'" data-toggle1="tooltip" data-original-title="Колличество комментариев." id="' . $i['id'] . '">[ ' . count($i['more']) . ' ]</a>';
+                    $val = '<a href="/request/comments/' . $i['id'] . '" data-target="#upload" data-type-form="commentsform" data-toggle="modal" class="upl label '.$worklabel.'" data-toggle1="tooltip" data-original-title="Колличество комментариев" id="' . $i['id'] . '">[ ' . count($i['more']) . ' ]</a>';
 
                 }
 
@@ -1119,11 +1119,20 @@ if (!function_exists('req_get_status')) {
 
 }
 
+/*
+|--------------------------------------------------------------------------
+| Получение статистики
+|--------------------------------------------------------------------------
+|
+| $request = array()
+|   - Массив заявок
+|
+*/
 if (!function_exists('req_get_stats')) {
 
     function req_get_stats($request)
     {
-        $result = array('yan' => array('request' => 0, 'contract' => 0), 'feb' => array('request' => 0, 'contract' => 0), 'month' => array('request' => 0, 'contract' => 0), 'total' => array('request' => 0, 'contract' => 0));
+        $result = array('yan' => array('request' => 0, 'contract' => 0), 'feb' => array('request' => 0, 'contract' => 0), 'mart' => array('request' => 0, 'contract' => 0), 'apr' => array('request' => 0, 'contract' => 0), 'month' => array('request' => 0, 'contract' => 0), 'total' => array('request' => 0, 'contract' => 0));
 
         foreach($request as $i) {
 
@@ -1151,6 +1160,26 @@ if (!function_exists('req_get_stats')) {
                 if($i['ikp'] == 13) {
 
                     $result['feb']['contract']++;
+                }
+            }
+
+            if($i['date'] < 1396310340 && $i['date'] > 1393632000) {
+
+                $result['mart']['request']++;
+
+                if($i['ikp'] == 13) {
+
+                    $result['mart']['contract']++;
+                }
+            }
+
+            if($i['date'] < 1398902340 && $i['date'] > 1396310400) {
+
+                $result['apr']['request']++;
+
+                if($i['ikp'] == 13) {
+
+                    $result['apr']['contract']++;
                 }
             }
 

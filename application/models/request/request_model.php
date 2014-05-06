@@ -254,7 +254,7 @@ class request_model extends CI_Model {
 		
 		$docs = $docs1;
 		
-		for($i=count($docs)+1;$i<=20;$i++) {
+		for($i=count($docs)+1;$i<=100;$i++) {
 			
 			if ($this->upload->do_upload('doc'.$i)) {
 				
@@ -266,7 +266,10 @@ class request_model extends CI_Model {
 				
 				$docs[] = array('id' => $i, 'author' => $author, 'date' => time(), 'name' => $name, 'file' => $dt['file_name']);
 				
-			}
+			} else {
+
+                if($i > 10) break;
+            }
 		}
 		
 		if(empty($docs)) {
@@ -427,7 +430,7 @@ class request_model extends CI_Model {
 
             $traspr2 = $traspr1;
 
-            for($i=$ct+1;$i<=15;$i++) {
+            for($i=$ct+1;$i<=100;$i++) {
 
                 if($this->input->post('trasprname'.$i) && !empty($_POST['trasprname'.$i])) {
 
@@ -438,6 +441,10 @@ class request_model extends CI_Model {
                     $srok = $this->input->post('trasprsr'.$i);
 
                     $traspr2[] = array('id' => $i, 'price' => $price, 'name' => $name, 'srok' => $srok);
+
+                } else {
+
+                    if($i > 10) break;
                 }
             }
 

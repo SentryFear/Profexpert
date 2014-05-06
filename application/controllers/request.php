@@ -301,8 +301,8 @@ class Request extends CI_Controller
 		}
 	}
 
-    function comments() {
-
+    function comments()
+    {
         $id = intval($this->uri->segment(3));
 
         if(!empty($id) && $this->input->is_ajax_request()) {
@@ -322,7 +322,7 @@ class Request extends CI_Controller
               </div>
               <div class="modal-body" id="scrl">';
 
-            foreach($more as $i){
+            foreach($more as $i) {
 
                 isset($i['author']) ? $author = $i['author'] : $author = 'none';
 
@@ -341,7 +341,7 @@ class Request extends CI_Controller
 
             echo '</div>
               <div class="modal-footer">
-                <textarea class="span5 wysihtml5" rows="5" name="text" id="text" placeholder="Комментарий к проекту" style="float: left; width: 515px; margin-bottom: 15px;"></textarea>
+                <textarea class="span5 wysihtml5" rows="5" name="text" id="text" placeholder="Комментарий к проекту" style="float: left; width: 655px; margin-bottom: 15px;"></textarea>
                 <div class="btn-group">
                   <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>';
 
@@ -388,8 +388,8 @@ class Request extends CI_Controller
     /**
      * Изменение статуса заявки (отправление от отдела к отделу)
      */
-    function send() {
-		
+    function send()
+    {
 		$type = $this->uri->segment(3);
 		
 		$id = intval($this->uri->segment(4));
@@ -619,8 +619,8 @@ class Request extends CI_Controller
     /**
      * Печать заявки
      */
-    function prints() {
-		
+    function prints()
+    {
 		$data = array();
 		
 		$data['region'] = $this->config->item('region');

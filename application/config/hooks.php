@@ -10,7 +10,13 @@
 |
 */
 
-
+$hook['post_system'] = array(
+    'class'    => 'logs_hook',
+    'function' => 'index',
+    'filename' => 'logs.php',
+    'filepath' => 'hooks',
+    'params'   => array()
+);
 
 /* End of file hooks.php */
 /* Location: ./application/config/hooks.php */

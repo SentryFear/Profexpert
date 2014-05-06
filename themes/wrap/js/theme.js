@@ -7,12 +7,22 @@ $(function() {
         $.getJSON( "/api/getStatus", function( data ) {
 
             $.each( data, function( key, val ) {
+
                 $('#ld'+val.id).html(val.text);
             });
-
         });
     }
+
+    $('.modal').on('hide', function () {
+        $( 'body' ).css( "overflow", "auto" );
+    });
+
+    $('.modal').on('show', function () {
+        $( 'body' ).css( "overflow", "hidden" );
+    });
+
     get_status();
+
     setInterval(function()
     {
         get_status();
@@ -20,6 +30,7 @@ $(function() {
     }, 10000);
 
     $("#commentsform").submit(function() {
+
         var str = $(this).serialize();
 
         $. ajax ({
@@ -27,12 +38,9 @@ $(function() {
             url: '/request',
             data: str,
             success: function(msg) {
-
                 $('#load').load('/request/comments/'+$("#ths").val(), function() {
                     $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
                 })
-
-
             }
         });
 
@@ -40,6 +48,7 @@ $(function() {
     });
 
     $("#workform").submit(function() {
+
         var str = $(this).serialize();
 
         $. ajax ({
@@ -51,8 +60,6 @@ $(function() {
                 $('#load').load('/projects/work/'+$("#ths").val(), function() {
                     $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
                 })
-
-
             }
         });
 
@@ -60,16 +67,22 @@ $(function() {
     });
 
     $('body').on('click','[data-ind]', function(e){
-            e.preventDefault();
 
-            var btn = $(this);
-            btn.button('loading');
-            var href = $(this).attr('href');
-            var id = $(this).data("ind");
+        e.preventDefault();
 
-            $('#ld'+id).html('');
-            $('#ld'+id).load(href);
-        })
+        var btn = $(this);
+
+        btn.button('loading');
+
+        var href = $(this).attr('href');
+
+        var id = $(this).data("ind");
+
+        $('#ld'+id).html('');
+
+        $('#ld'+id).load(href);
+
+    });
 
     $(".wysihtml5").wysihtml5({
         "font-styles": false,
@@ -104,7 +117,10 @@ $(function() {
              cacheLength:10
         });
 
-    $( ".datepicker" ).datepicker();
+    $('.datepicker').live('focus', function(){
+
+        $(this).datepicker();
+    });
 
     var tpol = 'address';
 
@@ -153,6 +169,7 @@ $(function() {
             trzd = Number(trzd) + Number(val);
 
         });
+
         if(!oldrazd) $("input[name='total']").val(trzd);
 
     }
@@ -170,8 +187,6 @@ $(function() {
                 arr[key] = $(this).val();
 
                 calctrazd(arr)
-
-
 
                 console.log(trzd);
             });
@@ -201,6 +216,7 @@ $(function() {
             i++;
 
         } else {
+
             alert('За один раз можно отправлять только 10 файлов!');
         }
     });
@@ -211,154 +227,154 @@ $(function() {
         else $('.form-actions .btn-group').removeClass('fix-action');
     });
 
-  $( document ).ajaxStart(function() {
-    $( "#loading" ).show();
-  });
+    $( document ).ajaxStart(function() {
+        $( "#loading" ).show();
+    });
   
-  $( document ).ajaxComplete(function() {
-    $( "#loading" ).hide();
-  });
+    $( document ).ajaxComplete(function() {
+        $( "#loading" ).hide();
+    });
   
-  $("#loading").bind("ajaxSend", function(){
-      $(this).show(); // ���������� �������
-  }).bind("ajaxComplete", function(){
-      $(this).hide(); // �������� �������
-  });
+    $("#loading").bind("ajaxSend", function(){
+        $(this).show(); // ���������� �������
+    }).bind("ajaxComplete", function(){
+        $(this).hide(); // �������� �������
+    });
 
-  var $window = $(window);
+    var $window = $(window);
 
-  // fix sub nav on scroll
-  var $win = $(window)
-    , $nav = $('.subnav')
-    , navTop = $('.subnav').length && $('.subnav').offset().top - 40
-    , isFixed = 0
+    // fix sub nav on scroll
+    var $win = $(window)
+        , $nav = $('.subnav')
+        , navTop = $('.subnav').length && $('.subnav').offset().top - 40
+        , isFixed = 0
 
-  processScroll();
+    processScroll();
 
-  // hack sad times - holdover until rewrite for 2.1
-  $nav.on('click', function () {
-      if (!isFixed) {
-          setTimeout(function () {
-              $win.scrollTop($win.scrollTop() - 47)
-          }, 10)
-      }
-  });
+    // hack sad times - holdover until rewrite for 2.1
+    $nav.on('click', function () {
+        if (!isFixed) {
+            setTimeout(function () {
+                $win.scrollTop($win.scrollTop() - 47)
+            }, 10)
+        }
+    });
 
-  $win.on('scroll', processScroll);
+    $win.on('scroll', processScroll);
 
-  function processScroll() {
-    var scrollTop = $win.scrollTop();
-    if (scrollTop >= navTop && !isFixed) {
-      isFixed = 1;
-      $nav.addClass('subnav-fixed');
-    } else if (scrollTop <= navTop && isFixed) {
-      isFixed = 0;
-      $nav.removeClass('subnav-fixed');
+    function processScroll() {
+        var scrollTop = $win.scrollTop();
+        if (scrollTop >= navTop && !isFixed) {
+            isFixed = 1;
+            $nav.addClass('subnav-fixed');
+        } else if (scrollTop <= navTop && isFixed) {
+            isFixed = 0;
+            $nav.removeClass('subnav-fixed');
+        }
     }
-  }
-  // navbar notification popups
-  $(".notification-dropdown").each(function (index, el) {
-    var $el = $(el);
-    var $dialog = $el.find(".pop-dialog");
-    var $trigger = $el.find(".trigger");
+    // navbar notification popups
+    $(".notification-dropdown").each(function (index, el) {
+        var $el = $(el);
+        var $dialog = $el.find(".pop-dialog");
+        var $trigger = $el.find(".trigger");
     
-    /*$dialog.click(function (e) {
-        e.stopPropagation()
-    });*/
+        /*$dialog.click(function (e) {
+            e.stopPropagation()
+        });*/
 
-    $dialog.find(".close-icon").click(function (e) {
-      e.preventDefault();
-      $dialog.removeClass("is-visible");
-      $trigger.removeClass("active");
-    });
-    $("body").click(function () {
-      $dialog.removeClass("is-visible");
-      $trigger.removeClass("active");
-    });
+        $dialog.find(".close-icon").click(function (e) {
+            e.preventDefault();
+            $dialog.removeClass("is-visible");
+            $trigger.removeClass("active");
+        });
 
-    $trigger.click(function (e) {
-      e.preventDefault();
-      e.stopPropagation();
+        $(".content").click(function () {
+            $dialog.removeClass("is-visible");
+            $trigger.removeClass("active");
+        });
+
+        $trigger.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
       
-      // hide all other pop-dialogs
-      $(".notification-dropdown .pop-dialog").removeClass("is-visible");
-      $(".notification-dropdown .trigger").removeClass("active");
+            // hide all other pop-dialogs
+            $(".notification-dropdown .pop-dialog").removeClass("is-visible");
+            $(".notification-dropdown .trigger").removeClass("active");
 
-      $dialog.toggleClass("is-visible");
-      if ($dialog.hasClass("is-visible")) {
-        $(this).addClass("active");
-      } else {
-        $(this).removeClass("active");
-      }
+            $dialog.toggleClass("is-visible");
+            if ($dialog.hasClass("is-visible")) {
+                $(this).addClass("active");
+            } else {
+                $(this).removeClass("active");
+            }
+        });
     });
-  });
 
-  $("#clnt").change(function () {
-      //$(this).html('test');
-      $('#zsurname').val($(this).find("option:selected").data("sn"));
-      $('#zname').val($(this).find("option:selected").data("n"));
-      $('#zmname').val($(this).find("option:selected").data("mn"));
-      $('#organization').val($(this).find("option:selected").data("org"));
-      $('#phone').val($(this).find("option:selected").data("phone"));
-      $('#email').val($(this).find("option:selected").data("email"));
-      $('#hear').val($(this).find("option:selected").data("hear"));
-  });
+    $("#clnt").change(function () {
+        //$(this).html('test');
+        $('#zsurname').val($(this).find("option:selected").data("sn"));
+        $('#zname').val($(this).find("option:selected").data("n"));
+        $('#zmname').val($(this).find("option:selected").data("mn"));
+        $('#organization').val($(this).find("option:selected").data("org"));
+        $('#phone').val($(this).find("option:selected").data("phone"));
+        $('#email').val($(this).find("option:selected").data("email"));
+        $('#hear').val($(this).find("option:selected").data("hear"));
+    });
 
-  $(".upl").click(function () {
-    var href = $(this).attr('href');
-    //$('#load').html('');
-    $('#load').load(href);
-    $("#ths").val(this.id);
+    $(".upl").click(function () {
+        var href = $(this).attr('href');
+        //$('#load').html('');
+        $('#load').load(href);
+        $("#ths").val(this.id);
+    });
 
-  });
-  
-  $("#edt").click(function () {
-    alert('sdfasd');
-    //var href = $(this).attr('href')
-    //$.get(href, function(data){
-    //  $('#load').html(data);
+    $("#edt").click(function () {
+        alert('sdfasd');
+        //var href = $(this).attr('href')
+        //$.get(href, function(data){
+        //  $('#load').html(data);
+        //});
+        //$('#load').html('');
+        //$('#load').load(href);
+        //$("#ths").val(this.id);
+       	//alert(this.id)
+        //$("#ps").html($(this).data("ps"));
+        //$("#tp").html($(this).data("tp"));
+        //$("#ep").html($(this).data("ep"));
+    });
+
+    // sidebar menu dropdown toggle
+    $("#dashboard-menu").find(".dropdown-toggle").click(function (e) {
+        e.preventDefault();
+        var $item = $(this).parent();
+        $item.toggleClass("active");
+        if ($item.hasClass("active")) {
+            $item.find(".submenu").slideDown("fast");
+        } else {
+            $item.find(".submenu").slideUp("fast");
+        }
+    });
+
+
+    // mobile side-menu slide toggler
+    var $menu = $("#sidebar-nav");
+    $("body").click(function () {
+        if ($menu.hasClass("display")) {
+            $menu.removeClass("display");
+        }
+    });
+    //$menu.click(function(e) {
+    //  e.stopPropagation();
     //});
-    //$('#load').html('');
-    //$('#load').load(href);
-    //$("#ths").val(this.id);
-   	//alert(this.id)
-    //$("#ps").html($(this).data("ps"));
-    //$("#tp").html($(this).data("tp"));
-    //$("#ep").html($(this).data("ep"));
-  });
+    $("#menu-toggler").click(function (e) {
+        e.stopPropagation();
+        $menu.toggleClass("display");
+    });
 
-  // sidebar menu dropdown toggle
-  $("#dashboard-menu").find(".dropdown-toggle").click(function (e) {
-    e.preventDefault();
-    var $item = $(this).parent();
-    $item.toggleClass("active");
-    if ($item.hasClass("active")) {
-      $item.find(".submenu").slideDown("fast");
-    } else {
-      $item.find(".submenu").slideUp("fast");
-    }
-  });
-
-
-  // mobile side-menu slide toggler
-  var $menu = $("#sidebar-nav");
-  $("body").click(function () {
-    if ($menu.hasClass("display")) {
-      $menu.removeClass("display");
-    }
-  });
-  //$menu.click(function(e) {
-  //  e.stopPropagation();
-  //});
-  $("#menu-toggler").click(function (e) {
-    e.stopPropagation();    
-    $menu.toggleClass("display");    
-  });
-  
-  $('body').tooltip({
-      selector: "[data-toggle=tooltip]",
-      html: "true"
-  });
+    $('body').tooltip({
+        selector: "[data-toggle=tooltip]",
+        html: "true"
+    });
 
 	// build all tooltips from data-attributes
 	$("[data-toggle='tooltip']").each(function (index, el) {
@@ -378,32 +394,32 @@ $(function() {
 
   // custom uiDropdown element, example can be seen in user-list.html on the 'Filter users' button
 	var uiDropdown = new function() {
-  	var self;
-  	self = this;
-  	this.hideDialog = function($el) {
-    		return $el.find(".dialog").hide().removeClass("is-visible");
-  	};
-  	this.showDialog = function($el) {
-    		return $el.find(".dialog").show().addClass("is-visible");
-  	};
+  	    var self;
+  	    self = this;
+  	    this.hideDialog = function($el) {
+    	    return $el.find(".dialog").hide().removeClass("is-visible");
+  	    };
+  	    this.showDialog = function($el) {
+    	    return $el.find(".dialog").show().addClass("is-visible");
+  	    };
 		return this.initialize = function() {
-  		$("html").click(function() {
-    		$(".ui-dropdown .head").removeClass("active");
-      		return self.hideDialog($(".ui-dropdown"));
-    		});
+  		    $("html").click(function() {
+    		    $(".ui-dropdown .head").removeClass("active");
+      		    return self.hideDialog($(".ui-dropdown"));
+    	    });
     		$(".ui-dropdown .body").click(function(e) {
-      		return e.stopPropagation();
+      		    return e.stopPropagation();
     		});
     		return $(".ui-dropdown").each(function(index, el) {
-      		return $(el).click(function(e) {
-      			e.stopPropagation();
-      			$(el).find(".head").toggleClass("active");
-      			if ($(el).find(".head").hasClass("active")) {
-        			return self.showDialog($(el));
-      			} else {
-        			return self.hideDialog($(el));
-      			}
-      		});
+      		    return $(el).click(function(e) {
+      			    e.stopPropagation();
+      			    $(el).find(".head").toggleClass("active");
+      			    if ($(el).find(".head").hasClass("active")) {
+        			    return self.showDialog($(el));
+      			    } else {
+        			    return self.hideDialog($(el));
+      			    }
+      		    });
     		});
     	};
   	};

@@ -397,7 +397,7 @@
 }
 .ui-select select {	
 	line-height: inherit;
-	width: 135%;
+	width: 100%;
 	font-family: "Open Sans", Arial;
 	font-size: 12px;
 	border: none;

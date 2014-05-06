@@ -18,7 +18,7 @@ class Projects extends CI_Controller
         $this->load->helper(array('form', 'url', 'projects'));
 
         //load request model
-        //$this->load->model('request/request_model');
+        $this->load->model('projects/projects_model');
 
         //load request config
         $this->config->load('request');
@@ -83,14 +83,27 @@ class Projects extends CI_Controller
 
             $res = array();
 
+            $lastedit = array();
+
             $res = projects_work_type_pr($this->config->item('worktype'), $res);
 
             $worktype = serialize($res);
 
+            $lastedit[] =  array('author' => $this->dx_auth->get_name(), 'date' => time(), 'action' => $res);
+
+            $tdd = '';
+
+            if($this->input->post('dogdate')) {
+
+                $dd = explode('.', $this->input->post('dogdate'));
+
+                $tdd = mktime(0, 0, 0, $dd[1], $dd[0], $dd[2]);
+            }
+
             $insproj = array(
                 'date' => time(),
                 'cnumber' => $this->input->post('cnumber'),
-                'dogdate' => $this->input->post('dogdate'),
+                'dogdate' => $tdd,
                 'work' => $this->input->post('work'),
                 'city' => $this->input->post('city'),
                 'region' => $this->input->post('region'),
@@ -99,6 +112,7 @@ class Projects extends CI_Controller
                 'buildingAdd' => $this->input->post('buildingAdd'),
                 'apartment' => $this->input->post('apartment'),
                 'worktype' => $worktype,
+                'lastedit' => serialize($lastedit),
                 'cid' => $cid,
             );
 
@@ -112,14 +126,29 @@ class Projects extends CI_Controller
 
                 $updwork = array();
 
+                $end = array();
+
                 $updwork = projects_work_type_pr($this->config->item('worktype'), $updwork);
 
-                $updlastedit = array('author' => $this->dx_auth->get_name(), 'date' => time());
+                $id = $this->input->post('id');
+
+                $row = $this->db->get_where('projects', array('id' => $id))->row_array();
+
+                $updlastedit = unserialize($row['lastedit']);
+
+                if(empty($updlastedit)) $updlastedit = array();
+                else $end = end($updlastedit);
+
+                if($updwork != $end['action']) $updlastedit[] = array('author' => $this->dx_auth->get_name(), 'date' => time(), 'action' => $updwork);
+
+                if(count($updlastedit) > 6) unset($updlastedit[1]);
+
+                $updlastedit = array_values($updlastedit);
 
                 $this->db->update('projects', array('worktype' => serialize($updwork), 'lastedit' => serialize($updlastedit)), array('id' => $this->input->post('id')));
             }
 
-            exit('ok');
+            return 'ok';
         }
 
         if($this->input->post('edit')) {
@@ -163,12 +192,20 @@ class Projects extends CI_Controller
                     );
 
                     $this->db->update('card', $updclnt, array('id' => $cid));
+                }
 
+                $tdd = '';
+
+                if($this->input->post('dogdate')) {
+
+                    $dd = explode('.', $this->input->post('dogdate'));
+
+                    $tdd = mktime(0, 0, 0, $dd[1], $dd[0], $dd[2]);
                 }
 
                 $updproj = array(
                     'cnumber' => $this->input->post('cnumber'),
-                    'dogdate' => $this->input->post('dogdate'),
+                    'dogdate' => $tdd,
                     'work' => $this->input->post('work'),
                     'city' => $this->input->post('city'),
                     'region' => $this->input->post('region'),
@@ -182,10 +219,62 @@ class Projects extends CI_Controller
                 $this->db->update('projects', $updproj, array('id' => $this->input->post('id')));
             }
 
-            exit('ok1');
+            return 'ok';
         }
 
-        $result['data'] = $this->db->select('*')->from('card')->join('projects', 'projects.cid = card.id', 'RIGHT OUTER')->get()->result_array();
+        if($this->input->post('comments') && $this->input->post('id')) {
+
+            if($this->input->post('text')) {
+
+                //$this->load->library('history');
+
+                //$this->load->library('notification');
+
+                $id = $this->input->post('id');
+
+                $text = $this->input->post('text');
+
+                $author = $this->dx_auth->get_name();
+
+                $aid = $this->dx_auth->get_user_id();
+
+                $rname = $this->dx_auth->get_role_name();
+
+                $row = $this->db->get_where('projects', array('id' => $id))->row_array();
+
+                //$this->notification->setNotification('Новый комментарий ['.$id.']', '/request/?sort=mAll', $id, 'Новый комментарий к заявке', '0', $row['mid']);
+
+                $comments = unserialize($row['comments']);
+
+                if(empty($comments)) $comments = array();
+
+                $comments[] = array('aid' => $aid, 'rname' => $rname, 'author' => $author, 'text'=> $text, 'date' => time());
+
+                //if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
+
+                    //$upd['kp'] = 9;
+
+                    //$this->history->setHistory('dt9', $id);
+                //}
+
+                $upd['comments'] = serialize($comments);
+
+                $this->db->update('projects', $upd, array('id' => $id)) ? $data['success'] = "Заявка успешно отправлена на доработку!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+            }
+
+            return 'ok';
+        }
+
+        if($this->input->post('upload') && $this->input->post('id')) {
+
+            $data = $this->projects_model->add_docs();
+
+            //var_dump($data);
+
+            return 'ok';
+        }
+
+        $result['data'] = $this->db->select('*')->from('card')->join('projects', 'projects.cid = card.id', 'RIGHT OUTER')->order_by('dogdate asc, cnumber asc')->get()->result_array();
 
         $respar = array();
 
@@ -195,12 +284,20 @@ class Projects extends CI_Controller
 
             $i['worktype'] = unserialize($i['worktype']);
 
-            $i['zadach'] = projects_work_type_total($this->config->item('worktype'), $i['worktype'], $i['zadach']);
+            $i['comments'] = unserialize($i['comments']);
+
+            $i['docs'] = unserialize($i['docs']);
+
+            $i['zadach'] = projects_work_type_total(projects_work_type_bd($this->config->item('worktype'), $i['worktype']), $i['zadach']);
 
             $respar[] = $i;
         }
 
         $result['data'] = $respar;
+
+        $sr = '';
+
+        $result['search'] = projects_work_type_to_search($this->config->item('worktype'), $sr);
 
         $wt = '';
 
@@ -224,17 +321,190 @@ class Projects extends CI_Controller
         echo $this->twig->render('projects/main.html', $result);
     }
 
-    function work() {
+    /**
+     * Добавление файлов открывается с помощью AJAX
+     */
+    function docs()
+    {
+        $id = intval($this->uri->segment(3));
 
+        $docs = array();
+
+        if(!empty($id) && $this->input->is_ajax_request()) {
+
+            $res = $this->db->get_where('projects', array('id' => $id))->row_array();
+
+            $docs = unserialize($res['docs']);
+
+            echo '
+<form method="POST" enctype="multipart/form-data" class="form-horizontal" id="addform">
+      <input type="hidden" name="id" value="'.$id.'" id="ths" />
+      <input type="hidden" name="upload" value="Отправить"/>
+<div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                     <h3 id="myModalLabel">Загрузить документы</h3>
+                  </div>
+                  <div class="modal-body">';
+
+            if(empty($docs)) {
+
+                echo '<div class="alert alert-error">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+						<b>Ещё не добавлено ни одного файла.</b>
+					</div>';
+                echo '<div class="alert alert-info">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<b>Подсказка</b><br>
+					* Для добавления файла нажмите кнопку <b>Добавить файл</b>.<br/>
+					* Заполните поле <b>Название файла</b>.<br/>
+					* Выберите файл с компьютера.<br/>
+					* Нажмите на кнопку <b>Загрузить</b>.
+				      </div>';
+
+            } else {
+
+                echo '<div class="alert alert-success" style="display:none" id="alrt">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <b id="resp"></b>
+					  </div>';
+
+                foreach($docs as $i) {
+
+                    echo '<blockquote><table class="table table-hover" style="margin-bottom: 0px;"><tr><td style="vertical-align: top;">
+							<input class="inline-input" placeholder="Название файла" name="name'.$i['id'].'" value="'.$i['name'].'" type="text">
+							<input id="inp'.$i['id'].'" type="file" name="doc'.$i['id'].'" style="display:none; margin-top: 15px;" />
+							</td>
+							<td style="vertical-align: top; overflow: visible;"><div class="btn-group">
+								<a href="#" class="btn btn-mini" onclick="$(\'#inp'.$i['id'].'\').toggle();" data-toggle="tooltip" data-original-title="Загрузить другой файл" data-placement="left"><i class="icon-edit"></i> Обновить файл</a>
+								<a href="/uploads/projects/'.$i['file'].'" target="_blank" class="btn btn-mini" data-toggle="tooltip" data-original-title="Скачать файл" data-placement="left"><i class="icon-download-alt"></i> Скачать файл</a>
+							</div></td></tr>
+						</table><small>Загрузил <b>'.$i['author'].'</b> '.date("d.m.Y в H:i", $i['date']).'</small></blockquote>';
+
+                }
+            }
+
+            echo '<div class="adds"></div>';
+
+            echo '<hr><p><a href="javascript:void(0);" class="btn btn-success btn-mini" id="add">Добавить файл</a></p>';
+
+            echo '<div class="alert alert-info">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<b>Подсказка</b><br>
+				* Нажмите на текст названия чтобы изменить его.<br>
+				* Нажмите на кнопку <i class="icon-edit" style="margin:0;"></i> рядом с названием того файла который хотите заменить.<br>
+				* Нажмите на кнопку <i class="icon-download-alt" style="margin:0;"></i> рядом с названием того файла который хотите скачать.
+			      </div>
+			      </div>
+                  <div class="modal-footer">
+                    <div class="btn-group">
+                      <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                      <input type="submit" class="btn btn-primary" name="upload" value="Добавить" />
+                    </div>
+                  </div></form>';
+
+            echo "<script>
+				(function($) {
+				$(function() {
+				//  $('input').styler({
+				//      browseText: 'Обновить файл'
+				//  });
+				var i = ".count($docs)." + 1;
+				var q = 0;
+				$('#add').click(function(e) {
+					if(q<10) {
+						$('div.adds').append('<blockquote><input class=\"inline-input\" placeholder=\"Название файла\" name=\"name'+i+'\" value type=\"text\"><input type=file name=doc'+i+' style=\"float: right;\" /></blockquote>');
+						q++;
+						i++;
+					} else {
+						alert('За один раз можно отправлять только 10 файлов!')
+					}
+
+
+				})
+				})
+				})(jQuery)
+				</script>  ";
+
+            echo "<script>
+				(function($) {
+
+                    $(function() {
+
+                        $('#addform').submit(function() {
+
+                            $( '#loading' ).show();
+
+                            var str = $(this).serialize();
+
+                            var form = document.forms.addform;
+
+                            var formData = new FormData(form);
+
+                            var xhr = new XMLHttpRequest();
+
+                            xhr.open('POST', '/projects');
+
+                            xhr.onreadystatechange = function() {
+                                if (xhr.readyState == 4) {
+                                    if(xhr.status == 200) {
+                                        data = xhr.responseText;
+                                        $('#load').load('/projects/docs/'+$('#ths').val(), function() {
+                                            $( '#loading' ).hide();
+                                            $( '#alrt' ).show();
+                                            $( '#resp' ).html('Файлы успешно добалены');
+                                            $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
+                                        })
+                                    }
+                                }
+                            };
+
+                            xhr.send(formData);
+
+                            /*$. ajax ({
+                                type: 'POST',
+                                url: '/request',
+                                data: str,
+                                success: function(msg) {
+
+                                    $('#load').load('/request/add/'+$('#ths').val(), function() {
+                                            $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
+                                    })
+
+
+                                }
+                            });*/
+
+                            return false;
+                        });
+                    })
+				})(jQuery)
+				</script>";
+
+        } else {
+
+            redirect("/projects");
+        }
+    }
+
+    function work()
+    {
         $id = intval($this->uri->segment(3));
 
         $tot = '';
 
         $totsh = '';
 
+        $end = array();
+
+        $endle = '';
+
+        $cendle = '';
+
+        $current = array();
+
         $worktype = array();
 
-        $lastedit = array('author' => 'none', 'date' => '1');
+        $lastedit[] = array('author' => 'none', 'date' => '1', 'action' => array());
 
         if(!empty($id) && $this->input->is_ajax_request()) {
 
@@ -248,13 +518,81 @@ class Projects extends CI_Controller
 
             $tot = projects_work_type_show($this->config->item('worktype'), $worktype, $tot, $flt);
 
+            $letot = '';
+
+            foreach($lastedit as $kle => $le) {
+
+                if(empty($letot)) {
+
+                    $letot .= '<small><span style="cursor: pointer;" data-toggle="tooltip" data-original-title="Посмотреть изменения" onclick="$(\'#le'.$kle.'\').toggle(\'slow\');">Добавил <b>'.$le['author'].'</b> ('.date('d.m.y H:i:s', $le['date']).')</span>&nbsp;<i onclick="$(\'#all\').toggle(\'slow\');" style="cursor: pointer;" data-toggle="tooltip" data-original-title="Посмотреть все изменения" class="icon-tasks"></i></small><br>';
+
+                    $cendle = projects_last_edit($this->config->item('worktype'), $le['action'], $cendle);
+
+                    $letot .= '<div style="display:none;" id="le'.$kle.'">'.$cendle.'</div><div id="all" style="display:none;">';
+
+                } else {
+
+                    $tot1 = $le['action'];
+
+                    $letot .= '<small style="cursor: pointer;" data-toggle="tooltip" data-original-title="Посмотреть изменения" onclick="$(\'#le'.$kle.'\').toggle(\'slow\');">Изменил <b>'.$le['author'].'</b> ('.date('d.m.y H:i:s', $le['date']).')</small><br>';
+
+                    foreach($current['action'] as $ek => $e)  {
+
+                        foreach($le['action'] as $ck => $c) {
+
+                            if($ek == $ck && $e['note'] == $c['note'] && $e['ord'] == $c['ord'] && $e['value'] == $c['value']) unset($tot1[$ck]);
+                        }
+                    }
+
+                    $endle = projects_last_edit($this->config->item('worktype'), $tot1, $endle);
+
+                    $letot .= '<div style="display:none;" id="le'.$kle.'">'.$endle.'</div>';
+                }
+
+                //$letot .= '<div style="display:none;" id="le'.$kle.'">'.$cendle.'</div>';
+
+                $current = $le;
+            }
+            $letot .= '</div>';
+            /*$current = current($lastedit);
+
+            $end = end($lastedit);
+
+            $tot1 = $end['action'];
+            //var_dump($end);
+            foreach($current['action'] as $ek => $e)  {
+
+                foreach($end['action'] as $ck => $c) {
+
+                    if($ek == $ck && $e['note'] == $c['note'] && $e['ord'] == $c['ord'] && $e['value'] == $c['value']) unset($tot1[$ck]);
+                }
+            }*/
+
+//var_dump($tot1);
+
+            //$endle = projects_last_edit($this->config->item('worktype'), $tot1, $endle);
+
+           //$cendle = projects_last_edit($this->config->item('worktype'), $current['action'], $cendle);
+
             echo '
                     <form method="POST" enctype="multipart/form-data" class="form-horizontal" id="workform">
                         <input type="hidden" name="id" value="'.$id.'" id="ths" />
                         <input type="hidden" name="workedt" value="Отправить"/>
                         <div class="modal-header">
                              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                             <h3 id="myModalLabel">Работа над проектом<br> <small><b>'.$lastedit['author'].'</b> ('.date('d.m.y H:i:s', $lastedit['date']).')</small></h3>
+                             <h3 id="myModalLabel">Работа над проектом<br>';
+
+            echo $letot;
+
+            /*echo '<small onclick="$(\'#cendle\').toggle(\'slow\');">Добавил <b>'.$current['author'].'</b> ('.date('d.m.y H:i:s', $current['date']).')</small><br>';
+
+            echo '<div style="display:none;" id="cendle">'.$cendle.'</div>';
+
+            echo '<small onclick="$(\'#endle\').toggle(\'slow\');">Изменил <b>'.$end['author'].'</b> ('.date('d.m.y H:i:s', $end['date']).')</small><br>';
+
+            echo '<div style="display:none;" id="endle">'.$endle.'</div>';*/
+
+            echo '</h3>
                         </div>
                         <div class="modal-body" id="scrl"><a href="javascript:void(0)" class="btn" onclick="$(\'.shch\').show();">Редактировать список</a><br><br>';
 
@@ -280,7 +618,7 @@ class Projects extends CI_Controller
                             success: function(msg) {
 
                                 $('#load').load('/projects/work/'+$('#ths').val(), function() {
-                                        $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
+                                        //$('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
                                 })
 
 
@@ -307,8 +645,92 @@ class Projects extends CI_Controller
         }
     }
 
-    function edit() {
+    function comments()
+    {
+        $id = intval($this->uri->segment(3));
 
+        if(!empty($id) && $this->input->is_ajax_request()) {
+
+            $res = $this->db->get_where('projects', array('id' => $id))->row_array();
+
+            if(!empty($res['comments'])) $more = unserialize($res['comments']);
+            else $more = array();
+
+            echo '
+<form method="POST" enctype="multipart/form-data" class="form-horizontal" id="commentsform">
+      <input type="hidden" name="id" value="'.$id.'" id="ths" />
+      <input type="hidden" name="comments" value="Отправить"/>
+<div class="modal-header">
+                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                 <h3 id="myModalLabel">Комментарии к проекту</h3>
+              </div>
+              <div class="modal-body" id="scrl">';
+
+            foreach($more as $i) {
+
+                isset($i['author']) ? $author = $i['author'] : $author = 'none';
+
+                isset($i['rname']) ? $rname = $i['rname'] : $rname = 'none';
+
+                echo '<blockquote>
+                          <p>'.$i['text'].'</p>
+                          <small>Создал <b>'.$author.' ('.$rname.')</b> '.date("d.m.Y в H:i", $i['date']).'</small>
+                        </blockquote>';
+            }
+
+            //if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
+
+            //echo '';
+            //}
+
+            echo '</div>
+              <div class="modal-footer">
+                <textarea class="span5 wysihtml5" rows="5" name="text" id="text" placeholder="Комментарий к проекту" style="float: left; width: 515px; margin-bottom: 15px;"></textarea>
+                <div class="btn-group">
+                  <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>';
+
+            //if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
+
+            echo '<input type="submit" class="btn btn-primary" name="comments" value="Отправить" />';
+            //}
+
+            echo '</div></div></form>';
+
+            echo "<script>
+				(function($) {
+				$(function() {
+				    $('#commentsform').submit(function() {
+                        var str = $(this).serialize();
+
+                        $. ajax ({
+                            type: 'POST',
+                            url: '/projects',
+                            data: str,
+                            success: function(msg) {
+
+                                $('#load').load('/projects/comments/'+$('#ths').val(), function() {
+                                        $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
+                                })
+
+
+                            }
+                        });
+
+                        return false;
+                    });
+				})
+				})(jQuery)
+				</script>";
+
+        } else {
+
+            redirect("/projects");
+        }
+
+    }
+
+    function edit()
+    {
         $id = intval($this->uri->segment(3));
 
         if(!empty($id) && $this->input->is_ajax_request()) {
@@ -335,6 +757,8 @@ class Projects extends CI_Controller
                         </div>
                         <div class="modal-body" id="scrl">';
 
+            $dd = (!empty($res['dogdate']) && !strstr($res['dogdate'], '.')) ? date("d.m.Y", $res['dogdate']) : $res['dogdate'];
+
             echo '
                 <div class="control-group">
                     <label class="control-label" for="cnumber">№ договора</label>
@@ -345,7 +769,7 @@ class Projects extends CI_Controller
                 <div class="control-group">
                     <label class="control-label" for="cnumber">Дата заключения договора</label>
                     <div class="controls">
-                        <input class="inline-input datepicker1" type="text" data-date-format="dd.mm.yyyy" id="dogdate" name="dogdate" placeholder="Дата заключения договора" value="'.$res['dogdate'].'">
+                        <input class="inline-input datepicker1" type="text" data-date-format="dd.mm.yyyy" id="dogdate" name="dogdate" placeholder="Дата заключения договора" value="'.$dd.'">
                     </div>
                 </div>
                 <div class="control-group">
@@ -489,6 +913,55 @@ class Projects extends CI_Controller
 				})(jQuery)
 				</script>";
         }
+    }
+
+    function getProjects() {
+
+        $return = array();
+
+        $wt = $this->security->xss_clean($this->uri->segment(3));
+
+        $term = $this->security->xss_clean($this->uri->segment(4));
+
+        $res = $this->db->select('*')
+                ->from('card')
+                ->join('projects', 'projects.cid = card.id', 'RIGHT OUTER')
+                ->like('cnumber', $term)
+                ->or_like('work', $term)
+                ->or_like('city', $term)
+                ->or_like('region', $term)
+                ->or_like('street', $term)
+                ->or_like('building', $term)
+                ->or_like('buildingAdd', $term)
+                ->or_like('apartment', $term)
+                ->get()
+                ->result_array();
+
+        foreach($res as $i) {
+
+            if(!empty($wt)) {
+
+                if(!empty($i['worktype'])) {
+
+                    $sr = unserialize($i['worktype']);
+
+                    foreach($sr as $ks => $s) {
+
+                        if($ks == $wt && empty($s['value'])) $return[] = $i['id'];
+                    }
+                }
+
+
+
+            } else {
+
+                $return[] = $i['id'];
+            }
+
+
+        }
+
+        echo json_encode($return);
     }
 
     function delete()

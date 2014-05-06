@@ -202,21 +202,23 @@ input.search{
 
 /* navar popup dialog for messages */
 .navbar-inverse .pop-dialog .messages {
-	width: 330px;
-	margin: 10px -10px 0px -10px;
+    width: 400px;
+    height: 300px;
+    margin: 10px -10px 0px -10px;
+    overflow-x: auto;
 }
 .navbar-inverse  .pop-dialog .messages .item {
-	display: block;
-	padding: 10px 20px 15px 20px;
-	height: 54px;
-	border-bottom: 1px solid #e7e8ea;
-	color: rgb(54, 54, 54);
-	text-decoration: none;
-	position: relative;
-	transition: all .25s linear;
-	-moz-transition: all .25s linear;
-	-webkit-transition: all .25s linear;
-	-o-transition: all .25s linear;
+    display: block;
+    padding: 10px 0px 8px 10px;
+    border-top: 1px solid #e7e8ea;
+    color: rgb(54, 54, 54);
+    text-decoration: none;
+    /*padding-left: 50px;*/
+    position: relative;
+    transition: all .25s linear;
+    -moz-transition: all .25s linear;
+    -webkit-transition: all .25s linear;
+    -o-transition: all .25s linear;
 }
 .navbar-inverse  .pop-dialog .messages .item.last {
 	border-bottom: 0px;
@@ -243,15 +245,14 @@ input.search{
 	top: -1px;
 }
 .navbar-inverse  .pop-dialog .messages .item .time {
-	position: absolute;
-	right: 0px;
-	bottom: 6px;
-	color: #82a3c1;
-	font-style: italic;
-	font-weight: 600;
-	font-size: 11px;
-	min-width: 60px;
-	margin-right: 5px;
+    color: #82A3C1;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 11px;
+    min-width: 60px;
+    margin-right: 5px;
+    display: block;
+    text-align: right;
 }
 .navbar-inverse  .pop-dialog .messages .item .time i {
 	font-size: 13px;
