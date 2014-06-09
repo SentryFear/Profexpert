@@ -1,29 +1,21 @@
-# README #
+# Добро пожаловать!
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Система управления работой сотрудников
 
-### What is this repository for? ###
+Используемые инструменты:
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* **[CodeIgniter](http://ellislab.com/codeigniter/)**
+* **[Twig](http://twig.sensiolabs.org/)**
+* **[Bootstrap](http://getbootstrap.com/2.3.2/)**
 
-### How do I get set up? ###
+Документация:
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* [Контроллеры](https://bitbucket.org/SentryFear/profexpert/wiki/%D0%9A%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D0%BB%D0%B5%D1%80%D1%8B)
 
-### Contribution guidelines ###
+* [Хелперы](https://bitbucket.org/SentryFear/profexpert/wiki/%D0%A5%D0%B5%D0%BB%D0%BF%D0%B5%D1%80%D1%8B)
 
-* Writing tests
-* Code review
-* Other guidelines
+* Модели
 
-### Who do I talk to? ###
+* Свои библиотеки
 
-* Repo owner or admin
-* Other community or team contact
+* Сторонние библиотеки
