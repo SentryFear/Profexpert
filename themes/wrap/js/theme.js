@@ -13,12 +13,16 @@ $(function() {
         });
     }
 
-    $('.modal').on('hide', function () {
-        $( 'body' ).css( "overflow", "auto" );
+    $('#upload').on('hide', function (b) {
+        //console.log(b.target.attributes.role);
+        if(b.target.attributes.role == 'dialog') console.log('ok');
+        //alert(b.target.attributes.role)
+        if(b.target.attributes.role) $( 'body' ).css( "overflow", "auto" );
     });
 
-    $('.modal').on('show', function () {
-        $( 'body' ).css( "overflow", "hidden" );
+    $('#upload').on('show', function (b) {
+        //console.log('show');
+        if(b.target.attributes.role) $( 'body' ).css( "overflow", "hidden" );
     });
 
     get_status();

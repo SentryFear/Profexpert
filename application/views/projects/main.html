@@ -59,6 +59,42 @@
             white-space: nowrap;
         }
     </style>
+    <div id="main-stats">
+        <div class="row-fluid stats-row">
+            <div class="span2 stat">
+                <div class="data">
+                    <span class="number">{{ stats.2013.all }}</span> Всего<br>
+                    <span class="number">{{ stats.2013.close }}</span> Закрыто
+                </div>
+                <span class="date">За 2013 год договоров</span>
+            </div>
+            <div class="span2 stat" style="margin-left: 0;">
+                <div class="data">
+                    <span class="number">{{ stats.2014.all }}</span> Всего<br>
+                    <span class="number">{{ stats.2014.close }}</span> Закрыто
+                </div>
+                <span class="date">За 2014 год договоров</span>
+            </div>
+            <div class="span2 stat" style="margin-left: 0;">
+                <div class="data">
+                    <span class="number">{{ stats.all.all }}</span> Всего<br>
+                    <span class="number">{{ stats.all.close }}</span> Закрыто
+                </div>
+                <span class="date">Всего договоров</span>
+            </div>
+            <div class="span2 stat" style="margin-left: 0; {% if stats.all.notfill > 0 %}background-color: #FFEAE8;{% else %}background-color: #E5FFE6;{% endif %}">
+                <div class="data">
+                    {% if stats.all.notfill > 0 %}
+                    заполнить<br>
+                    <span class="number" style="color: #EE3232;">{{ stats.all.notfill }}</span> договоров
+                    {% else %}
+                        <br><span class="number" style="color: #68CE24;">0</span> договоров
+                    {% endif %}
+                </div>
+                <span class="date">Необходимо заполнить</span>
+            </div>
+        </div>
+    </div>
 <div class="table-products section">
     <div class="row-fluid filter-block">
         {#<div class="pull-left">
@@ -93,30 +129,31 @@
             <thead>
                 <tr>
                     <th width="3%">№</th>
-                    <th width="1%"><span class="line"></span><span data-toggle="tooltip" data-original-title="Работа">[ Р ]</span></th>
+                    <th width="1%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Работа">[ Р ]</span></th>
                     <th width="5%"><span class="line"></span>Договор</th>
                     <th class="span2"><span class="line"></span>Адрес</th>
                     <th class="span2"><span class="line"></span>Заказчик</th>
                     <th width="7%"><span class="line"></span>Срок оконч. дов.</th>
                     <th class="span2"><span class="line"></span>Текущая задача</th>
                     <th class="span2"><span class="line"></span>Следующая задача</th>
-                    <th width="1%"><span class="line"></span><span data-toggle="tooltip" data-original-title="Комментарии">[ К ]</span></th>
-                    <th width="1%"><span class="line"></span><span data-toggle="tooltip" data-original-title="Файлы">[ Ф ]</span></th>
+                    <th width="1%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Комментарии">[ К ]</span></th>
+                    <th width="1%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Файлы">[ Ф ]</span></th>
                     <th class="span1"><span class="line"></span>Действия</th>
                 </tr>
             </thead>
             <tbody>
             {% for row in data %}
-                <tr id="p{{ row.id }}" class="hde">
+                <tr id="p{{ row.id }}" class="hde" {% if row.worktype.rabotaszakzakrytdogovordata.value|length > 0 %}style="background-color: #D2FFCA;"{% endif %}>
                     <td>{{ loop.index }}</td>
-                    {#<td><a href="/projects/work/{{ row.id }}" data-target="#upload" data-toggle="modal" class="upl label {% if row.zadach.count > 0  %}label-important{% else %}label-success{% endif %}" data-toggle1="tooltip" data-original-title="Задачи по проекту" id="{{ row.id }}">[ {{ row.zadach.count }} ]</a></td>#}
-                    <td><a href="/projects/work/{{ row.id }}" data-target="#upload" data-toggle="modal" class="upl label {% if row.zadach|length > 0  %}label-important{% else %}label-success{% endif %}" data-toggle1="tooltip" data-original-title="Задачи по проекту" id="{{ row.id }}">[ {{ row.zadach|length }} ]</a></td>
+                    <td><a href="/projects/work/{{ row.id }}" data-target="#upload" data-toggle="modal" class="upl label {% if row.zadach.count > 0  %}label-important{% else %}label-success{% endif %}" data-toggle1="tooltip" data-original-title="Задачи по проекту" id="{{ row.id }}">[ {{ row.zadach.count }} ]</a></td>
                     <td><span data-toggle="tooltip" data-original-title="Дата создания проекта: {{ row.date|date("d.m.Y") }}<br>Дата заключения договора: {{ row.dogdate|date("d.m.Y") }}<br>Работа: {{ row.work }}">{{ row.cnumber }}</span></td>
                     {#<td>{{ row.work }}</td>#}
                     <td><span data-toggle="tooltip" data-original-title="Город: {{ row.city }}<br>Район: {{ row.region }}<br>Улица: {{ row.street }}<br>Дом: {{ row.building }}<br>Корпус\Литера: {{ row.buildingAdd }}<br>Квартира/Помещение: {{ row.apartment }}">{% if row.street|length > 0 %}{{ row.street }}, {% endif %}{% if row.building|length > 0 %}д.{{ row.building }}, {% endif %}{% if row.buildingAdd|length > 0 %}корп/лит:{{ row.buildingAdd }}, {% endif %}{% if row.apartment|length > 0 %}кв.{{ row.apartment }}{% endif %}</span></td>
                     <td>{{ row.zsurname }} {{ row.zname }} {{ row.zmname }}</td>
                     <td>{{ row.worktype.doverennstsrokokonchaniyadata.value }}</td>
-                    <td>
+                    <td><a href="/projects/work/{{ row.id }}/{{ row.zadach.rs.0.last.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.rs.0.last.rname }}<br>({{ row.zadach.rs.0.rname }})" id="{{ row.id }}">{{ row.zadach.rs.0.last1.rname }}</a></td>
+                    <td><a href="/projects/work/{{ row.id }}/{{ row.zadach.rs.1.last.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.rs.1.last.rname }}<br>({{ row.zadach.rs.1.rname }})" id="{{ row.id }}">{{ row.zadach.rs.1.last1.rname }}</a></td>
+                    {#<td>
                         {% if row.zadach.next.top|length == 0 and row.zadach.current.top|length > 0 %}
                             <a href="/projects/work/{{ row.id }}/{{ row.zadach.current.top.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.current.top.rname }}<br>({{ row.zadach.current.bottom.rname }})" id="{{ row.id }}">{{ row.zadach.current.bottom.rname }}</a>
                         {% elseif row.zadach.current.top|length > 0 %}
@@ -129,7 +166,7 @@
                         {% elseif row.zadach.next.bottom|length > 0 %}
                             <a href="/projects/work/{{ row.id }}/{{ row.zadach.current.top.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.current.top.rname }}<br>({{ row.zadach.next.bottom.rname }})" id="{{ row.id }}">{{ row.zadach.next.bottom.rname }}</a>
                         {% endif %}
-                    </td>
+                    </td>#}
                     <td><a href="/projects/comments/{{ row.id }}" data-target="#upload" data-toggle="modal" class="upl label {% if row.comments|length > 0  %}label-important{% else %}label-success{% endif %}" data-toggle1="tooltip" data-original-title="Комментарии к проекту" id="{{ row.id }}">[ {{ row.comments|length }} ]</a></td>
                     <td><a href="/projects/docs/{{ row.id }}" data-target="#upload" data-toggle="modal" class="upl label {% if row.docs|length > 0  %}label-important{% else %}label-success{% endif %}" data-toggle1="tooltip" data-original-title="Файлы к проекту" id="{{ row.id }}">[ {{ row.docs|length }} ]</a></td>
                     <td>

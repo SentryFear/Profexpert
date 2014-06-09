@@ -275,10 +275,13 @@ class Projects extends CI_Controller
         }
 
         $result['data'] = $this->db->select('*')->from('card')->join('projects', 'projects.cid = card.id', 'RIGHT OUTER')->order_by('dogdate asc, cnumber asc')->get()->result_array();
+            //->limit(10,10)->get()->result_array();
 
         $respar = array();
 
         $zadach = array();
+
+        $result['stats'] = array('all' => array('close' => 0, 'notfill' => 0, 'work' => 0, 'all' => 0), '2013' => array('close' => 0, 'notfill' => 0, 'work' => 0, 'all' => 0), '2014' => array('close' => 0, 'notfill' => 0, 'work' => 0, 'all' => 0));
 
         foreach($result['data'] as $i) {
 
@@ -289,6 +292,22 @@ class Projects extends CI_Controller
             $i['docs'] = unserialize($i['docs']);
 
             $i['zadach'] = projects_work_type_total(projects_work_type_bd($this->config->item('worktype'), $i['worktype']), $i['zadach']);
+
+            //stats
+            $datest = !empty($i['dogdate']) ? date("Y", $i['dogdate']) : date("Y", $i['date']);
+
+            $result['stats'][$datest]['all']++;
+
+            if(empty($i['worktype'])) $result['stats'][$datest]['notfill']++;
+            elseif(!empty($i['worktype']['rabotaszakzakrytdogovordata']['value'])) $result['stats'][$datest]['close']++;
+            else $result['stats'][$datest]['work']++;
+
+            $result['stats']['all']['all']++;
+
+            if(empty($i['worktype'])) $result['stats']['all']['notfill']++;
+            elseif(!empty($i['worktype']['rabotaszakzakrytdogovordata']['value'])) $result['stats']['all']['close']++;
+            else $result['stats']['all']['work']++;
+            //end stats
 
             $respar[] = $i;
         }
@@ -574,13 +593,21 @@ class Projects extends CI_Controller
 
            //$cendle = projects_last_edit($this->config->item('worktype'), $current['action'], $cendle);
 
+            $info = '';
+
+            $info .= !empty($res['cnumber']) ? '<b>'.$res['cnumber'].'</b> ' : '';
+            $info .= !empty($res['street']) ? $res['street'] : '';
+            $info .= !empty($res['building']) ? ', д. '.$res['building'] : '';
+            $info .= !empty($res['buildingAdd']) ? ', корп/лит. '.$res['buildingAdd'] : '';
+            $info .= !empty($res['apartment']) ? ', кв. '.$res['apartment'] : '';
+
             echo '
                     <form method="POST" enctype="multipart/form-data" class="form-horizontal" id="workform">
                         <input type="hidden" name="id" value="'.$id.'" id="ths" />
                         <input type="hidden" name="workedt" value="Отправить"/>
                         <div class="modal-header">
                              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                             <h3 id="myModalLabel">Работа над проектом<br>';
+                             <h3 id="myModalLabel">Работа над проектом <small>'.$info.'</small><br>';
 
             echo $letot;
 
@@ -934,6 +961,13 @@ class Projects extends CI_Controller
                 ->or_like('building', $term)
                 ->or_like('buildingAdd', $term)
                 ->or_like('apartment', $term)
+                ->or_like('zsurname', $term)
+                ->or_like('zname', $term)
+                ->or_like('zmname', $term)
+                ->or_like('organization', $term)
+                ->or_like('phone', $term)
+                ->or_like('email', $term)
+                ->or_like('hear', $term)
                 ->get()
                 ->result_array();
 
@@ -951,13 +985,10 @@ class Projects extends CI_Controller
                     }
                 }
 
-
-
             } else {
 
                 $return[] = $i['id'];
             }
-
 
         }
 

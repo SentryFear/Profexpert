@@ -132,7 +132,7 @@ if (!function_exists('req_arr_to_table')) {
 
                     if(!empty($i['email'])) $emaile = '<br><b><i>Email:</b></i> '.$i['email'];
 
-                    $val = '<a href="/card/view/'. $i['id'] .'/"><span data-toggle="tooltip" data-original-title="' . $fio . ' ' . $telphone . ' ' . $emaile . '">' . $i['zname'] . '</span></a>';
+                    $val = '<a href="/card/view/'. $i['cid'] .'/"><span data-toggle="tooltip" data-original-title="' . $fio . ' ' . $telphone . ' ' . $emaile . '">' . $i['zname'] . '</span></a>';
 
                 }
 
@@ -1132,7 +1132,32 @@ if (!function_exists('req_get_stats')) {
 
     function req_get_stats($request)
     {
-        $result = array('yan' => array('request' => 0, 'contract' => 0), 'feb' => array('request' => 0, 'contract' => 0), 'mart' => array('request' => 0, 'contract' => 0), 'apr' => array('request' => 0, 'contract' => 0), 'month' => array('request' => 0, 'contract' => 0), 'total' => array('request' => 0, 'contract' => 0));
+        $time = mktime(0, 0, 0, date("n"), 1, date("Y"));
+
+        $result = array(
+                        '0' => array('request' => 0, 'contract' => 0, 'month' => ''),
+                        '1' => array('request' => 0, 'contract' => 0, 'month' => ''),
+                        '2' => array('request' => 0, 'contract' => 0, 'month' => ''),
+                        '3' => array('request' => 0, 'contract' => 0, 'month' => ''),
+                        '4' => array('request' => 0, 'contract' => 0, 'month' => ''),
+                        'month' => array('request' => 0, 'contract' => 0),
+                        'total' => array('request' => 0, 'contract' => 0)
+        );
+
+        $month = array(
+            '01' => 'Январь',
+            '02' => 'Февраль',
+            '03' => 'Март',
+            '04' => 'Апрель',
+            '05' => 'Май',
+            '06' => 'Июнь',
+            '07' => 'Июль',
+            '08' => 'Август',
+            '09' => 'Сентябрь',
+            '10' => 'Октябрь',
+            '11' => 'Ноябрь',
+            '12' => 'Декабрь'
+        );
 
         foreach($request as $i) {
 
@@ -1143,43 +1168,81 @@ if (!function_exists('req_get_stats')) {
                 $result['total']['contract']++;
             }
 
-            if($i['date'] < 1391212740 && $i['date'] > 1388534400) {
+            $lm1 = strtotime("-4 month", $time);
 
-                $result['yan']['request']++;
+            $reslm1 = mktime(0, 0, 0, date("m", $lm1), 1, date("Y", $lm1));
+
+            $result['1']['month'] = $month[date("m", $lm1)]." ".date("Y", $lm1);
+
+            if($i['date'] < $reslm1) {
+
+                $result['0']['request']++;
 
                 if($i['ikp'] == 13) {
 
-                    $result['yan']['contract']++;
+                    $result['0']['contract']++;
                 }
             }
 
-            if($i['date'] < 1393631940 && $i['date'] > 1391212800) {
+            $lm2 = strtotime("-3 month", $time);
 
-                $result['feb']['request']++;
+            $reslm2 = mktime(0, 0, 0, date("m", $lm2), 1, date("Y", $lm2));
+
+            $result['2']['month'] = $month[date("m", $lm2)]." ".date("Y", $lm2);
+
+            if($i['date'] < $reslm2 && $i['date'] > $reslm1) {
+
+                $result['1']['request']++;
 
                 if($i['ikp'] == 13) {
 
-                    $result['feb']['contract']++;
+                    $result['1']['contract']++;
                 }
             }
 
-            if($i['date'] < 1396310340 && $i['date'] > 1393632000) {
+            $lm3 = strtotime("-2 month", $time);
 
-                $result['mart']['request']++;
+            $reslm3 = mktime(0, 0, 0, date("m", $lm3), 1, date("Y", $lm3));
+
+            $result['3']['month'] = $month[date("m", $lm3)]." ".date("Y", $lm3);
+
+            if($i['date'] < $reslm3 && $i['date'] > $reslm2) {
+
+                $result['2']['request']++;
 
                 if($i['ikp'] == 13) {
 
-                    $result['mart']['contract']++;
+                    $result['2']['contract']++;
                 }
             }
 
-            if($i['date'] < 1398902340 && $i['date'] > 1396310400) {
+            $lm4 = strtotime("-1 month", $time);
 
-                $result['apr']['request']++;
+            $reslm4 = mktime(0, 0, 0, date("m", $lm4), 1, date("Y", $lm4));
+
+            $result['4']['month'] = $month[date("m", $lm4)]." ".date("Y", $lm4);
+
+            if($i['date'] < $reslm4 && $i['date'] > $reslm3) {
+
+                $result['3']['request']++;
 
                 if($i['ikp'] == 13) {
 
-                    $result['apr']['contract']++;
+                    $result['3']['contract']++;
+                }
+            }
+
+            $lm5 = time();
+
+            $reslm5 = mktime(0, 0, 0, date("m", $lm5), 1, date("Y", $lm5));
+
+            if($i['date'] < $reslm5 && $i['date'] > $reslm4) {
+
+                $result['4']['request']++;
+
+                if($i['ikp'] == 13) {
+
+                    $result['4']['contract']++;
                 }
             }
 

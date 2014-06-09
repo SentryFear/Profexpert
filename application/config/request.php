@@ -69,7 +69,8 @@ $config['sort'] = array(
                             array('name' => 'Архив', 'uri' => 'mArh', 'allow' => '3', 'logic' => 'kp:6?date<2419200?mid:usr'),
                             array('name' => 'Договор подписан', 'uri' => 'mSuccess', 'allow' => '3', 'logic' => 'kp:13?mid:usr'),
                         // Проектный отдел - id = 4
-                            array('name' => 'Все', 'uri' => 'pAll', 'allow' => '4', 'logic' => 'uid:0?kp:1,uid:usr?kp:1,uid:usr?kp:3,uid:usr?kp:4,uid:usr?kp:5,uid:usr?kp:6,uid:usr?kp:7,uid:usr?kp:8,uid:usr?kp:9,uid:usr?kp:10,uid:usr?kp:11,uid:usr?kp:12,uid:usr?kp:13', 'default' => '1'),
+                            array('name' => 'Все', 'uri' => 'pAll', 'allow' => '4', 'logic' => 'uid:0?kp:1,uid:usr?kp!2'),
+                            array('name' => 'Актуальные заявки', 'uri' => 'pAkt', 'allow' => '4', 'logic' => 'uid:0?kp:1,uid:usr?date>2419200?kp!2', 'default' => '1'),
                             array('name' => 'Новые', 'uri' => 'pNew', 'allow' => '4', 'logic' => 'uid:0?kp:1'),
                             array('name' => 'В работе', 'uri' => 'pInWork', 'allow' => '4', 'logic' => 'uid:usr?kp:1'),
                             array('name' => 'Завершённые', 'uri' => 'pCompleted', 'allow' => '4', 'logic' => 'uid:usr?kp:3,uid:usr?kp:4,uid:usr?kp:5,uid:usr?kp:6,uid:usr?kp:7'),
@@ -278,7 +279,7 @@ $config['instance'] = array(
                                 array('rname' => 'Справка об отсутствии задолженности', 'name' => 'sooz', 'price' => '2000'),
                                 array('rname' => 'Согласование балансодержателя дома (ТСЖ, ГУЖА, УК)', 'name' => 'sbd', 'price' => '5000'),
                             array('rname' => 'Государственное унитарное предприятие «Водоканал Санкт-Петербурга»', 'ins' => '1', 'names' => array('typviv')),
-                                array('rname' => 'ТУ по водоотведению и канализированию', 'name' => 'typviv', 'price' => '2000'),
+                                array('rname' => 'ТУ по водоотведению и канализации', 'name' => 'typviv', 'price' => '2000'),
                             array('rname' => 'Органы санитарно-эпидемиологической службы', 'ins' => '1', 'names' => array('zfgyz')),
                                 array('rname' => 'Заключение ФГУЗ', 'name' => 'zfgyz', 'price' => '10000'),
                             array('rname' => 'Государственный пожарный надзор Санкт-Петербурга', 'ins' => '1', 'names' => array('zogpn', 'sogogpn')),
@@ -313,12 +314,15 @@ $config['instance'] = array(
                                 array('rname' => 'Решение МВК', 'name' => 'spvmvk', 'price' => '10000'),
                                 array('rname' => 'АКТ МВК', 'name' => 'vove', 'price' => '10000'),
                                 array('rname' => 'Согласование установки времнной перегородки в межквартирном коридоре', 'name' => 'suvpvmk', 'price' => '5000'),
+                            array('rname' => 'Администрация района', 'ins' => '1', 'names' => array('perevodvnezilfond')),
+                                array('rname' => 'Перевод в нежилой фонд', 'name' => 'perevodvnezilfond', 'price' => '5000'),
                             array('rname' => 'Управление Федеральной службы государственной регистрации, кадастра и картографии по Санкт-Петербургу', 'ins' => '1', 'names' => array('psogrps')),
                                 array('rname' => 'Получение свидетельства о государственной регистрации права собственности', 'name' => 'psogrps', 'price' => '2500'),
                             array('rname' => 'Государственная Административно-Техническая Инспекция', 'ins' => '1', 'names' => array('ponpsr', 'zaor')),
                                 array('rname' => 'Получение ордера на производство строительных работ', 'name' => 'ponpsr', 'price' => '100000'),
                                 array('rname' => 'Закрытие ордера', 'name' => 'zaor', 'price' => '10000'),
                             array('rname' => 'Федеральная кадастровая палата по Санкт-Петербургу', 'ins' => '1', 'names' => array('pkadpas')),
+                                array('rname' => 'Получение старого кадастрового паспорта (росреестр)', 'name' => 'pstarkadpas', 'price' => '2000'),
                                 array('rname' => 'Получение кадастрового паспорта', 'name' => 'pkadpas', 'price' => '2000'),
                         );
 /*
@@ -421,6 +425,16 @@ $config['worktype'] = array(
         array('rname' => 'Разрешительное письмо КГА', 'name' => 'razreshitelnoepismokga', 'type' => 'bool', 'ord' => '12', 'names' => array(
             array('rname' => 'Заказан', 'name' => 'razreshitelnoepismokgazak', 'type' => 'date', 'ord' => '1'),
             array('rname' => 'Получен', 'name' => 'razreshitelnoepismokgapol', 'type' => 'date', 'ord' => '2'),
+        )),
+        array('rname' => 'АПЗ КГА', 'name' => 'pirdapzkga', 'type' => 'bool', 'ord' => '13', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'pirdapzkgazak', 'type' => 'date', 'ord' => '1'),
+            array('rname' => 'Оплачен', 'name' => 'pirdapzkgaopl', 'type' => 'date', 'ord' => '2'),
+            array('rname' => 'Получен', 'name' => 'pirdapzkgapol', 'type' => 'date', 'ord' => '3'),
+        )),
+        array('rname' => 'Городостроительный план КГА', 'name' => 'pirdgorodostplankga', 'type' => 'bool', 'ord' => '14', 'names' => array(
+            array('rname' => 'Заказан', 'name' => 'pirdgorodostplankgazak', 'type' => 'date', 'ord' => '1'),
+            array('rname' => 'Оплачен', 'name' => 'pirdgorodostplankgaopl', 'type' => 'date', 'ord' => '2'),
+            array('rname' => 'Получен', 'name' => 'pirdgorodostplankgapol', 'type' => 'date', 'ord' => '3'),
         )),
     )),
     array('rname' => 'Проектирование', 'name' => 'proekti', 'type' => 'bool', 'ord' => '3', 'names' => array(
@@ -654,6 +668,9 @@ $config['worktype'] = array(
             array('rname' => 'Безнал', 'name' => 'rabotaszakokonchatelniyraschetbeznal', 'type' => 'bool', 'ord' => '2'),
             array('rname' => 'Дата', 'name' => 'rabotaszakokonchatelniyraschetdata', 'type' => 'date', 'ord' => '3'),
         )),
+        array('rname' => 'Закрыть договор', 'name' => 'rabotaszakzakrytdogovor', 'type' => 'bool', 'ord' => '6', 'names' => array(
+            array('rname' => 'Дата', 'name' => 'rabotaszakzakrytdogovordata', 'type' => 'date', 'ord' => '1'),
+        )),
     )),
     /*array('rname' => '', 'name' => '', 'type' => '', 'names' => array(
         array('rname' => '', 'name' => '', 'type' => '')
@@ -728,7 +745,9 @@ $config['access'] = array(
     array('name' => 'Общий объём работ',              'value' => 'atotal',        'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'add-on' => 'дн.'),
     array('name' => 'Название проекта для КП',        'value' => 'kpname',        'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'type' => 'textarea', 'self' => 'class="span10 wysihtml5" rows="10"'),
     array('name' => 'Предварительный расчёт',         'value' => 'traspr',        'allow' => '2,3,6', 'view' => 0, 'add' => 0),
+    array('name' => 'Текст скидки',                   'value' => 'kpsaletext',    'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'add-on' => 'По умолчанию: "Скидка"'),
     array('name' => 'Скидка',                         'value' => 'kpsale',        'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'add-on' => '%'),
+    array('name' => 'Текст итого с учётом скидки',    'value' => 'kptotsaletext',     'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'add-on' => 'По умолчанию: "Итого с учётом скидки"'),
     array('name' => 'Итого с учётом скидки',          'value' => 'kptotsale',     'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'add-on' => 'руб.'),
     array('name' => 'Примечание КП',                  'value' => 'kpmore',        'allow' => '2,3,6', 'view' => 0, 'add' => 0, 'type' => 'textarea', 'self' => 'class="span10 wysihtml5" rows="10"'),
     //array('name' => 'КП',                             'value' => 'kp',            'allow' => '2,6', 'form' => 0, 'self' => 'class="span3"'),

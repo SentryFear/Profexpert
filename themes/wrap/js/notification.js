@@ -63,6 +63,8 @@ var Notification = {
 
         var newnotific = '';
 
+        var colortext = '';
+
         var nextRequest = 5000;
 
         var noActivity = 0;
@@ -98,11 +100,15 @@ var Notification = {
 
                     newnotific = "[ "+items.length+" ] Новое уведомление! ";
 
+                    colortext = '#AB0032';
+
                 } else {
 
                     noActivity++;
 
                     newnotific = '';
+
+                    colortext = '';
                 }
 
                 // 2 секунды
@@ -197,11 +203,15 @@ var Notification = {
 
                 $('title').text(newnotific+title);
 
+                $('.icon-warning-sign').css( "color", colortext );
+
                 i = 1;
 
             } else if(i == 1) {
 
                 $('title').text(title);
+
+                $('.icon-warning-sign').css( "color", "" );
 
                 i = 0;
             }

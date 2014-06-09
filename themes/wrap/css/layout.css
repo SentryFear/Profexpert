@@ -45,7 +45,7 @@ input.search{
 
 /* search input */
 .navbar-inverse input.search {
-	background: url("../img/lens.png") #0f1217 no-repeat 95%;
+	/*background: url("../img/lens.png") #0f1217 no-repeat 95%;*/
 	border: 1px solid #0f1217;
 	position: relative;
 	border-radius: 4px;

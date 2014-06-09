@@ -52,42 +52,49 @@
   </style>
     <div id="main-stats">
         <div class="row-fluid stats-row">
-            <div class="span2 stat">
+            <div class="span2 stat" style="margin-left: 0;">
                 <div class="data">
-                    <span class="number">{{ stats.yan.request }}</span> Заявок<br>
-                    <span class="number">{{ stats.yan.contract }}</span> Договоров
+                    <span class="number">{{ stats.0.request }}</span> Заявок<br>
+                    <span class="number">{{ stats.0.contract }}</span> Договоров
                 </div>
-                <span class="date">Январь 2014</span>
+                <span class="date">До {{ stats.1.month }}</span>
             </div>
-            <div class="span2 stat">
+            <div class="span2 stat" style="margin-left: 0;">
                 <div class="data">
-                    <span class="number">{{ stats.feb.request }}</span> Заявок<br>
-                    <span class="number">{{ stats.feb.contract }}</span> Договоров
+                    <span class="number">{{ stats.1.request }}</span> Заявок<br>
+                    <span class="number">{{ stats.1.contract }}</span> Договоров
                 </div>
-                <span class="date">Февраль 2014</span>
+                <span class="date">{{ stats.1.month }}</span>
             </div>
-            <div class="span2 stat">
+            <div class="span2 stat" style="margin-left: 0;">
                 <div class="data">
-                    <span class="number">{{ stats.mart.request }}</span> Заявок<br>
-                    <span class="number">{{ stats.mart.contract }}</span> Договоров
+                    <span class="number">{{ stats.2.request }}</span> Заявок<br>
+                    <span class="number">{{ stats.2.contract }}</span> Договоров
                 </div>
-                <span class="date">Март 2014</span>
+                <span class="date">{{ stats.2.month }}</span>
             </div>
-            <div class="span2 stat">
+            <div class="span2 stat" style="margin-left: 0;">
                 <div class="data">
-                    <span class="number">{{ stats.apr.request }}</span> Заявок<br>
-                    <span class="number">{{ stats.apr.contract }}</span> Договоров
+                    <span class="number">{{ stats.3.request }}</span> Заявок<br>
+                    <span class="number">{{ stats.3.contract }}</span> Договоров
                 </div>
-                <span class="date">Апрель 2014</span>
+                <span class="date">{{ stats.3.month }}</span>
             </div>
-            <div class="span2 stat">
+            <div class="span2 stat" style="margin-left: 0;">
+                <div class="data">
+                    <span class="number">{{ stats.4.request }}</span> Заявок<br>
+                    <span class="number">{{ stats.4.contract }}</span> Договоров
+                </div>
+                <span class="date">{{ stats.4.month }}</span>
+            </div>
+            <div class="span2 stat" style="margin-left: 0;">
                 <div class="data">
                     <span class="number">{{ stats.month.request }}</span> Заявок<br>
                     <span class="number">{{ stats.month.contract }}</span> Договоров
                 </div>
                 <span class="date">За последние 30 дней</span>
             </div>
-            <div class="span2 stat last">
+            <div class="span2 stat last" style="margin-left: 0;">
                 <div class="data">
                     <span class="number">{{ stats.total.request }}</span> Заявок<br>
                     <span class="number">{{ stats.total.contract }}</span> Договоров

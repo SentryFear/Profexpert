@@ -153,10 +153,10 @@
                 {% endfor %}
                 <tr>
                     <td style="border:none;" />
-                    <td style="border:none;">
+                    <td style="border:none; white-space: nowrap;">
                         <p align="right"><strong>Итого:</strong></p>
                     </td>
-                    <td style="border:none;">
+                    <td style="border:none; white-space: nowrap;">
                         <p align="center"><strong>{{ tcopr|number_format(2, ',', ' ') }}</strong></p>
                     </td>
                     <td style="border:none;" />
@@ -165,7 +165,7 @@
                 <tr>
                     <td style="border:none;" />
                     <td style="border:none;">
-                        <p align="right"><strong>Скидка:</strong></p>
+                        <p align="right"><strong>{% if result.kpsaletext|length > 0 %}{{ result.kpsaletext }}{% else %}Скидка{% endif %}:</strong></p>
                     </td>
                     <td style="border:none;">
                         <p align="center"><strong>{{ result.kpsale }}%</strong></p>
@@ -177,7 +177,7 @@
                 <tr>
                     <td style="border:none;" />
                     <td style="border:none; text-decoration: underline;">
-                        <p align="right"><strong>Итого с учётом скидки:</strong></p>
+                        <p align="right"><strong>{% if result.kptotsaletext|length > 0 %}{{ result.kptotsaletext }}{% else %}Итого с учётом скидки{% endif %}:</strong></p>
                     </td>
                     <td style="border:none; text-decoration: underline;">
                         <p align="center"><strong>{{ result.kptotsale|number_format(2, ',', ' ') }}</strong></p>

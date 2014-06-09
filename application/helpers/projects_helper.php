@@ -83,8 +83,6 @@ if (!function_exists('projects_work_type_show')) {
 
             $i['note'] = isset($data[$i['name']]['note']) ? $data[$i['name']]['note'] : '';
 
-            //$result[$i['name']] = $i;
-
             $ch = '';
 
             if($i['value'] != '') {
@@ -151,10 +149,6 @@ if (!function_exists('work_type_sort')) {
 
         asort($sortable_array);
 
-        //var_dump($sortable_array);
-
-        //echo "<br><br>";
-
         foreach ($sortable_array as $k => $v) {
 
             $new_array[$k] = $config[$k];
@@ -183,8 +177,6 @@ if (!function_exists('projects_last_edit')) {
 
                 $i['note'] = !empty($data[$i['name']]['note']) ? $data[$i['name']]['note'] : '';
 
-                //$result .= "<small style='margin-left: ".(32*($c-1))."px;'>".$last['rname']."</small><br>";
-
                 $result .= "<small style='margin-left: ".(32*$c)."px;'>".$i['ord']."".$i['rname']." - ".$i['value'].$i['note']."</small><br>";
 
             }
@@ -199,27 +191,25 @@ if (!function_exists('projects_last_edit')) {
     }
 }
 
-
-
 if (!function_exists('projects_work_type_total')) {
 
-    function projects_work_type_total($source = array(), &$result = array(), &$last = '', &$last1 = '', &$vl = 0)
+    function projects_work_type_total($source = array(), &$result = array(), &$last = '', &$last1 = array(), &$vl = 0, &$count = 0)
     {
-        if(empty($result)) $result = array('count' => 0, 'current' => array('top' => '', 'bottom' => ''), 'next' => array('top' => '', 'bottom' => ''));
-
+        //if(empty($result)) $result = array('count' => 0, 'current' => array('top' => '', 'bottom' => ''), 'next' => array('top' => '', 'bottom' => ''));
+        if(empty($result)) $result = array('count' => 0, 'rs' => array());
         //$source = projects_work_type_sort_ord($source, 'ord');
 
-        foreach($source as $i) {
+        foreach($source as $k => $i) {
+
+
 
             if($i['type'] == 'bool' && $vl == 0) {
 
                 $last = $i;
 
-                //var_dump($last);
-                //echo "<br><br>";
             }
 
-            if($i['type'] == 'bool' && $vl == 1) {
+            if($i['type'] == 'bool') {
 
                 $last1 = $i;
             }
@@ -228,28 +218,40 @@ if (!function_exists('projects_work_type_total')) {
 
             if(empty($i['value']) && $i['type'] != 'bool') {
 
+                $result['count']++;
+
                 $i['last'] = $last;
 
                 $i['last1'] = $last1;
 
-                $result['count']++;
+                //if(empty($result['current']['top'])) $result['current']['top'] = $last;
 
-                if(empty($result['current']['top'])) $result['current']['top'] = $last;
+                //if(empty($result['current']['bottom'])) $result['current']['bottom'] = $last1;
 
-                if(empty($result['current']['bottom'])) $result['current']['bottom'] = $last1;
+                //if(!empty($result['current']['top']) && empty($result['next']['top']) && $result['current']['top'] != $last) $result['next']['top'] = $last;
 
-                if(!empty($result['current']['top']) && empty($result['next']['top']) && $result['current']['top'] != $last) $result['next']['top'] = $last;
+                //if(!empty($result['next']['top']) && !empty($result['current']['bottom']) && empty($result['next']['bottom']) && $result['current']['bottom'] != $last1) $result['next']['bottom'] = $last1;
+                //echo $result['rs'][0];
+                //if(!empty($result['rs']) && $result['rs'][$result['count']-1]['last1']['name'] != $i['last1']['name'])
 
-                if(!empty($result['current']['bottom']) && empty($result['next']['bottom']) && $result['current']['bottom'] != $last1) $result['next']['bottom'] = $last1;
+                if(isset($result['rs'][$count-1]) && $result['rs'][$count-1]['last1']['name'] == $i['last1']['name']) {
 
-                //$result[] = $i;
+
+                } else {
+
+                    $result['rs'][$count] = $i;
+
+                    $count++;
+                }
+
+
             }
 
             if(isset($i['names'])) {
 
                 $bl = $vl + 1;
 
-                projects_work_type_total($i['names'], $result, $last, $last1, $bl);
+                projects_work_type_total($i['names'], $result, $last, $last1, $bl, $count);
             }
 
         }
