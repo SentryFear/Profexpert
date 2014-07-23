@@ -1,5 +1,7 @@
 {% extends "_main.html" %}
 
+{% block title %}Разрешения{% endblock %}
+
 {% block content %}
     <div id="pad-wrapper">
         <form method="POST" class="form-horizontal">
@@ -19,9 +21,33 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="allowed_uris">Разрешеня</label>
+                <label class="control-label" for="allowed_uris">Разрешённые адреса</label>
                 <div class="controls">
                     <textarea cols="40" rows="10" name="allowed_uris" id="allowed_uris">{{ allowed_uris|join('\n') }}</textarea>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="add">Разрешить добавление</label>
+                <div class="controls">
+                    <input type="checkbox" name="add" value="1" id="add" {% if add == 1 %}checked{% endif %}>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="edit">Разрешить изменение</label>
+                <div class="controls">
+                    <input type="checkbox" name="edit" value="1" id="edit" {% if edit == 1 %}checked{% endif %}>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="delete">Разрешить удаление</label>
+                <div class="controls">
+                    <input type="checkbox" name="delete" value="1" id="delete" {% if delete == 1 %}checked{% endif %}>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="print">Разрешить печать</label>
+                <div class="controls">
+                    <input type="checkbox" name="print" value="1" id="print" {% if print == 1 %}checked{% endif %}>
                 </div>
             </div>
             <div class="form-actions">

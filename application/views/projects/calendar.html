@@ -1,0 +1,242 @@
+{% extends "_main.html" %}
+
+{% block title %}Календарь задач{% endblock %}
+
+{% block content %}
+    <link href="/themes/wrap/css/lib/font-awesome.css" type="text/css" rel="stylesheet" />
+    <link href='/themes/wrap/css/fullcalendar.css' rel='stylesheet' />
+    <link href='/themes/wrap/css/fullcalendar.print.css' rel='stylesheet' media='print' />
+    <style>
+        .fc-event:hover {
+            border-color: #127ba7 !important;
+            background-color: #127ba7 !important;
+        }
+    </style>
+    <div id="main-stats">
+        <div class="row-fluid stats-row">
+            <div class="span2 stat" style="margin-left: 0;">
+                <div class="data">
+                    <span class="number">{{ tasks|length }}</span> Задач<br>
+                </div>
+                <span class="date">Нераспределено</span>
+            </div>
+            <div class="span2 stat" style="margin-left: 0;">
+                <div class="data">
+                    <span class="number">{{ prtasks|length }}</span> Задач<br>
+                </div>
+                <span class="date">Просрочено</span>
+            </div>
+            <div class="span2 stat" style="margin-left: 0;">
+                <div class="data">
+                    <span class="number">{{ tasks|length + prtasks|length }}</span> Задач<br>
+                </div>
+                <span class="date">Всего</span>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid" style="margin-top: 40px;">
+        <table class="table table-hover" id="fhead" style="display: none;">
+            <thead>
+            <tr>
+                <th width="3%" class="number">№</th>
+            </tr>
+            </thead>
+        </table>
+        {#<!-- Help for users -->
+        <div class="alert alert-info">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <b>Подсказка</b><br>
+        </div>
+        <!-- End Help -->#}
+        <div id="loadingcal" style="display: block; position: absolute; top: 120px; right: 50%;">loading...</div>
+        <div id="external-events" class="fc-ltr span2" style="margin-left: 10px;">
+            <h4>Нераспределённые Задачи</h4><br>
+            {% for key, row1 in region %}
+                {% set coureg = 0 %}
+                <a href="javascript:void(0);" id="q{{ key }}" class="label" onclick="$('#{{ key }}').toggle('slow')">{{ row1 }}</a>
+                <div style="display: none;" id="{{ key }}">
+                    {% for row in tasks %}
+                        {% if key == row.key %}
+                            {% set coureg = coureg+1 %}
+                            <div class="external-event fc-event fc-event-hori fc-event-draggable fc-event-start fc-event-end ui-draggable" data-prkey="{{ key }}" data-rid="{{ row.id }}" data-name="{{ row.name }}" style="position: relative; width: 193px;">
+                                <div class="fc-event-inner">
+                                    Район: {{ row.region }}<br>
+                                    Адрес: {{ row.address }}<br>
+                                    {{ row.task }}
+                                    {% if row.note|length > 0 %}<br>Примечание: {{ row.note }}{% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div><span id="c{{ key }}" class="label label-info">{{ coureg }}</span><br>
+            {% endfor %}
+            <br><br>
+            <h4>Просроченные Задачи</h4><br>
+            {% for key, row1 in prregion %}
+                {% set coureg = 0 %}
+                <a href="javascript:void(0);" id="q{{ key }}pr" class="label" onclick="$('#{{ key }}pr').toggle('slow')">{{ row1 }}</a>
+                <div style="display: none;" id="{{ key }}pr">
+                    {% for row in prtasks %}
+                        {% if key == row.key %}
+                            {% set coureg = coureg+1 %}
+                            <div class="fc-event fc-event-hori fc-event-draggable fc-event-start fc-event-end" data-prkey="{{ key }}pr" data-rid="{{ row.id }}" data-name="{{ row.name }}" style="position: relative; width: 193px; background-color: #B94A48; border-color: #B94A48;">
+                                <div class="fc-event-inner">
+                                    Район: {{ row.region }}<br>
+                                    Адрес: {{ row.address }}<br>
+                                    Дата: {{ row.date }}<br>
+                                    {{ row.task }}
+                                    {% if row.note|length > 0 %}<br>Примечание: {{ row.note }}{% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div><span id="c{{ key }}pr" class="label label-info">{{ coureg }}</span><br>
+            {% endfor %}
+        </div>
+        <div id="calendar" class="span10" style="margin-left: 10px;"></div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src='/themes/wrap/js/moment.min.js'></script>
+    <script src='/themes/wrap/js/lang/ru.js'></script>
+    <script src='/themes/wrap/js/fullcalendar.min.js'></script>
+<script>
+    $(document).ready(function() {
+            /* initialize the external events
+             -----------------------------------------------------------------*/
+
+            $('#external-events div.external-event').each(function() {
+
+                // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+                // it doesn't need to have a start or end
+                var eventObject = {
+                    title: $.trim($(this).text()) // use the element's text as the event title
+                };
+
+                // store the Event Object in the DOM element so we can get to it later
+                $(this).data('eventObject', eventObject);
+
+                // make the event draggable using jQuery UI
+                $(this).draggable({
+                    zIndex: 999,
+                    revert: true,      // will cause the event to go back to its
+                    revertDuration: 0  //  original position after the drag
+                });
+
+            });
+
+        var date = new Date();
+        var d = date.getDate();
+        var m = date.getMonth();
+        var y = date.getFullYear();
+
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'month,agendaWeek,agendaDay',
+                center: 'title',
+                right: 'today prev,next'
+            },
+            lang: "ru",
+            selectable: true,
+            selectHelper: true,
+            editable: true,
+            droppable: true,
+            events: '/projects/getCalendar',
+            loading: function(bool) {
+                $('#loadingcal').toggle(bool);
+            },
+            eventDrop: function(event, delta, revertFunc) {
+
+                $.ajax({
+                    type: "POST",
+                    url: "/projects/setCalendar",
+                    data: { rid: event.rid, name: event.name, cdate: event.start.format('X')  }
+                })
+                    .done(function( msg ) {
+                            console.log( "Data Saved: " + msg );
+                    });
+
+                console.log(event.rid+"/"+event.name+"/"+event.start.format('X'));
+
+            },
+            eventClick: function(calEvent, jsEvent, view) {
+
+                if(confirm('Вы уверенны что хотите удалить задачу:\n\r ' + calEvent.title)) {
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/projects/delCalendarEvent",
+                        data: { rid: calEvent.rid, name: calEvent.name  }
+                    })
+                            .done(function( msg ) {
+
+                                console.log( "Data deleted: " + msg );
+
+                            });
+
+                    $('#calendar').fullCalendar( 'refetchEvents' );
+                }
+            },
+            eventBackgroundColor: '#278ccf',
+            drop: function(date) { // this function is called when something is dropped
+
+                // retrieve the dropped element's stored Event Object
+                var originalEventObject = $(this).data('eventObject');
+
+                // we need to copy it, so that multiple events don't have a reference to the same object
+                var copiedEventObject = $.extend({}, originalEventObject);
+
+                // assign it the date that was reported
+                copiedEventObject.start = date;
+
+                copiedEventObject.rid = $(this).data("rid");
+
+                copiedEventObject.name = $(this).data("name");
+
+                var prkey = $(this).data("prkey");
+
+                $.ajax({
+                    type: "POST",
+                    url: "/projects/setCalendar",
+                    data: { rid: copiedEventObject.rid, name: copiedEventObject.name, cdate: copiedEventObject.start.format('X')  }
+                })
+                        .done(function( msg ) {
+
+                            var ct = $('#c'+prkey).html();
+
+                            if(ct-1 <= 0) {
+
+                                $('#q'+prkey).remove();
+
+                                $('#c'+prkey).remove();
+                            }
+
+                            $('#c'+prkey).html(ct-1);
+
+                            console.log( "Data Saved: " + msg );
+                        });
+
+                // render the event on the calendar
+                // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+                $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+
+                $(this).remove();
+
+            }
+        });
+
+        setInterval(function()
+        {
+            $('#calendar').fullCalendar( 'refetchEvents' );
+
+        }, 50000);
+        // handler to close the new event popup just for displaying purposes
+        // more documentation for fullcalendar on http://arshaw.com/fullcalendar/
+        $(".popup .close-pop").click(function () {
+            $(".new-event").fadeOut("fast");
+        });
+    });
+</script>
+{% endblock %}

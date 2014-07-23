@@ -1,42 +1,152 @@
 {% extends "_main.html" %}
-{% set active = 'rls' %}
+
+{% block title %}Отделы{% endblock %}
+
 {% block content %}
-  <div class="table-wrapper products-table section">
-    <div class="row-fluid">
-	<form method="POST">
-	<table class="table table-hover">
-	  <thead>
-	    <tr>
-	      <th class="span2">#</th>
-	      <th class="span2"><span class="line"></span>ID</th>
-	      <th class="span10"><span class="line"></span>Название</th>
-	      <th><span class="line"></span>Родительский ID</th>
-	      <th><span class="line"></span>Действия</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-		{% for row in roles %}
-		  <tr>
-		    <td><input type="checkbox" name="checkbox_{{ row.id }}" value="{{ row.id }}"></td>
-		    <td>{{ row.id }}</td>
-		    <td>{{ row.name }}</td>
-		    <td>{{ row.parent_id }}</td>
-		    <td>
-                <ul class="actions" style="float: left;">
-                    <li><a href="/users/uri_permissions/{{ row.id }}/">URI</a></li>
-                    <li><a href="/users/custom_permissions/{{ row.id }}/">Custom</a></li>
-                </ul>
-            </td>
-		    {#<td><div class="btn-group"><a href="/request/edit/{{ row.id }}/" class="btn btn-mini">Изменить</a><a href="/request/delete/{{ row.id }}/" class="btn btn-mini btn-danger">Удалить</a></div></td>#}
-		  </tr>
-		{% endfor %}
-	  </tbody>
-	</table>
-	<div class="form-actions">
-	  <input type="submit" name="delete" class="btn btn-danger" value="Удалить выделенне"/>
-	</div>
-	</form>
+    <style type="text/css">
+        .chek {
+            margin: 0 !important;
+        }
+        .sort .btn {
+            font-size: 11px;
+            font-family: "Open sans", Helvetica, Arial;
+            color: #313d4c;
+            font-weight: 700;
+            padding: 5px 10px;
+            line-height: 14px;
+            background: #fefefe;
+            background: -moz-linear-gradient(top, #fefefe 0%, #f7f7f7 100%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefefe), color-stop(100%,#f7f7f7));
+            background: -webkit-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
+            background: -o-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
+            background: -ms-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
+            background: linear-gradient(to bottom, #fefefe 0%,#f7f7f7 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#f7f7f7',GradientType=0 );
+            border: 1px solid #d0dde9;
+            transition: color .1s linear;
+            -moz-transition: color .1s linear;
+            -webkit-transition: color .1s linear;
+            -o-transition: color .1s linear;
+        }
+        .sort a:hover {
+            color: #a8b5c7;
+        }
+        .sort a:active, .btn-group a.active {
+            -webkit-box-shadow:0 1px 0 rgba(0,0,0,0.2) inset;
+            -moz-box-shadow:0 1px 0 rgba(0,0,0,0.2) inset;
+            box-shadow:0 1px 0 rgba(0,0,0,0.2) inset;
+            color: #a8b5c7;
+        }
+        .sort .btn:hover, .sort .btn:focus, .sort .btn:active, .sort .btn.active, .sort .btn.disabled, .sort .btn[disabled] {
+            background: #fefefe;
+            background: -moz-linear-gradient(top, #fefefe 0%, #f7f7f7 100%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefefe), color-stop(100%,#f7f7f7));
+            background: -webkit-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
+            background: -o-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
+            background: -ms-linear-gradient(top, #fefefe 0%,#f7f7f7 100%);
+            background: linear-gradient(to bottom, #fefefe 0%,#f7f7f7 100%);
+        }
+        td{
+            max-width: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        th{
+            max-width: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+    <div id="main-stats">
+        <div class="row-fluid stats-row">
+            <div class="span3 stat">
+                <div class="data">
+                    <span class="number">1</span>
+                    статистика
+                </div>
+                <span class="date">статистика</span>
+            </div>
+            <div class="span3 stat">
+                <div class="data">
+                    <span class="number">2</span>
+                    статистика
+                </div>
+                <span class="date">статистика</span>
+            </div>
+        </div>
     </div>
+    <div class="table-products section">
+        <div class="row-fluid filter-block">
+            {#<div class="pull-left">
+                <div class="btn-group">
+                    {% set act = '' %}
+                    {% for i in sort %}
+                    {% if i.active == 1 %}
+                    {% set act = i.name %}
+                    {% endif %}
+                    {% endfor %}
+                    <button class="btn glow">{{ act }}</button>
+                    <button class="btn glow dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% set act = '' %}
+                        {% for i in sort %}
+                        <li><a href="/request/?sort={{ i.uri }}" class="{% if i.active == 1 %}active {% set act = i.name %}{% endif %}">{{ i.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>#}
+            <div class="pull-right">
+                {#<input type="text" class="search">#}
+                <a href="#add" data-target="#add" data-toggle="modal" class="btn-flat success new-product"><i class="icon-plus"></i> <span>Добавить</span></a>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <form method="POST">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th width="3%">#</th>
+                        <th width="2%" class="number"><span class="line"></span>ID</th>
+                        <th class="span10"><span class="line"></span>Название</th>
+                        <th><span class="line"></span>Родительский отдел</th>
+                        <th><span class="line"></span>Пользователей</th>
+                        <th width="1%"><span class="line"></span>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in roles %}
+                        <tr>
+                            <td><input type="checkbox" name="checkbox_{{ row.id }}" value="{{ row.id }}" class="chek"></td>
+                            <td>{{ row.id }}</td>
+                            <td>{{ row.name }}</td>
+                            <td><span class="label label-info">{% if row.parent_id == 0 %}Нет{% else %}{{ row.parent_name }}{% endif %}</span></td>
+                            <td>{{ row.users }}</td>
+                            <td>
+                                <ul class="actions" style="float: left;">
+                                    <li><a href="/users/permissions/{{ row.id }}/" data-toggle1="tooltip" data-original-title="Изменить разрешения"><i class="table-edit"></i></a></li>
+                                    <li class="last"><a href="#" onclick="return confirm('Вы уверены что хотите удалить проект?')" data-toggle="tooltip" data-original-title="Удалить"><i class="table-delete"></i></a></li>
+                                </ul>
+                            </td>
+                            {#<td><div class="btn-group"><a href="/request/edit/{{ row.id }}/" class="btn btn-mini">Изменить</a><a href="/request/delete/{{ row.id }}/" class="btn btn-mini btn-danger">Удалить</a></div></td>#}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div class="row-fluid filter-block">
+                    <div class="pull-right">
+                        {#<input type="text" class="search">#}
+                        <a href="#aNewReq" data-target="#aNewReq" data-toggle="modal" class="btn-flat success new-product"><i class="icon-plus"></i> <span>Добавить</span></a>
+                    </div>
+                    <div class="pull-left">
+                        <input type="submit" name="delete" class="btn-flat danger new-product" value="Удалить выделенне"/>
+                    </div>
+                </div>
+            </form>
+        </div>
   </div>
 <div id="add" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">

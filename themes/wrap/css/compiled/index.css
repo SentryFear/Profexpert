@@ -23,7 +23,7 @@
       #main-stats .stat .data .number {
         color: #32a0ee;
         font-size: 25px;
-        margin-right: 15px; }
+        padding-right: 15px; }
     #main-stats .stat .date {
       color: #b4b8bb;
       font-weight: lighter;

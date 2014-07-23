@@ -43,7 +43,7 @@ if (!function_exists('projects_work_type_pr')) {
     {
         foreach($source as $i) {
 
-            if(!empty($_POST[$i['name'].'ch']) || !empty($_POST[$i['name'].'note']) || !empty($_POST[$i['name'].'ord'])) {
+            if(!empty($_POST[$i['name'].'ch']) || !empty($_POST[$i['name'].'note']) || !empty($_POST[$i['name'].'ord']) || !empty($_POST[$i['name'].'cdate'])) {
 
                 $value = isset($_POST[$i['name']]) ? $_POST[$i['name']] : '0';
 
@@ -51,7 +51,21 @@ if (!function_exists('projects_work_type_pr')) {
 
                 $note = isset($_POST[$i['name'].'note']) ? $_POST[$i['name'].'note'] : '';
 
-                $result[$i['name']] = array('value' => $value, 'ord' => $ord, 'note' => $note);
+                //$cdate = isset($_POST[$i['name'].'caldate']) ? $_POST[$i['name'].'caldate'] : '';
+
+                if(isset($_POST[$i['name'].'cdate'])) {
+
+                    $excdate = explode('.', $_POST[$i['name'].'cdate']);
+
+                    if(!empty($excdate[1]) && !empty($excdate[0]) && !empty($excdate[2])) {
+
+                        $cdate = mktime(0, 0, 0, $excdate[1], $excdate[0], $excdate[2]);
+
+                    } else $cdate = '';
+
+                } else $cdate = '';
+
+                $result[$i['name']] = array('value' => $value, 'ord' => $ord, 'note' => $note, 'cdate' => $cdate);
 
                 if(isset($i['names'])) {
 
@@ -83,6 +97,8 @@ if (!function_exists('projects_work_type_show')) {
 
             $i['note'] = isset($data[$i['name']]['note']) ? $data[$i['name']]['note'] : '';
 
+            $i['cdate'] = !empty($data[$i['name']]['cdate']) ? date('d.m.Y', $data[$i['name']]['cdate']) : '';
+
             $ch = '';
 
             if($i['value'] != '') {
@@ -92,6 +108,9 @@ if (!function_exists('projects_work_type_show')) {
                 $dp = '';
             }
 
+            //Если нет задач, выводится верхний уровень всех задач
+            if($c == 0 && empty($data)) $dp = '';
+
             if($flt != '' && $flt != $i['name']) $dp = 'display:none;';
 
             if($c == 0) $result .= '<tr class="worktype1"><td><div class="'.$old.' shch" style="'.$dp.'">';
@@ -100,7 +119,16 @@ if (!function_exists('projects_work_type_show')) {
 
             $workinp = '';
 
-            if($i['type'] == 'date') $workinp = '<input id="' . $i['name'] . '" name="' . $i['name'] . '" class="span2 datepicker1" data-date-format="dd.mm.yyyy" id="appendedPrependedInput" type="text" placeholder="' . $i['rname'] . '" value="'.$i['value'].'">';
+            $caldate = '';
+
+            if($i['type'] == 'date') {
+
+                $workinp = '<input id="' . $i['name'] . '" name="' . $i['name'] . '" style="width:70px;" class="span2 datepicker1" data-date-format="dd.mm.yyyy" id="appendedPrependedInput" type="text" placeholder="' . $i['rname'] . '" value="'.$i['value'].'">';
+
+                $caldate = '<input id="' . $i['name'] . 'cdate" name="' . $i['name'] . 'cdate" style="width:70px;" class="span2 datepicker1" data-date-format="dd.mm.yyyy" id="appendedPrependedInput" type="text" placeholder="' . $i['rname'] . '" value="'.$i['cdate'].'">';
+            }
+
+            //if(!empty($i['cdate'])) $caldate = '<span class="add-on">'.date('d.m.Y', $i['cdate']).'</span>';
 
             $result .= '<div class="input-prepend input-append bordbt" style="width: 100%;">
                                 <input type="text" class="span1" style="width: 20px;" id="' . $i['name'] . 'ord" name="' . $i['name'] . 'ord" value="'.$i['ord'].'" placeholder="№" />
@@ -109,6 +137,7 @@ if (!function_exists('projects_work_type_show')) {
                                 </span>
                                 '.$workinp.'
                                 <span class="add-on">' . $i['rname'] . '</span>
+                                ' . $caldate . '
                                 <input type="text" class="span1 1inline-input" style="width: 150px; float: right;" id="' . $i['name'] . 'note" name="' . $i['name'] . 'note" placeholder="Примечание" value="'.$i['note'].'" />
                             </div>';
 
@@ -201,12 +230,9 @@ if (!function_exists('projects_work_type_total')) {
 
         foreach($source as $k => $i) {
 
-
-
             if($i['type'] == 'bool' && $vl == 0) {
 
                 $last = $i;
-
             }
 
             if($i['type'] == 'bool') {
@@ -237,14 +263,13 @@ if (!function_exists('projects_work_type_total')) {
                 if(isset($result['rs'][$count-1]) && $result['rs'][$count-1]['last1']['name'] == $i['last1']['name']) {
 
 
+
                 } else {
 
                     $result['rs'][$count] = $i;
 
                     $count++;
                 }
-
-
             }
 
             if(isset($i['names'])) {
@@ -253,7 +278,124 @@ if (!function_exists('projects_work_type_total')) {
 
                 projects_work_type_total($i['names'], $result, $last, $last1, $bl, $count);
             }
+        }
 
+        return $result;
+    }
+}
+
+if (!function_exists('projects_work_type_task')) {
+
+    function projects_work_type_task($source = array())
+    {
+        $result = array('task' => array(), 'region' => array(), 'nztask' => array(), 'nzreg' => array(), 'prtask' => array(), 'prreg' => array(), 'today' => array(), 'tomorrow' => array());
+
+        foreach($source['zadach']['rs'] as $i) {
+
+            //if(isset($i['cdate']) && )
+
+            //if(isset($i['last1']['ins'])) {
+
+                $narr = 'osttask';
+
+                $nreg = 'ostregion';
+
+                $note = '';
+
+                $addr = $source['street']."".$source['building'];
+
+                if(!empty($source['buildingAdd'])) $addr .= ", к.".$source['buildingAdd'];
+
+                if(!empty($source['apartment'])) $addr .= ", кв.".$source['apartment'];
+
+                if(empty($i['cdate'])) {
+
+                    $narr = 'nztask';
+
+                    $nreg = 'nzreg';
+
+                } elseif(!empty($i['cdate']) && $i['cdate'] < strtotime("-1 day")) {
+
+                    $narr = 'prtask';
+
+                    $nreg = 'prreg';
+                }
+
+                if(!empty($i['last1']['note'])) $note .= $i['last1']['note'];
+
+                if(!empty($i['note'])) $note .= "(".$i['note'].")";
+
+                if(!empty($i['cdate']) && $i['cdate'] > strtotime("-1 day") && $i['cdate'] < time()) {
+
+                    $key = explode(' ', $source['region']);
+
+                    $result['today'][] = array(
+                        'id' => $source['id'],
+                        'name' => $i['name'],
+                        'date' => !empty($i['cdate']) ? date('Y-m-d', $i['cdate']) : date('Y-m-d'),
+                        'ins' => isset($i['last1']['ins']) ? $i['last1']['ins'] : '',
+                        'region' => $source['region'],
+                        'note' => $note,
+                        'key' => $key[0],
+                        'address' => $addr,
+                        'task' => $i['last1']['rname']."/".$i['rname']
+                    );
+
+                }
+
+                if(!empty($i['cdate']) && $i['cdate'] > time() && $i['cdate'] < strtotime("+1 day")) {
+
+                    $key = explode(' ', $source['region']);
+
+                    $result['tomorrow'][] = array(
+                        'id' => $source['id'],
+                        'name' => $i['name'],
+                        'date' => !empty($i['cdate']) ? date('Y-m-d', $i['cdate']) : date('Y-m-d'),
+                        'ins' => isset($i['last1']['ins']) ? $i['last1']['ins'] : '',
+                        'region' => $source['region'],
+                        'note' => $note,
+                        'key' => $key[0],
+                        'address' => $addr,
+                        'task' => $i['last1']['rname']."/".$i['rname']
+                    );
+                }
+
+                if(!empty($i['cdate'])) {
+
+                    $key = explode(' ', $source['region']);
+
+                    $result['task'][] = array(
+                        'id' => $source['id'],
+                        'name' => $i['name'],
+                        'date' => !empty($i['cdate']) ? date('Y-m-d', $i['cdate']) : date('Y-m-d'),
+                        'ins' => isset($i['last1']['ins']) ? $i['last1']['ins'] : '',
+                        'region' => $source['region'],
+                        'note' => $note,
+                        'key' => $key[0],
+                        'address' => $addr,
+                        'task' => $i['last1']['rname']."/".$i['rname']
+                    );
+
+                    $result['region'][trim($key[0])] = $source['region'];
+                }
+
+                $key = explode(' ', $source['region']);
+
+                $result[$narr][] = array(
+                    'id' => $source['id'],
+                    'name' => $i['name'],
+                    'date' => !empty($i['cdate']) ? date('Y-m-d', $i['cdate']) : date('Y-m-d'),
+                    'ins' => isset($i['last1']['ins']) ? $i['last1']['ins'] : '',
+                    'region' => $source['region'],
+                    'note' => $note,
+                    'key' => $key[0],
+                    'address' => $addr,
+                    'task' => $i['last1']['rname']."/".$i['rname']
+                );
+
+                $result[$nreg][trim($key[0])] = $source['region'];
+
+            //}
         }
 
         return $result;

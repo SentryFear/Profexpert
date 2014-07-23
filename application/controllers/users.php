@@ -20,6 +20,7 @@ class Users extends CI_Controller
 		
 		$this->load->helper('form');
 		$this->load->helper('url');
+        $this->load->helper('users');
 	}
 
     /**
@@ -35,7 +36,7 @@ class Users extends CI_Controller
      */
     function users()
 	{
-		$this->load->model('dx_auth/users_model', 'users_model');			
+		$this->load->model('dx_auth/users_model', 'users_model');
 		
 		$this->load->model('dx_auth/roles', 'roles');
 		
@@ -102,7 +103,7 @@ class Users extends CI_Controller
 				{
 					$this->users_model->delete_user($value);
 				}
-			}				
+			}
 		}
 		
 		/* Showing page to user */
@@ -113,8 +114,18 @@ class Users extends CI_Controller
 		$row_count = 100;
 		
 		// Get all users
-		$data['users'] = $this->users_model->get_all($offset, $row_count)->result();
-		
+		$data['users'] = $this->users_model->get_all($offset, $row_count)->result_array();
+
+        $data['stats'] = array('active' => 0, 'noactive' => 0);
+
+        foreach($data['users'] as $k => $i) {
+
+            $data['users'][$k]['last_login'] = users_time($i['last_login']);
+
+            if($i['banned'] == 0) $data['stats']['active']++;
+            else $data['stats']['noactive']++;
+        }
+
 		// Pagination config
 		$p_config['base_url'] = '/users/';
 		$p_config['uri_segment'] = 3;
@@ -192,7 +203,9 @@ class Users extends CI_Controller
      * Список отделов
      */
     function roles()
-	{		
+	{
+        $this->load->model('dx_auth/users_model', 'users_model');
+
 		$this->load->model('dx_auth/roles', 'roles');
 		
 		/* Database related */
@@ -220,8 +233,34 @@ class Users extends CI_Controller
 		/* Showing page to user */
 		
 		// Get all roles from database
-		$data['roles'] = $this->roles->get_all()->result();
-		
+		$data['roles'] = $this->roles->get_all()->result_array();
+
+        $data['users'] = $this->users_model->get_all()->result_array();
+
+        $roles = array();
+
+        $pn = array();
+
+        foreach($data['roles'] as $i) {
+
+            $i['users'] = 0;
+
+            $i['parent_name'] = 0;
+
+            $pn = $this->roles->get_role_by_id($i['parent_id'])->row_array();
+
+            if(!empty($pn)) $i['parent_name'] = $pn['name'];
+
+            foreach($data['users'] as $q) {
+
+                if($i['id'] == $q['role_id'] && $q['banned'] != 1) $i['users']++;
+            }
+
+            $roles[] = $i;
+        }
+
+        $data['roles'] = $roles;
+
 		echo $this->twig->render('users/roles.html', $data);
 		
 		// Load view
@@ -231,7 +270,7 @@ class Users extends CI_Controller
     /**
      * Доступы по uri
      */
-    function uri_permissions()
+    function permissions()
 	{
 		function trim_value(&$value) 
 		{ 
@@ -239,6 +278,7 @@ class Users extends CI_Controller
 		}
 	
 		$this->load->model('dx_auth/roles', 'roles');
+
 		$this->load->model('dx_auth/permissions', 'permissions');
 		
 		if ($this->input->post('save'))
@@ -253,6 +293,18 @@ class Users extends CI_Controller
 			// IMPORTANT: uri permission data, is saved using 'uri' as key.
 			// So this key name is preserved, if you want to use custom permission use other key.
 			$this->permissions->set_permission_value($this->input->post('role'), 'uri', $allowed_uris);
+
+            $permission_data = $this->permissions->get_permission_data($this->input->post('role'));
+
+            // Set value in permission data array
+            $permission_data['add'] = $this->input->post('add');
+            $permission_data['edit'] = $this->input->post('edit');
+            $permission_data['delete'] = $this->input->post('delete');
+            $permission_data['print'] = $this->input->post('print');
+            $permission_data['request'] = $this->input->post('request');
+
+            // Set permission data for role_id
+            $this->permissions->set_permission_data($this->input->post('role'), $permission_data);
 		}
 		
 		/* Showing page to user */		
@@ -267,9 +319,19 @@ class Users extends CI_Controller
 		$data['roles'] = $this->roles->get_all()->result();
 		// Get allowed uri permissions
 		$data['allowed_uris'] = $this->permissions->get_permission_value($role_id, 'uri');
-		
+
+        $data['roles'] = $this->roles->get_all()->result();
+
+        $data['trole'] = $role_id;
+        // Get edit and delete permissions
+        $data['add'] = $this->permissions->get_permission_value($role_id, 'add');
+        $data['edit'] = $this->permissions->get_permission_value($role_id, 'edit');
+        $data['delete'] = $this->permissions->get_permission_value($role_id, 'delete');
+        $data['print'] = $this->permissions->get_permission_value($role_id, 'print');
+        $data['request'] = $this->permissions->get_permission_value($role_id, 'request');
+
 		// Load view
-		echo $this->twig->render('users/uri_permissions.html', $data);
+		echo $this->twig->render('users/permissions.html', $data);
 		//$this->load->view('backend/uri_permissions', $data);
 	}
 
@@ -334,5 +396,61 @@ class Users extends CI_Controller
         echo $this->twig->render('users/custom_permissions.html', $data);
 		//$this->load->view('backend/custom_permissions', $data);
 	}
+
+    function profile() {
+
+        $id = intval($this->uri->segment(3));
+
+        $this->load->model('dx_auth/users_model', 'users_model');
+
+        $this->load->model('dx_auth/roles', 'roles');
+
+        if(!empty($id)) {
+
+            $data = array();
+
+            $data['result'] = $this->users_model->get_user_by_id($id)->row_array();
+
+            if(!empty($data['result'])) {
+
+                if($this->input->post('save')) {
+
+                    $save = array(
+                        'name' => $this->input->post('name'),
+                        'username' => $this->input->post('username'),
+                        'email' => $this->input->post('email'),
+                        'role_id' => $this->input->post('role_id'),
+                    );
+
+                    $config['upload_path'] = './uploads/img/sign/';
+                    //$config['allowed_types'] = 'doc|docx|xls|xlsx|pdf|txt|jpg|gif|jpeg';
+                    $config['max_size']	= '10000';
+                    $config['encrypt_name'] = true;
+
+                    $this->load->library('upload', $config);
+
+                    if($this->upload->do_upload('signature')) {
+
+                        $signature = $this->upload->data();
+
+                        $save['signature'] = $signature['file_name'];
+                    }
+
+                    if($this->db->update('users', $save, array('id' => $id))) $data['success'] = "Профиль изменён!";
+                    else $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+                }
+
+                $data['result'] = $this->users_model->get_user_by_id($id)->row_array();
+
+                $data['roles'] = $this->roles->get_all()->result();
+
+                echo $this->twig->render('users/profile.html', $data);
+
+            } else redirect("/users/");
+
+        } else redirect("/users/");
+
+
+    }
 }
 ?>

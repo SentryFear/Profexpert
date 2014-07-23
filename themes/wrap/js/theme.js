@@ -122,8 +122,9 @@ $(function() {
         });
 
     $('.datepicker').live('focus', function(){
-
-        $(this).datepicker();
+        $(this).datepicker({
+            language: 'ru'
+        });
     });
 
     var tpol = 'address';
@@ -327,7 +328,7 @@ $(function() {
 
     $(".upl").click(function () {
         var href = $(this).attr('href');
-        //$('#load').html('');
+        $('#load').html('');
         $('#load').load(href);
         $("#ths").val(this.id);
     });

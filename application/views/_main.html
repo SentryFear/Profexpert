@@ -108,7 +108,7 @@
             <ul class="nav pull-right">                
                 <li class="hidden-phone">
                     <form>
-                        <input class="search" type="text" id="search" />
+                        <input class="search span3" type="text" id="search" />
                         {% block search %}
                         {% endblock %}
                     </form>
@@ -212,7 +212,7 @@
 	      {# <li {% if segments.1|length == 0 %}class="active"{% endif %}><a href="/">{% if segments.1|length == 0 %}<div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>{% endif %}<i class="icon-home"></i><span>Главная</span></a></li> #}
 	      {% for row in menu %}
             {% if access == 'admin' or row.cpu in access %}
-              <li {% if segments.2|length == 0 and segments.1|trim('/') == row.cpu|trim('/') %}class="active"{% endif %}>
+              <li {% if segments.2|length == 0 and segments.1|trim('/') == row.cpu|trim('/') or segments.1|trim('/') ~ "/" ~ segments.2|trim('/') == row.cpu|trim('/') %}class="active"{% endif %}>
                 {% if segments.2|length == 0 and segments.1|trim('/') == row.cpu|trim('/') %}<div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>{% endif %}
                 <a href="{{ row.cpu }}" {{ row.self }}>{{row.icon|raw}} <span>{{ row.name }}</span></a>
               </li>
@@ -269,8 +269,8 @@
     <script src="/themes/js/bootstrap.min.js"></script>
     <script src="/themes/js/custom.js"></script>#}
     	<!-- scripts -->
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.1.0.js"></script>
+    <script src="/themes/wrap/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/themes/wrap/js/jquery-migrate-1.2.1.min.js"></script>
     <script src="/themes/wrap/js/bootstrap.min.js"></script>
     <script src="/themes/wrap/js/bootstrap-wysihtml5-0.0.2.js"></script>
     <script src="/themes/wrap/js/jquery-ui-1.10.2.custom.min.js"></script>
@@ -278,6 +278,7 @@
     <script src="/themes/wrap/js/jquery.ui.menu.js"></script>
     <script src="/themes/wrap/js/jquery.ui.autocomplete.js"></script>
     <script src="/themes/wrap/js/bootstrap.datepicker.js"></script>
+    <script src="/themes/wrap/js/bootstrap-datepicker.ru.js"></script>
     <!-- knob -->
     <script src="/themes/wrap/js/jquery.knob.js"></script>
     <!-- flot charts -->
@@ -309,37 +310,6 @@
 
             $('thead th.number').data('sortBy', function(th, td, sorter) {
                 return parseInt(td.text(), 10);
-            });
-
-            function getIt(){
-
-                $.getJSON( "/projects/getProjects/"+$("#searchwt").val()+"/"+$("#search").val(), function( data, status, xhr ) {
-
-                    $('.hde').hide(200);
-
-                    $.each( data, function( key, val ) {
-
-                        $('#p'+val).show(200);
-                    });
-
-                    return false;
-                });
-            }
-
-            $("#search").keyup(function(){
-
-                if (getIt.timeout) clearTimeout(getIt.timeout);
-
-                getIt.timeout = setTimeout(getIt,600);
-
-            });
-
-            $("#searchwt").change(function(){
-
-                if (getIt.timeout) clearTimeout(getIt.timeout);
-
-                getIt.timeout = setTimeout(getIt,100);
-
             });
 
         });

@@ -36,3 +36,9 @@
     text-shadow:1px 1px 0 #940f0f;
     z-index: 1031;
 }
+a .stat:hover {
+    background-color: #F5FAFC;
+}
+.stat a:hover {
+    text-decoration: none;
+}

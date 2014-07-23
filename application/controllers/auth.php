@@ -317,7 +317,12 @@ class Auth extends CI_Controller
 	{
 		show_error("Отказанно в доступе");
 	}
-	
+
+    function banned()
+    {
+        show_error("Аккаунт заблокирован", "500", "Отказанно в доступе");
+    }
+
 	// Example how to get permissions you set permission in /backend/custom_permissions/
 	function custom_permissions()
 	{

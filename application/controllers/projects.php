@@ -111,6 +111,7 @@ class Projects extends CI_Controller
                 'building' => $this->input->post('building'),
                 'buildingAdd' => $this->input->post('buildingAdd'),
                 'apartment' => $this->input->post('apartment'),
+                'MngCompany' => $this->input->post('MngCompany'),
                 'worktype' => $worktype,
                 'lastedit' => serialize($lastedit),
                 'cid' => $cid,
@@ -213,6 +214,7 @@ class Projects extends CI_Controller
                     'building' => $this->input->post('building'),
                     'buildingAdd' => $this->input->post('buildingAdd'),
                     'apartment' => $this->input->post('apartment'),
+                    'MngCompany' => $this->input->post('MngCompany'),
                     'cid' => $cid,
                 );
 
@@ -281,11 +283,35 @@ class Projects extends CI_Controller
 
         $zadach = array();
 
-        $result['stats'] = array('all' => array('close' => 0, 'notfill' => 0, 'work' => 0, 'all' => 0), '2013' => array('close' => 0, 'notfill' => 0, 'work' => 0, 'all' => 0), '2014' => array('close' => 0, 'notfill' => 0, 'work' => 0, 'all' => 0));
+        $result['stats'] = array(
+            'all' => array('close' => 0, 'notfill' => 0, 'work' => 0, 'all' => 0, 'tasktoday' => 0, 'tasktomorrow' => 0),
+            'datest' => array()
+        );
+
+        $result['tasks'] = array();
+
+        $tasks = array();
 
         foreach($result['data'] as $i) {
 
             $i['worktype'] = unserialize($i['worktype']);
+
+            $i['unixtime'] = '';
+
+            $i['success'] = 0;
+
+            $i['notfill'] = 0;
+
+            if(!empty($i['worktype']['rabotaszakzakrytdogovordata']['value'])) $i['success'] = 1;
+
+            if(empty($i['worktype'])) $i['notfill'] = 1;
+
+            if(!empty($i['worktype']['doverennstsrokokonchaniyadata']['value'])) {
+
+                $dogdt = explode('.', $i['worktype']['doverennstsrokokonchaniyadata']['value']);
+
+                $i['unixtime'] = mktime(0, 0, 0, $dogdt[1], $dogdt[0], $dogdt[2]);
+            }
 
             $i['comments'] = unserialize($i['comments']);
 
@@ -293,24 +319,88 @@ class Projects extends CI_Controller
 
             $i['zadach'] = projects_work_type_total(projects_work_type_bd($this->config->item('worktype'), $i['worktype']), $i['zadach']);
 
+            if(count($i['zadach']) > 0) $tasks = projects_work_type_task($i);
+
+            $result['tasks'] = array_merge ($result['tasks'], $tasks);
+
+            $result['stats']['all']['tasktoday'] += count($tasks['today']);
+
+            $result['stats']['all']['tasktomorrow'] += count($tasks['tomorrow']);
+
             //stats
             $datest = !empty($i['dogdate']) ? date("Y", $i['dogdate']) : date("Y", $i['date']);
 
-            $result['stats'][$datest]['all']++;
+            //$result['stats']['datest'][$datest] = $datest;
 
-            if(empty($i['worktype'])) $result['stats'][$datest]['notfill']++;
-            elseif(!empty($i['worktype']['rabotaszakzakrytdogovordata']['value'])) $result['stats'][$datest]['close']++;
-            else $result['stats'][$datest]['work']++;
+            $thsyesr = date("Y");
+
+            if(($thsyesr - $datest) < 3) {
+
+                if(!isset($result['stats']['datest'][$datest])) $result['stats']['datest'][$datest] = array('datest' => $datest,'close' => 0, 'notfill' => 0, 'work' => 0, 'all' => 0);
+
+                $result['stats']['datest'][$datest]['all']++;
+
+                if(empty($i['worktype'])) {
+
+                    $result['stats']['datest'][$datest]['notfill']++;
+
+                    $result['stats']['datest'][$datest]['work']++;
+
+                } elseif(!empty($i['worktype']['rabotaszakzakrytdogovordata']['value'])) {
+
+                    $result['stats']['datest'][$datest]['close']++;
+
+                } else {
+
+                    $result['stats']['datest'][$datest]['work']++;
+                }
+
+            } else {
+
+                if(!isset($result['stats']['datest'][$thsyesr-3])) $result['stats']['datest'][$thsyesr-3] = array('datest' => ($thsyesr-3), 'text' => 'До '.($thsyesr-2).' года', 'close' => 0, 'notfill' => 0, 'work' => 0, 'all' => 0);
+
+                $result['stats']['datest'][$thsyesr-3]['all']++;
+
+                if(empty($i['worktype'])) {
+
+                    $result['stats']['datest'][$thsyesr-3]['notfill']++;
+
+                    $result['stats']['datest'][$thsyesr-3]['work']++;
+
+                } elseif(!empty($i['worktype']['rabotaszakzakrytdogovordata']['value'])) {
+
+                    $result['stats']['datest'][$thsyesr-3]['close']++;
+
+                } else {
+
+                    $result['stats']['datest'][$thsyesr-3]['work']++;
+                }
+            }
+
 
             $result['stats']['all']['all']++;
 
-            if(empty($i['worktype'])) $result['stats']['all']['notfill']++;
-            elseif(!empty($i['worktype']['rabotaszakzakrytdogovordata']['value'])) $result['stats']['all']['close']++;
-            else $result['stats']['all']['work']++;
+            if(empty($i['worktype'])) {
+
+                $result['stats']['all']['notfill']++;
+
+                $result['stats']['all']['work']++;
+
+            } elseif(!empty($i['worktype']['rabotaszakzakrytdogovordata']['value'])) {
+
+                $result['stats']['all']['close']++;
+
+            } else {
+
+                $result['stats']['all']['work']++;
+            }
             //end stats
 
             $respar[] = $i;
         }
+
+        ksort($result['stats']['datest']);
+        //var_dump($result['stats']['datest']);
 
         $result['data'] = $respar;
 
@@ -340,6 +430,141 @@ class Projects extends CI_Controller
         echo $this->twig->render('projects/main.html', $result);
     }
 
+
+    function calendar()
+    {
+        $result = array();
+
+        $result['data'] = $this->db->select('*')->from('card')->join('projects', 'projects.cid = card.id', 'RIGHT OUTER')->order_by('dogdate asc, cnumber asc')->get()->result_array();
+
+        $result['tasks'] = array();
+
+        $result['region'] = array();
+
+        $result['prtasks'] = array();
+
+        $result['prregion'] = array();
+
+        $tasks = array();
+
+        foreach($result['data'] as $i) {
+
+            $i['worktype'] = unserialize($i['worktype']);
+
+            $i['zadach'] = projects_work_type_total(projects_work_type_bd($this->config->item('worktype'), $i['worktype']), $i['zadach']);
+
+            if(count($i['zadach']) > 0) $tasks = projects_work_type_task($i);
+
+            $result['tasks'] = array_merge ($result['tasks'], $tasks['nztask']);
+
+            $result['region'] = array_merge ($result['region'], $tasks['nzreg']);
+
+            $result['prtasks'] = array_merge ($result['prtasks'], $tasks['prtask']);
+
+            $result['prregion'] = array_merge ($result['prregion'], $tasks['prreg']);
+        }
+
+        //var_dump($result['tasks']);
+
+        echo $this->twig->render('projects/calendar.html', $result);
+    }
+
+    function getCalendar()
+    {
+        $result = array();
+
+        $result['data'] = $this->db->select('*')->from('card')->join('projects', 'projects.cid = card.id', 'RIGHT OUTER')->order_by('dogdate asc, cnumber asc')->get()->result_array();
+
+        $result['tasks'] = array();
+
+        $tasks = array();
+
+        foreach($result['data'] as $i) {
+
+            $i['worktype'] = unserialize($i['worktype']);
+
+            $i['zadach'] = projects_work_type_total(projects_work_type_bd($this->config->item('worktype'), $i['worktype']), $i['zadach']);
+
+            if(count($i['zadach']) > 0) $tasks = projects_work_type_task($i);
+
+            $result['tasks'] = array_merge ($result['tasks'], $tasks['task']);
+        }
+
+        $OutCal = array();
+
+        foreach($result['tasks'] as $q) {
+
+            $color = '#278ccf';
+
+            $note = '';
+
+            if(isset($q['ins'])) {
+
+                if($q['ins'] == 'mvk') $color = '#C67605';
+                if($q['ins'] == 'pib') $color = '#356635';
+            }
+
+            if(!empty($q['note'])) $note = "\n\rПримечание: ".$q['note'];
+
+            $OutCal[] = array('rid' => $q['id'], 'color' => $color, 'start' => isset($q['date']) ? $q['date'] : '', 'name' => $q['name'], 'title' => "Район: ".$q['region']."\n\rАдрес: ".$q['address']."\n\r".$q['task'].$note);
+        }
+
+        echo json_encode($OutCal);
+    }
+
+    function setCalendar()
+    {
+        $id = intval($this->input->post('rid'));
+
+        $name = $this->input->post('name');
+
+        $cdate = intval($this->input->post('cdate'));
+
+        if(!empty($id) && $this->input->is_ajax_request()) {
+
+            $wt = array();
+
+            $res = $this->db->get_where('projects', array('id' => $id))->row_array();
+
+            $wt = unserialize($res['worktype']);
+
+            if(!isset($wt[$name])) $wt[$name] = array('value'=> '', 'ord' => '', 'note' => '', 'cdate' => $cdate);
+            else $wt[$name]['cdate'] = $cdate;
+
+            $upd['worktype'] = serialize($wt);
+
+            $this->db->update('projects', $upd, array('id' => $id));
+
+            echo 'ok';
+        }
+    }
+
+    function delCalendarEvent()
+    {
+        $id = intval($this->input->post('rid'));
+
+        $name = $this->input->post('name');
+
+        $cdate = '';
+
+        if(!empty($id) && $this->input->is_ajax_request()) {
+
+            $wt = array();
+
+            $res = $this->db->get_where('projects', array('id' => $id))->row_array();
+
+            $wt = unserialize($res['worktype']);
+
+            if(!isset($wt[$name])) $wt[$name] = array('value'=> '', 'ord' => '', 'note' => '', 'cdate' => $cdate);
+            else $wt[$name]['cdate'] = $cdate;
+
+            $upd['worktype'] = serialize($wt);
+
+            $this->db->update('projects', $upd, array('id' => $id));
+
+            echo 'ok';
+        }
+    }
     /**
      * Добавление файлов открывается с помощью AJAX
      */
@@ -660,7 +885,9 @@ class Projects extends CI_Controller
 
             echo "<script>
                 $('.datepicker1').live('focus', function(){
-                   $(this).datepicker();
+                   $(this).datepicker({
+                        language: 'ru'
+                    });
                 });
 				/*$('.modal-body').ready(function(){
 				        $('.datepicker1').datepicker();
@@ -817,6 +1044,12 @@ class Projects extends CI_Controller
                     </div>
                 </div>
                 <div class="control-group">
+                    <label class="control-label" for="work">Управляющая Компания</label>
+                    <div class="controls">
+                        <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="projects" data-tpol="MngCompany" id="MngCompany" name="MngCompany" placeholder="Управляющая Компания" value="'.$res['MngCompany'].'">
+                    </div>
+                </div>
+                <div class="control-group">
                     <label class="control-label" for="client">Клиент</label>
                     <div class="controls">
                         <div class="ui-select" style="width: auto;">
@@ -871,7 +1104,9 @@ class Projects extends CI_Controller
 				(function($) {
 				$(function() {
 				    $('.datepicker1').live('focus', function(){
-                       $(this).datepicker();
+                       $(this).datepicker({
+                            language: 'ru'
+                        });
                     });
 
 				    $('#editform').submit(function() {
@@ -946,9 +1181,13 @@ class Projects extends CI_Controller
 
         $return = array();
 
+        $key = 0;
+
         $wt = $this->security->xss_clean($this->uri->segment(3));
 
         $term = $this->security->xss_clean($this->uri->segment(4));
+
+        if($this->input->get('key')) $key = $this->input->get('key');
 
         $res = $this->db->select('*')
                 ->from('card')
@@ -968,6 +1207,7 @@ class Projects extends CI_Controller
                 ->or_like('phone', $term)
                 ->or_like('email', $term)
                 ->or_like('hear', $term)
+                ->order_by('dogdate asc, cnumber asc')
                 ->get()
                 ->result_array();
 
@@ -983,6 +1223,60 @@ class Projects extends CI_Controller
 
                         if($ks == $wt && empty($s['value'])) $return[] = $i['id'];
                     }
+                }
+
+            } elseif(!empty($key)) {
+
+                if($key == 'unfilled') {
+
+                    if(empty($i['worktype'])) {
+
+                        $return[] = $i['id'];
+
+                    } else {
+
+                        $sr = unserialize($i['worktype']);
+
+                        if(empty($sr)) $return[] = $i['id'];
+                    }
+
+                } elseif(strstr($key, 'year')) {
+
+                    $year = preg_replace('#[^0-9]#','',$key);
+
+                    $thsyear = date("Y");
+
+                    $datest = !empty($i['dogdate']) ? date("Y", $i['dogdate']) : date("Y", $i['date']);
+
+                    if(($thsyear - $year) == 3 && $datest < $year) $datest = $year;
+
+                    if($datest == $year) $return[] = $i['id'];
+
+                } elseif($key == 'allwork') {
+
+                    if(!empty($i['worktype'])) {
+
+                        $sr = unserialize($i['worktype']);
+
+                        if(empty($sr['rabotaszakzakrytdogovordata']['value'])) $return[] = $i['id'];
+
+                    } else {
+
+                        $return[] = $i['id'];
+                    }
+
+                } elseif($key == 'allclose') {
+
+                    if(!empty($i['worktype'])) {
+
+                        $sr = unserialize($i['worktype']);
+
+                        if(!empty($sr['rabotaszakzakrytdogovordata']['value'])) $return[] = $i['id'];
+                    }
+
+                } else {
+
+                    $return[] = $i['id'];
                 }
 
             } else {

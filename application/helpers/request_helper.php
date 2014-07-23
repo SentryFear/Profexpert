@@ -71,11 +71,15 @@ if (!function_exists('req_arr_to_table')) {
 
             $self = '';
 
+            $self1 = '';
+
             if (isset($i['self'])) $self = $i['self'];
+
+            if (isset($i['self1'])) $self1 = $i['self1'];
 
             if ($g > 1) $line = '<span class="line"></span>';
 
-            $result .= "<th $self>" . $line . $i['name'] . "</th>";
+            $result .= "<th $self>" . $line . "<span $self1>" . $i['name'] . "</span></th>";
         }
 
         $result .= "</tr></thead><tbody>";
@@ -132,7 +136,7 @@ if (!function_exists('req_arr_to_table')) {
 
                     if(!empty($i['email'])) $emaile = '<br><b><i>Email:</b></i> '.$i['email'];
 
-                    $val = '<a href="/card/view/'. $i['cid'] .'/"><span data-toggle="tooltip" data-original-title="' . $fio . ' ' . $telphone . ' ' . $emaile . '">' . $i['zname'] . '</span></a>';
+                    $val = '<a href="/card/view/'. $i['cid'] .'/" target="_blank"><span data-toggle="tooltip" data-original-title="' . $fio . ' ' . $telphone . ' ' . $emaile . '">' . $i['zname'] . '</span></a>';
 
                 }
 
@@ -158,9 +162,9 @@ if (!function_exists('req_arr_to_table')) {
 
                         $building = (!empty($i['building'])) ? ', д.'.$i['building'] : '';
 
-                        $buildingAdd = (!empty($i['buildingAdd'])) ? ', корп.'.$i['buildingAdd'] : '';
+                        $buildingAdd = (!empty($i['buildingAdd'])) ? ', корп/лит.'.$i['buildingAdd'] : '';
 
-                        $apartment = (!empty($i['apartment'])) ? ', кв.'.$i['apartment'] : '';
+                        $apartment = (!empty($i['apartment'])) ? ', кв/пом.'.$i['apartment'] : '';
 
                         $val = '<span data-toggle="tooltip" data-original-title="Город: '.$i['city'].'<br>'.$regionad.'<br>Улица: '.$i['street'].'<br>Дом: '.$i['building'].'<br>Корпус\Лит: '.$i['buildingAdd'].'<br>Квартира/Помещение: '.$i['apartment'].'">'.$street.''.$building.''.$buildingAdd.''.$apartment.'</span>';
 
@@ -239,7 +243,6 @@ if (!function_exists('req_arr_to_table')) {
 
                         }
                     }
-
                 }
 
                 if ($val == 'actions') {
@@ -406,7 +409,7 @@ if (!function_exists('req_arr_to_form')) {
                             <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="request5projects" data-tpol="region" id="region" name="region" placeholder="Район" value="' . $region . '"><br>
                             <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="request5projects" data-tpol="street" id="street" name="street" placeholder="Улица" value="' . $street . '"><br>
                             <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="request5projects" data-tpol="building" id="building" name="building" placeholder="Дом" value="' . $building . '"><br>
-                            <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="request5projects" data-tpol="buildingAdd" id="buildingAdd" name="buildingAdd" placeholder="Корп/Лит" value="' . $buildingAdd . '"><br>
+                            <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="request5projects" data-tpol="buildingAdd" id="buildingAdd" name="buildingAdd" placeholder="корп/лит." value="' . $buildingAdd . '"><br>
                             <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="request5projects" data-tpol="apartment" id="apartment" name="apartment" placeholder="кв/пом." value="' . $apartment . '">';
                 }
 
@@ -847,7 +850,7 @@ if (!function_exists('req_arr_to_form')) {
                                 <div class="row-fluid">
                                     <div class="span3">
                                         <b>Основаная информация:</b><br>
-                                         - Адрес: <b>'.$data['address'].'</b><br>
+                                         - Адрес: <b>'.$data['city'].', '.$data['region'].', '.$data['street'].', '.$data['building'].', '.$data['buildingAdd'].', '.$data['apartment'].' </b><br>
                                          - Район: <b>'.$rne.'</b><br>
                                          - Название проекта: <b>'.$data['name'].'</b><br>
                                          - Площадь объекта: <b>'.$data['footage'].'</b>м&sup2;<br><br>
@@ -858,7 +861,10 @@ if (!function_exists('req_arr_to_form')) {
                                         Стоимость работ может измениться после получения подробного технического задания от Заказчика.<br>
                                         Платежи за выдачу технической документации и согласование проектной документации, предусмотренные государственными инстанциями, оплачиваются Заказчиком отдельно по предъявляемым квитанциям.<br>
                                         В данный расчет не включена стоимость работ по вводу в эксплуатацию объекта после перепланировки и получению технического паспорта на образованный в результате перепланировки объект, получению дополнительной мощности и оформлению электропотребления. Услуги по вводу объекта в эксплуатацию осмечиваются отдельно и составляют 70-80% от данного коммерческого предложения.<br>
-                                        Цены по коммерческому предложению действительны в течение месяца.<br>
+                                        Обращаем Ваше внимание, что в соответствии с п. 1 ст. 28 Жилищного Кодекса Российской Федерации завершение переустройства и (или) перепланировки жилого помещения подтверждается актом приемочной комиссии. После выполнения работ в установленные сроки необходимо предъявить к приемке жилое помещение при наличии необходимых документов.<br><br>
+                                        Цены по коммерческому предложению действительны в течение месяца.<br><br>
+                                        Стоимость работ по вводу объекта в эксплуатацию после перепланировки действительна при полном соответствии выполненных ремонтно-строительных работ согласованному МВК проекту. Урегулирование вопросов несоответствия проекту выполненных ремонтно-строительных работ, оговаривается отдельно.
+Платежи за выдачу технической документации и согласование проектной документации, предусмотренные государственными инстанциями, оплачиваются Заказчиком отдельно по предъявляемым квитанциям.
                                     </div>
                                 </div>
                                 <div class="row-fluid">
@@ -1089,7 +1095,6 @@ if (!function_exists('req_get_status')) {
                         $data1[$k] = explode(':', $q);
 
                         if ($data1[$k][1] == 'usr') $data1[$k][1] = $extra['user_id'];
-
                     }
 
                     foreach ($data1 as $g) {

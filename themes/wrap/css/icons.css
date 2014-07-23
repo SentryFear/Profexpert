@@ -112,4 +112,11 @@ i.table-delete{
   	line-height: 14px;
   	vertical-align: text-top;
 }
-
+i.icons-all{
+     color: #000;
+     font-size: 14px;
+     vertical-align: text-top;
+ }
+.actions a:hover{
+    text-decoration: none;
+}

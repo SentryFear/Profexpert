@@ -3,12 +3,12 @@
 {% block title %}Проекты{% endblock %}
 
 {% block search %}
-    <div class="ui-select" style="top: 9px; margin-right: 40px; width: auto;">
+    {#<div class="ui-select" style="top: 9px; margin-right: 20px;">
         <select id="searchwt">
             <option value="0">Не выбрано</option>
             {{ search|raw }}
         </select>
-    </div>
+    </div>#}
 {% endblock %}
 
 {% block content %}
@@ -53,7 +53,13 @@
             background: linear-gradient(to bottom, #fefefe 0%,#f7f7f7 100%);
         }
         td{
-            max-width: 150px;
+             max-width: 60px;
+             overflow: hidden;
+             text-overflow: ellipsis;
+             white-space: nowrap;
+         }
+        th{
+            max-width: 60px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -61,38 +67,46 @@
     </style>
     <div id="main-stats">
         <div class="row-fluid stats-row">
-            <div class="span2 stat">
-                <div class="data">
-                    <span class="number">{{ stats.2013.all }}</span> Всего<br>
-                    <span class="number">{{ stats.2013.close }}</span> Закрыто
-                </div>
-                <span class="date">За 2013 год договоров</span>
-            </div>
+            {% for row in stats.datest %}
+                <a href="javascript:void(0);" data-href="?key=year{{ row.datest }}" class="searchget">
+                    <div class="span2 stat">
+                        <div class="data">
+                            <span class="number">{{ row.work }}</span> В работе<br>
+                            <span class="number">{{ row.close }}</span> Закрыто
+                        </div>
+                        <span class="date">{% if row.text|length > 0 %}{{ row.text }}{% else %}За {{ row.datest }} год договоров{% endif %}</span>
+                    </div>
+                </a>
+            {% endfor %}
             <div class="span2 stat" style="margin-left: 0;">
                 <div class="data">
-                    <span class="number">{{ stats.2014.all }}</span> Всего<br>
-                    <span class="number">{{ stats.2014.close }}</span> Закрыто
-                </div>
-                <span class="date">За 2014 год договоров</span>
-            </div>
-            <div class="span2 stat" style="margin-left: 0;">
-                <div class="data">
-                    <span class="number">{{ stats.all.all }}</span> Всего<br>
-                    <span class="number">{{ stats.all.close }}</span> Закрыто
+                    <a href="javascript:void(0);" data-href="?key=allwork" class="searchget"><span class="number">{{ stats.all.work }}</span> В работе<br></a>
+                    <a href="javascript:void(0);" data-href="?key=allclose" class="searchget"><span class="number">{{ stats.all.close }}</span> Закрыто</a>
                 </div>
                 <span class="date">Всего договоров</span>
             </div>
-            <div class="span2 stat" style="margin-left: 0; {% if stats.all.notfill > 0 %}background-color: #FFEAE8;{% else %}background-color: #E5FFE6;{% endif %}">
-                <div class="data">
-                    {% if stats.all.notfill > 0 %}
-                    заполнить<br>
-                    <span class="number" style="color: #EE3232;">{{ stats.all.notfill }}</span> договоров
-                    {% else %}
-                        <br><span class="number" style="color: #68CE24;">0</span> договоров
-                    {% endif %}
+            <a href="javascript:void(0);" data-href="?key=unfilled" class="searchget">
+                <div class="span2 stat" style="margin-left: 0; {% if stats.all.notfill > 0 %}background-color: #FFEAE8;{% else %}background-color: #D2FFCA;{% endif %}">
+                    <div class="data">
+                        {% if stats.all.notfill > 0 %}
+                            Необходимо<br>
+                        <span class="number" style="color: #EE3232;">{{ stats.all.notfill }}</span> заполнить
+                        {% else %}
+                            <br><span class="number" style="color: #68CE24;">0</span> договоров
+                        {% endif %}
+                    </div>
+                    <span class="date">договоров</span>
                 </div>
-                <span class="date">Необходимо заполнить</span>
-            </div>
+            </a>
+            <a href="http://bd.domainspb.ru/projects/calendar">
+                <div class="span2 stat" style="margin-left: 0;">
+                    <div class="data">
+                        <span class="number">{{ stats.all.tasktoday }}</span> Сегодня<br>
+                        <span class="number">{{ stats.all.tasktomorrow }}</span> Завтра
+                    </div>
+                    <span class="date">Необходимо выполнить задач</span>
+                </div>
+            </a>
         </div>
     </div>
 <div class="table-products section">
@@ -128,29 +142,29 @@
         <table class="table table-hover" id="fhead">
             <thead>
                 <tr>
-                    <th width="3%">№</th>
+                    <th width="1%" class="number">№</th>
                     <th width="1%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Работа">[ Р ]</span></th>
                     <th width="5%"><span class="line"></span>Договор</th>
                     <th class="span2"><span class="line"></span>Адрес</th>
-                    <th class="span2"><span class="line"></span>Заказчик</th>
-                    <th width="7%"><span class="line"></span>Срок оконч. дов.</th>
-                    <th class="span2"><span class="line"></span>Текущая задача</th>
-                    <th class="span2"><span class="line"></span>Следующая задача</th>
+                    <th class="span1"><span class="line"></span>Заказчик</th>
+                    <th width="8%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Срок окончания доверенности">Срок окончания доверенности</span></th>
+                    <th class="span1"><span class="line"></span><span data-toggle="tooltip" data-original-title="Текущая задача">Текущая задача</span></th>
+                    <th class="span1"><span class="line"></span><span data-toggle="tooltip" data-original-title="Следующая задача">Следующая задача</span></th>
                     <th width="1%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Комментарии">[ К ]</span></th>
                     <th width="1%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Файлы">[ Ф ]</span></th>
-                    <th class="span1"><span class="line"></span>Действия</th>
+                    <th width="1%"><span class="line"></span>Действия</th>
                 </tr>
             </thead>
             <tbody>
             {% for row in data %}
-                <tr id="p{{ row.id }}" class="hde" {% if row.worktype.rabotaszakzakrytdogovordata.value|length > 0 %}style="background-color: #D2FFCA;"{% endif %}>
-                    <td>{{ loop.index }}</td>
+                <tr id="p{{ row.id }}" class="hde" {% if row.success == 1 %}style="background-color: #D2FFCA;"{% elseif row.notfill == 1 %}style="background-color: #FFEAE8;"{% endif %}>
+                    <td class="numb">{{ loop.index }}</td>
                     <td><a href="/projects/work/{{ row.id }}" data-target="#upload" data-toggle="modal" class="upl label {% if row.zadach.count > 0  %}label-important{% else %}label-success{% endif %}" data-toggle1="tooltip" data-original-title="Задачи по проекту" id="{{ row.id }}">[ {{ row.zadach.count }} ]</a></td>
                     <td><span data-toggle="tooltip" data-original-title="Дата создания проекта: {{ row.date|date("d.m.Y") }}<br>Дата заключения договора: {{ row.dogdate|date("d.m.Y") }}<br>Работа: {{ row.work }}">{{ row.cnumber }}</span></td>
                     {#<td>{{ row.work }}</td>#}
-                    <td><span data-toggle="tooltip" data-original-title="Город: {{ row.city }}<br>Район: {{ row.region }}<br>Улица: {{ row.street }}<br>Дом: {{ row.building }}<br>Корпус\Литера: {{ row.buildingAdd }}<br>Квартира/Помещение: {{ row.apartment }}">{% if row.street|length > 0 %}{{ row.street }}, {% endif %}{% if row.building|length > 0 %}д.{{ row.building }}, {% endif %}{% if row.buildingAdd|length > 0 %}корп/лит:{{ row.buildingAdd }}, {% endif %}{% if row.apartment|length > 0 %}кв.{{ row.apartment }}{% endif %}</span></td>
-                    <td>{{ row.zsurname }} {{ row.zname }} {{ row.zmname }}</td>
-                    <td>{{ row.worktype.doverennstsrokokonchaniyadata.value }}</td>
+                    <td><span data-toggle="tooltip" data-original-title="Город: {{ row.city }}<br>Район: {{ row.region }}<br>Улица: {{ row.street }}<br>Дом: {{ row.building }}<br>Корпус\Литера: {{ row.buildingAdd }}<br>Квартира/Помещение: {{ row.apartment }}">{% if row.street|length > 0 %}{{ row.street }}, {% endif %}{% if row.building|length > 0 %}д.{{ row.building }}, {% endif %}{% if row.buildingAdd|length > 0 %}корп./лит.{{ row.buildingAdd }}, {% endif %}{% if row.apartment|length > 0 %}кв./пом.{{ row.apartment }}{% endif %}</span></td>
+                    <td><a href="/card/view/{{ row.cid }}/" target="_blank"><span data-toggle="tooltip" data-original-title="{{ row.zsurname }} {{ row.zname }} {{ row.zmname }} {% if row.phone|length > 0 %}<br> <b><i>Телефон:</b></i> {{ row.phone }} {% endif %}{% if row.email|length > 0 %}<br><b><i>Email:</b></i> {{ row.email }}{% endif %}">{{ row.zname }}</span></a></td>
+                    <td {% if "now"|date("U") > row.unixtime and row.worktype.rabotaszakzakrytdogovordata.value|length <= 0 %}style="color:red;"{% endif %}>{{ row.worktype.doverennstsrokokonchaniyadata.value }}</td>
                     <td><a href="/projects/work/{{ row.id }}/{{ row.zadach.rs.0.last.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.rs.0.last.rname }}<br>({{ row.zadach.rs.0.rname }})" id="{{ row.id }}">{{ row.zadach.rs.0.last1.rname }}</a></td>
                     <td><a href="/projects/work/{{ row.id }}/{{ row.zadach.rs.1.last.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.rs.1.last.rname }}<br>({{ row.zadach.rs.1.rname }})" id="{{ row.id }}">{{ row.zadach.rs.1.last1.rname }}</a></td>
                     {#<td>
@@ -167,8 +181,8 @@
                             <a href="/projects/work/{{ row.id }}/{{ row.zadach.current.top.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.current.top.rname }}<br>({{ row.zadach.next.bottom.rname }})" id="{{ row.id }}">{{ row.zadach.next.bottom.rname }}</a>
                         {% endif %}
                     </td>#}
-                    <td><a href="/projects/comments/{{ row.id }}" data-target="#upload" data-toggle="modal" class="upl label {% if row.comments|length > 0  %}label-important{% else %}label-success{% endif %}" data-toggle1="tooltip" data-original-title="Комментарии к проекту" id="{{ row.id }}">[ {{ row.comments|length }} ]</a></td>
-                    <td><a href="/projects/docs/{{ row.id }}" data-target="#upload" data-toggle="modal" class="upl label {% if row.docs|length > 0  %}label-important{% else %}label-success{% endif %}" data-toggle1="tooltip" data-original-title="Файлы к проекту" id="{{ row.id }}">[ {{ row.docs|length }} ]</a></td>
+                    <td><a href="/projects/comments/{{ row.id }}" data-target="#upload" data-toggle="modal" class="upl label {% if row.comments|length > 0  %}label-success{% else %}label{% endif %}" data-toggle1="tooltip" data-original-title="Комментарии к проекту" id="{{ row.id }}">[ {{ row.comments|length }} ]</a></td>
+                    <td><a href="/projects/docs/{{ row.id }}" data-target="#upload" data-toggle="modal" class="upl label {% if row.docs|length > 0  %}label-success{% else %}label{% endif %}" data-toggle1="tooltip" data-original-title="Файлы к проекту" id="{{ row.id }}">[ {{ row.docs|length }} ]</a></td>
                     <td>
                         <ul class="actions" style="float: left;">
                             <li><a href="/projects/edit/{{ row.id }}/" data-target="#upload" data-toggle="modal" class="upl" data-toggle1="tooltip" data-original-title="Изменить проект" id="{{ row.id }}"><i class="table-edit"></i></a></li>
@@ -188,8 +202,16 @@
             </div>
         </div>
         <!-- EndTable -->
+        {#<!-- Help for users -->
+        <div class="alert alert-info">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <b>Подсказка</b><br>
+
+        </div>
+        <!-- End Help -->#}
     </div>
 </div>
+
 <!-- Modal Upload -->
 {% include 'projects/upload.html' %}
 <!-- EndModal Upload -->
@@ -197,4 +219,99 @@
 <!-- Modal Add -->
 {% include 'projects/add.html' %}
 <!-- EndModal Add -->
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function() {
+
+            function strstr( haystack, needle, bool ) {	// Find first occurrence of a string
+                //
+                // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+
+                var pos = 0;
+
+                pos = haystack.indexOf( needle );
+                if( pos == -1 ){
+                    return false;
+                } else{
+                    if( bool ){
+                        return haystack.substr( 0, pos );
+                    } else{
+                        return haystack.slice( pos );
+                    }
+                }
+            }
+
+
+            function getIt(){
+
+                var chwt = 0;
+
+                if($("#searchwt").val() !== undefined) chwt = $("#searchwt").val();
+
+                $.getJSON( "/projects/getProjects/"+chwt+"/"+$("#search").val(), function( data, status, xhr ) {
+
+                    $('.hde').hide(200);
+
+                    var numb = 1;
+
+                    $.each( data, function( key, val ) {
+
+                        $('#p'+val).show(200);
+
+                        $('#p'+val+' .numb').html(numb);
+
+                        numb++;
+                    });
+
+                    return false;
+                });
+            }
+
+            $("#search").keyup(function(){
+
+                if (getIt.timeout) clearTimeout(getIt.timeout);
+
+                getIt.timeout = setTimeout(getIt,600);
+
+            });
+
+            $("#searchwt").change(function(){
+
+                if (getIt.timeout) clearTimeout(getIt.timeout);
+
+                getIt.timeout = setTimeout(getIt,100);
+
+            });
+
+            $(".searchget").click(function(){
+
+                var vl = $('#search').val();
+
+                if(vl !== undefined) {
+
+                    if(strstr(vl, '?')) {
+
+                        var req = strstr(vl, '?', true);
+
+                        $('#search').val(req+$(this).data("href"));
+
+                    } else {
+
+                        $('#search').val(vl+$(this).data("href"));
+                    }
+
+                } else {
+
+                    $('#search').val($(this).data("href"));
+                }
+
+                getIt();
+
+                return false;
+            });
+        });
+    </script>
 {% endblock %}
