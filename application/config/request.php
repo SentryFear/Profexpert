@@ -242,6 +242,8 @@ $config['razd'] = array(
                         array('name' => 'apz', 'rname' => 'Архитектурно-Планировочное Задание', 'sname' => 'АПЗ', 'price' => '150', 'time' => '3'),
                         array('name' => 'aro', 'rname' => 'Архитектурные Решения Отдельный Вход', 'pname' => 'Архитектурные Решения', 'sname' => 'АР', 'price' => '150'),
                         array('name' => 'arop', 'rname' => 'Архитектурное Решение Отдельного Входа с Приямком', 'pname' => 'Архитектурные Решения', 'sname' => 'АР', 'price' => '150'),
+                        array('name' => 'paz', 'rname' => 'Паспорт фасада здания', 'pname' => 'Паспорт фасада здания', 'sname' => 'Паспорт фасада здания', 'price' => '0'),
+                        array('name' => 'pifvz', 'rname' => 'Проект изменения фасадного вида здания', 'pname' => 'Проект изменения фасадного вида здания', 'sname' => 'Проект изменения фасадного вида здания', 'price' => '0'),
                         array('name' => 'visit', 'rname' => 'Выезд на объект', 'price' => '0'),
                         array('name' => 'pecsb', 'rname' => 'Печать и сбор проекта', 'price' => '0'),
                         );
@@ -628,7 +630,7 @@ $config['worktype'] = array(
         )),
         array('rname' => 'Экспертиза проекта', 'name' => 'soglasovanekspertizaproekta', 'type' => 'bool', 'ord' => '11', 'names' => array(
             array('rname' => 'Заказан', 'name' => 'soglasovanekspertizaproektazak', 'type' => 'date', 'ord' => '1'),
-            //array('rname' => 'Дата выполнения', 'name' => 'soglasovanekspertizaproektadtvip', 'type' => 'date', 'ord' => '2'),
+            array('rname' => 'Оплачено', 'name' => 'soglasovanekspertizaproektaopl', 'type' => 'date', 'ord' => '2'),
             array('rname' => 'Получен', 'name' => 'soglasovanekspertizaproektapol', 'type' => 'date', 'ord' => '3'),
         )),
         array('rname' => 'МВК', 'name' => 'soglasovanmvk', 'type' => 'bool', 'ord' => '12', 'ins' => 'mvk', 'names' => array(
@@ -716,7 +718,10 @@ $config['worktype'] = array(
             array('rname' => 'Безнал', 'name' => 'rabotaszakokonchatelniyraschetbeznal', 'type' => 'bool', 'ord' => '2'),
             array('rname' => 'Дата', 'name' => 'rabotaszakokonchatelniyraschetdata', 'type' => 'date', 'ord' => '3'),
         )),
-        array('rname' => 'Закрыть договор', 'name' => 'rabotaszakzakrytdogovor', 'type' => 'bool', 'ord' => '6', 'names' => array(
+        array('rname' => 'Приостановить договор', 'name' => 'rabotaszakpriostanovitdogovor', 'type' => 'bool', 'ord' => '6', 'names' => array(
+            array('rname' => 'Дата', 'name' => 'rabotaszakpriostanovitdogovordata', 'type' => 'date', 'ord' => '1'),
+        )),
+        array('rname' => 'Закрыть договор', 'name' => 'rabotaszakzakrytdogovor', 'type' => 'bool', 'ord' => '7', 'names' => array(
             array('rname' => 'Дата', 'name' => 'rabotaszakzakrytdogovordata', 'type' => 'date', 'ord' => '1'),
         )),
     )),

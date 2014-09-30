@@ -32,6 +32,24 @@
                 </ul>
             </div>
         </div>
+        <div class="span4">
+                {% if result.hear %}
+                    <h6>Откуда узнали?</h6>
+                    <blockquote>
+                        <p>{{ result.hear|raw }}</p>
+                    </blockquote>
+                {% endif %}
+                {% if result.cсoments %}
+                <h6>Комментарии к заказчику</h6>
+                {% for row in result.cсoments %}
+                <blockquote>
+                    <p>{{ row.text|raw }}</p>
+                    <small>Изменил <b>{{ row.author }}</b> {{ row.date|date("d.m.Y в H:i") }}</small>
+                </blockquote>
+
+                {% endfor %}
+                {% endif %}
+        </div>
         {#<a class="btn-flat icon pull-right delete-user" data-toggle="tooltip" title="Delete user" data-placement="top">
             <i class="icon-trash"></i>
         </a>
@@ -42,51 +60,17 @@
 
     <div class="row-fluid profile">
         <!-- bio, new note & orders column -->
-        <div class="span9 bio">
-            <div class="profile-box">
-                <!-- biography -->
-                <div class="span12 section">
-                    {% if result.hear %}
-                        <h6>Откуда узнали?</h6>
-                        <p>{{ result.hear }}</p>
-                    {% endif %}
-                    {% if result.cсoments %}
-                        <h6>Комментарии к заказчику</h6>
-                        {% for row in result.cсoments %}
-                            <blockquote>
-                                <p>{{ row.text|raw }}</p>
-                                <small>Изменил <b>{{ row.author }}</b> {{ row.date|date("d.m.Y в H:i") }}</small>
-                            </blockquote>
-
-                        {% endfor %}
-                    {% endif %}
-                </div>
-
+        <div class="span12">
                 <h6>История заказчика</h6>
                 <br>
                 <!-- recent orders table -->
                 <table class="table table-hover" id="fhead">
                     <thead>
                     <tr>
-                        <th class="span2">
-                            Адрес
-                        </th>
-                        <th class="span2">
-                            <span class="line"></span>
-                            Дата добавления
-                        </th>
-                        <th class="span3">
-                            <span class="line"></span>
-                            Изменения статуса
-                        </th>
-                        <th class="span3">
-                            <span class="line"></span>
-                            Комментарии
-                        </th>
-                        <th class="span1">
-                            <span class="line"></span>
-                            Работники
-                        </th>
+                        <th class="span3">Адрес</th>
+                        <th class="span4"><span class="line"></span>Изменения статуса</th>
+                        <th class="span3"><span class="line"></span>Комментарии</th>
+                        <th class="span1"><span class="line"></span>Работники</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -94,24 +78,25 @@
                     {% for row in result.req %}
                         <tr>
                             <td>
-                                {{ row.address }}
+                                <span data-toggle="tooltip" data-original-title="Город: {{ row.city }}<br>Район: {{ row.region }}<br>Улица: {{ row.street }}<br>Дом: {{ row.building }}<br>Корпус\Литера: {{ row.buildingAdd }}<br>Квартира/Помещение: {{ row.apartment }}">{% if row.street|length > 0 %}{{ row.street }}, {% endif %}{% if row.building|length > 0 %}д.{{ row.building }}, {% endif %}{% if row.buildingAdd|length > 0 %}корп./лит.{{ row.buildingAdd }}, {% endif %}{% if row.apartment|length > 0 %}кв./пом.{{ row.apartment }}{% endif %}</span>
                             </td>
                             <td>
-                                {{ row.date|date("d.m.Y H:i") }}
-                            </td>
-                            <td>
+                                <p>{{ row.date|date("d.m.Y H:i") }} - Дата добавления</p>
                                 {% for his in row.history %}
-                                    <p>{{ his.name|raw }} - {{ his.date|date("d.m.Y H:i") }}</p>
+                                    <p>{{ his.date|date("d.m.Y H:i") }} - {{ his.name|raw }}</p>
                                 {% endfor %}
                             </td>
                             <td>
                                 {% for com in row.more %}
-                                    <p>{{ com.text|raw }} - {{ com.date|date("d.m.Y H:i") }}</p>
+                                    <blockquote>
+                                        <p>{{ com.text|raw }}</p>
+                                        <small><b>{{ com.author }}</b> {{ com.date|date("d.m.Y H:i") }}</small>
+                                    </blockquote>
                                 {% endfor %}
                             </td>
                             <td>
-                                Менеджер: {{ row.nmid }}<br>
-                                Проектировщик: {{ row.nuid }}
+                                <span class="label label-success" data-toggle="tooltip" data-original-title="Менеджер: {{ row.nmid }}">{{ row.unmid }}</span>
+                                <span class="label label-success" data-toggle="tooltip" data-original-title="Проектировщик: {{ row.nuid }}">{{ row.unuid }}</span>
                             </td>
                         </tr>
                     {% endfor %}
@@ -130,7 +115,6 @@
                         <input type="reset" value="Cancel" class="reset">
                     </div>
                 </div>#}
-            </div>
         </div>
 
         {#<!-- side address column -->

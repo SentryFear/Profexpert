@@ -32,7 +32,7 @@ class request_model extends CI_Model {
 
         if($cid == 0) {
 
-            $comment[] = array('author' => $this->dx_auth->get_username(), 'text'=> 'Создана карточка клиента', 'date' => time());
+            $comment[] = array('author' => $this->dx_auth->get_name(), 'text'=> 'Создана карточка клиента', 'date' => time());
 
 
             $insert = array(
@@ -208,83 +208,90 @@ class request_model extends CI_Model {
      * @return mixed
      */
     function add_docs() {
-      
-		$id = $this->input->post('id');
-	      
-		$config['upload_path'] = './uploads/';
-		//$config['allowed_types'] = 'doc|docx|xls|xlsx|pdf|txt|jpg|gif|jpeg';
-		$config['max_size']	= '10000';
-		$config['encrypt_name'] = true;
 
-		$this->load->library('upload', $config);
-     
-		$author = $this->dx_auth->get_username();
-     
-		$data['success'] = '';
-		
-		$docs1 = array();
+        $ok = 0;
+
+        $author = $this->dx_auth->get_name();
+
+		$id = $this->input->post('id');
 
         $row = $this->db->get_where('request', array('id' => $id))->row_array();
 
-		//$row = $query->row_array();
-     
-		$docs = unserialize($row['docs']);
-		
-		if(empty($docs)) $docs = array();
-		
-		foreach($docs as $q) {
-			
-			$q['name'] = $this->input->post('name'.$q['id']);
-			
-			if($this->upload->do_upload('doc'.$q['id'])) {
-				
-				$dt = $this->upload->data();
-				
-				$q['file'] = $dt['file_name'];
-				
-				$q['date'] = time();
-				
-				$q['author'] = $author;
-				
-				$data['success'] .= "Документ номер <b>$q[id]</b> с именем <b>$q[name]</b> успешно обновлён.<br>";
-			}
-			
-			if(!empty($q['name'])) $docs1[] = $q;
-		}
-		
-		$docs = $docs1;
-		
-		for($i=count($docs)+1;$i<=100;$i++) {
-			
-			if ($this->upload->do_upload('doc'.$i)) {
-				
-				$name = $this->input->post('name'.$i) ? $this->input->post('name'.$i) : $dt['file_name'];
-				
-				$data['success'] .= "Документ номер $i с именем $name успешно загружен.<br>";
-			      
-				$dt = $this->upload->data();
-				
-				$docs[] = array('id' => $i, 'author' => $author, 'date' => time(), 'name' => $name, 'file' => $dt['file_name']);
-				
-			} else {
+        if(!empty($row) && !empty($author)) {
 
-                if($i > 10) break;
+            $config['upload_path'] = './uploads/';
+
+            $config['max_size']	= '10000';
+
+            $config['encrypt_name'] = true;
+
+            $this->load->library('upload', $config);
+
+            $BaseDocs = array();
+
+            $Docs = array();
+
+            if(!empty($row['docs'])) $BaseDocs = unserialize($row['docs']);
+
+            //Редактирование старых
+            $DocsCount = 0;
+
+            $TotDocsCount = 0;
+
+            foreach($BaseDocs as $q) {
+
+                $TotDocsCount++;
+
+                if($this->input->post('name'.$q['id'])) {
+
+                    $q['name'] = $this->input->post('name'.$q['id']);
+
+                    if($this->upload->do_upload('doc'.$q['id'])) {
+
+                        $dt = $this->upload->data();
+
+                        $q['file'] = $dt['file_name'];
+
+                        $q['date'] = time();
+
+                        $q['author'] = $author;
+                    }
+
+                    $q['id'] = $DocsCount;
+
+                    $Docs[] = $q;
+
+                    $DocsCount++;
+                }
             }
-		}
-		
-		if(empty($docs)) {
-		 	
-			$data['error'] = $this->upload->display_errors(false,false);
-		 	
-		} else {
-		 	
-			$upd['docs'] = serialize($docs);
-		 	
-			$this->db->update('request', $upd, array('id' => $id));
-		       
-		}
-   	
-		return $data;
+
+            //Добавление новых
+            for($i=$TotDocsCount+1;$i<=100;$i++) {
+
+                if($this->input->post('name'.$i) && $this->upload->do_upload('doc'.$i)) {
+
+                    $name = $this->input->post('name'.$i);
+
+                    $dt = $this->upload->data();
+
+                    $Docs[] = array('id' => $DocsCount, 'author' => $author, 'date' => time(), 'name' => $name, 'file' => $dt['file_name']);
+
+                    $DocsCount++;
+
+                } else {
+
+                    if($i - $TotDocsCount > 10) break;
+
+                }
+            }
+
+            $upd['docs'] = serialize($Docs);
+
+            $ok = $this->db->update('request', $upd, array('id' => $id));
+
+        }
+
+        return $ok;
 	}
 
     function add_comments() {

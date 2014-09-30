@@ -86,7 +86,7 @@ var Notification = {
                     items.push( "<a href='" + val.uri + "#hs" + val.rid + "' data-nid='" + val.id + "' data-scroll-nav='" + val.rid + "' class='item "+ cls +"' data-toggle='tooltip' data-original-title='" + val.text + "'><i class='icon-signin'></i> " + val.name + " <span class='time'><i class='icon-time'></i> " + val.time + "</span></a>" );
                 });
 
-                $('.count').html(count);
+                $('#countnt').html(count);
 
                 $('.count1').html(count);
 
@@ -188,12 +188,6 @@ var Notification = {
         (function getNotifTimeoutFunction(){
             get_notification(getNotifTimeoutFunction);
         })();
-
-        /*setInterval(function()
-        {
-            get_notification();
-
-        }, nextRequest);*/
 
         var i = 0;
 

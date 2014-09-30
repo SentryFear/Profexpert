@@ -189,3 +189,46 @@
     {{ add|raw }}
   <!-- EndModal Add -->
 {% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+        function get_status()
+        {
+            $.getJSON( "/api/getStatus", function( data ) {
+
+                $.each( data, function( key, val ) {
+
+                    $('#ld'+val.id).html(val.text);
+                });
+            });
+        }
+
+        get_status();
+
+        setInterval(function()
+        {
+            get_status();
+
+        }, 10000);
+
+        $('body').on('click','[data-ind]', function(e){
+
+            e.preventDefault();
+
+            var btn = $(this);
+
+            btn.button('loading');
+
+            var href = $(this).attr('href');
+
+            var id = $(this).data("ind");
+
+            $('#ld'+id).html('');
+
+            $('#ld'+id).load(href);
+
+        });
+    </script>
+{% endblock %}

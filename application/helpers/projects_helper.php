@@ -288,7 +288,7 @@ if (!function_exists('projects_work_type_task')) {
 
     function projects_work_type_task($source = array())
     {
-        $result = array('task' => array(), 'region' => array(), 'nztask' => array(), 'nzreg' => array(), 'prtask' => array(), 'prreg' => array(), 'today' => array(), 'tomorrow' => array());
+        $result = array('task' => array(), 'region' => array(), 'nztask' => array(), 'nzreg' => array(), 'prtask' => array(), 'prreg' => array(), 'osttask' => array(), 'today' => array(), 'tomorrow' => array());
 
         foreach($source['zadach']['rs'] as $i) {
 

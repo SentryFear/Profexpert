@@ -92,7 +92,8 @@
                             Необходимо<br>
                         <span class="number" style="color: #EE3232;">{{ stats.all.notfill }}</span> заполнить
                         {% else %}
-                            <br><span class="number" style="color: #68CE24;">0</span> договоров
+                            Необходимо<br>
+                            <span class="number" style="color: #68CE24;">0</span> заполнить
                         {% endif %}
                     </div>
                     <span class="date">договоров</span>
@@ -143,21 +144,21 @@
             <thead>
                 <tr>
                     <th width="1%" class="number">№</th>
-                    <th width="1%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Работа">[ Р ]</span></th>
+                    <th width="3%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Работа">[ Р ]</span></th>
                     <th width="5%"><span class="line"></span>Договор</th>
-                    <th class="span2"><span class="line"></span>Адрес</th>
-                    <th class="span1"><span class="line"></span>Заказчик</th>
+                    <th width="19%"><span class="line"></span>Адрес</th>
+                    <th width="19%"><span class="line"></span>Заказчик</th>
                     <th width="8%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Срок окончания доверенности">Срок окончания доверенности</span></th>
-                    <th class="span1"><span class="line"></span><span data-toggle="tooltip" data-original-title="Текущая задача">Текущая задача</span></th>
-                    <th class="span1"><span class="line"></span><span data-toggle="tooltip" data-original-title="Следующая задача">Следующая задача</span></th>
-                    <th width="1%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Комментарии">[ К ]</span></th>
-                    <th width="1%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Файлы">[ Ф ]</span></th>
+                    <th width="19%"><span class="line"></span><span data-toggle="tooltip" data-original-title="Текущая задача">Текущая задача</span></th>
+                    <th width="19%"><span class="line"></span><span data-toggle="tooltip" data-original-title="Следующая задача">Следующая задача</span></th>
+                    <th width="3%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Комментарии">[ К ]</span></th>
+                    <th width="3%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Файлы">[ Ф ]</span></th>
                     <th width="1%"><span class="line"></span>Действия</th>
                 </tr>
             </thead>
             <tbody>
             {% for row in data %}
-                <tr id="p{{ row.id }}" class="hde" {% if row.success == 1 %}style="background-color: #D2FFCA;"{% elseif row.notfill == 1 %}style="background-color: #FFEAE8;"{% endif %}>
+                <tr id="p{{ row.id }}" class="hde p{{ row.id }}" {% if row.success == 1 %}style="background-color: #D2FFCA;"{% elseif row.notfill == 1 %}style="background-color: #FFEAE8;"{% elseif row.stopped == 1 %}style="background-color: #FAE6CA;"{% endif %}>
                     <td class="numb">{{ loop.index }}</td>
                     <td><a href="/projects/work/{{ row.id }}" data-target="#upload" data-toggle="modal" class="upl label {% if row.zadach.count > 0  %}label-important{% else %}label-success{% endif %}" data-toggle1="tooltip" data-original-title="Задачи по проекту" id="{{ row.id }}">[ {{ row.zadach.count }} ]</a></td>
                     <td><span data-toggle="tooltip" data-original-title="Дата создания проекта: {{ row.date|date("d.m.Y") }}<br>Дата заключения договора: {{ row.dogdate|date("d.m.Y") }}<br>Работа: {{ row.work }}">{{ row.cnumber }}</span></td>
@@ -165,8 +166,8 @@
                     <td><span data-toggle="tooltip" data-original-title="Город: {{ row.city }}<br>Район: {{ row.region }}<br>Улица: {{ row.street }}<br>Дом: {{ row.building }}<br>Корпус\Литера: {{ row.buildingAdd }}<br>Квартира/Помещение: {{ row.apartment }}">{% if row.street|length > 0 %}{{ row.street }}, {% endif %}{% if row.building|length > 0 %}д.{{ row.building }}, {% endif %}{% if row.buildingAdd|length > 0 %}корп./лит.{{ row.buildingAdd }}, {% endif %}{% if row.apartment|length > 0 %}кв./пом.{{ row.apartment }}{% endif %}</span></td>
                     <td><a href="/card/view/{{ row.cid }}/" target="_blank"><span data-toggle="tooltip" data-original-title="{{ row.zsurname }} {{ row.zname }} {{ row.zmname }} {% if row.phone|length > 0 %}<br> <b><i>Телефон:</b></i> {{ row.phone }} {% endif %}{% if row.email|length > 0 %}<br><b><i>Email:</b></i> {{ row.email }}{% endif %}">{{ row.zname }}</span></a></td>
                     <td {% if "now"|date("U") > row.unixtime and row.worktype.rabotaszakzakrytdogovordata.value|length <= 0 %}style="color:red;"{% endif %}>{{ row.worktype.doverennstsrokokonchaniyadata.value }}</td>
-                    <td><a href="/projects/work/{{ row.id }}/{{ row.zadach.rs.0.last.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.rs.0.last.rname }}<br>({{ row.zadach.rs.0.rname }})" id="{{ row.id }}">{{ row.zadach.rs.0.last1.rname }}</a></td>
-                    <td><a href="/projects/work/{{ row.id }}/{{ row.zadach.rs.1.last.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.rs.1.last.rname }}<br>({{ row.zadach.rs.1.rname }})" id="{{ row.id }}">{{ row.zadach.rs.1.last1.rname }}</a></td>
+                    <td>{% if row.success == 1 or row.stopped == 1 %}{% else %}<a href="/projects/work/{{ row.id }}/{{ row.zadach.rs.0.last.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.rs.0.last.rname }}<br>({{ row.zadach.rs.0.rname }})" id="{{ row.id }}">{{ row.zadach.rs.0.last1.rname }}</a>{% endif %}</td>
+                    <td>{% if row.success == 1 or row.stopped == 1 %}{% else %}<a href="/projects/work/{{ row.id }}/{{ row.zadach.rs.1.last.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.rs.1.last.rname }}<br>({{ row.zadach.rs.1.rname }})" id="{{ row.id }}">{{ row.zadach.rs.1.last1.rname }}</a>{% endif %}</td>
                     {#<td>
                         {% if row.zadach.next.top|length == 0 and row.zadach.current.top|length > 0 %}
                             <a href="/projects/work/{{ row.id }}/{{ row.zadach.current.top.name }}" data-target="#upload" data-toggle="modal" class="upl label label-info" data-toggle1="tooltip" data-original-title="{{ row.zadach.current.top.rname }}<br>({{ row.zadach.current.bottom.rname }})" id="{{ row.id }}">{{ row.zadach.current.bottom.rname }}</a>
@@ -253,13 +254,24 @@
 
                 $.getJSON( "/projects/getProjects/"+chwt+"/"+$("#search").val(), function( data, status, xhr ) {
 
-                    $('.hde').hide(200);
+                    if(data.hide.length == 0) {
+
+                        $('.hde').hide(700);
+
+                    } else {
+
+                        $.each( data.hide, function( key, val ) {
+
+                            $('.p'+val).hide(700);
+
+                        });
+                    }
 
                     var numb = 1;
 
-                    $.each( data, function( key, val ) {
+                    $.each( data.show, function( key, val ) {
 
-                        $('#p'+val).show(200);
+                        $('.p'+val).delay(500).show(700);
 
                         $('#p'+val+' .numb').html(numb);
 

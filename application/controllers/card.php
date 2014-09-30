@@ -80,9 +80,19 @@ class Card extends CI_Controller
 
             foreach($users as $w) {
 
-                if($w['id'] == $req['mid']) $data['result']['req'][$req['id']]['nmid'] = $w['name'];
+                if($w['id'] == $req['mid']) {
 
-                if($w['id'] == $req['uid']) $data['result']['req'][$req['id']]['nuid'] = $w['name'];
+                    $data['result']['req'][$req['id']]['nmid'] = $w['name'];
+
+                    $data['result']['req'][$req['id']]['unmid'] = $w['username'];
+                }
+
+                if($w['id'] == $req['uid']) {
+
+                    $data['result']['req'][$req['id']]['nuid'] = $w['name'];
+
+                    $data['result']['req'][$req['id']]['unuid'] = $w['username'];
+                }
             }
 
             $data['result']['req'][$req['id']]['history'] = $history1;

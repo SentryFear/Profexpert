@@ -23,81 +23,90 @@ class projects_model extends CI_Model {
      */
     function add_docs() {
 
+        $ok = 0;
+
+        $author = $this->dx_auth->get_name();
+
         $id = $this->input->post('id');
-
-        $config['upload_path'] = './uploads/projects';
-        //$config['allowed_types'] = 'doc|docx|xls|xlsx|pdf|txt|jpg|gif|jpeg';
-        $config['max_size']	= '10000';
-        $config['encrypt_name'] = true;
-
-        $this->load->library('upload', $config);
-
-        $author = $this->dx_auth->get_username();
-
-        $data['success'] = '';
-
-        $docs1 = array();
 
         $row = $this->db->get_where('projects', array('id' => $id))->row_array();
 
-        //$row = $query->row_array();
+        if(!empty($row) && !empty($author)) {
 
-        $docs = unserialize($row['docs']);
+            $config['upload_path'] = './uploads/projects/';
 
-        if(empty($docs)) $docs = array();
+            $config['max_size']	= '10000';
 
-        foreach($docs as $q) {
+            $config['encrypt_name'] = true;
 
-            $q['name'] = $this->input->post('name'.$q['id']);
+            $this->load->library('upload', $config);
 
-            if($this->upload->do_upload('doc'.$q['id'])) {
+            $BaseDocs = array();
 
-                $dt = $this->upload->data();
+            $Docs = array();
 
-                $q['file'] = $dt['file_name'];
+            if(!empty($row['docs'])) $BaseDocs = unserialize($row['docs']);
 
-                $q['date'] = time();
+            //Редактирование старых
+            $DocsCount = 0;
 
-                $q['author'] = $author;
+            $TotDocsCount = 0;
 
-                $data['success'] .= "Документ номер <b>$q[id]</b> с именем <b>$q[name]</b> успешно обновлён.<br>";
+            foreach($BaseDocs as $q) {
+
+                $TotDocsCount++;
+
+                if($this->input->post('name'.$q['id'])) {
+
+                    $q['name'] = $this->input->post('name'.$q['id']);
+
+                    if($this->upload->do_upload('doc'.$q['id'])) {
+
+                        $dt = $this->upload->data();
+
+                        $q['file'] = $dt['file_name'];
+
+                        $q['date'] = time();
+
+                        $q['author'] = $author;
+                    }
+
+                    $q['id'] = $DocsCount;
+
+                    $Docs[] = $q;
+
+                    $DocsCount++;
+                }
             }
 
-            if(!empty($q['name'])) $docs1[] = $q;
-        }
+            //Добавление новых
+            for($i=$TotDocsCount+1;$i<=100;$i++) {
 
-        $docs = $docs1;
+                if($this->input->post('name'.$i) && $this->upload->do_upload('doc'.$i)) {
 
-        for($i=count($docs)+1;$i<=100;$i++) {
+                    $name = $this->input->post('name'.$i);
 
-            if ($this->upload->do_upload('doc'.$i)) {
+                    $dt = $this->upload->data();
 
-                $name = $this->input->post('name'.$i) ? $this->input->post('name'.$i) : $dt['file_name'];
+                    $Docs[] = array('id' => $DocsCount, 'author' => $author, 'date' => time(), 'name' => $name, 'file' => $dt['file_name']);
 
-                $data['success'] .= "Документ номер $i с именем $name успешно загружен.<br>";
+                    $DocsCount++;
 
-                $dt = $this->upload->data();
+                } else {
 
-                $docs[] = array('id' => $i, 'author' => $author, 'date' => time(), 'name' => $name, 'file' => $dt['file_name']);
+                    if($i - $TotDocsCount > 10) break;
 
-            } else {
-
-                if($i > 10) break;
+                }
             }
-        }
 
-        if(empty($docs)) {
+            $upd['docs'] = serialize($Docs);
 
-            $data['error'] = $this->upload->display_errors(false,false);
+            $ok = $this->db->update('projects', $upd, array('id' => $id));
 
-        } else {
-
-            $upd['docs'] = serialize($docs);
-
-            $this->db->update('projects', $upd, array('id' => $id));
 
         }
 
-        return $data;
+        return $ok;
+
     }
 }

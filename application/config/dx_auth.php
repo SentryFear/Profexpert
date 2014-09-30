@@ -15,8 +15,8 @@
 |
 */
 
-$config['DX_website_name'] = 'Your Website';
-$config['DX_webmaster_email'] = 'webmaster@yourhost.com';
+$config['DX_website_name'] = 'Profexpert';
+$config['DX_webmaster_email'] = 'admin@profexpert.com';
 
 /*
 |--------------------------------------------------------------------------

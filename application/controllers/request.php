@@ -89,7 +89,7 @@ class Request extends CI_Controller
 
             if($this->input->post('upload') && $this->input->post('id')) {
 
-                $data = array_merge($data, $this->request_model->add_docs());
+                $this->request_model->add_docs() ?  $data['success'] = "Файлы успешно добавлены!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
             }
 
             if($this->input->post('comments') && $this->input->post('id')) {
@@ -188,7 +188,7 @@ class Request extends CI_Controller
 				foreach($docs as $i) {
 
 					echo '<blockquote><table class="table table-hover" style="margin-bottom: 0px;"><tr><td style="vertical-align: top;">
-							<input class="inline-input" placeholder="Название файла" name="name'.$i['id'].'" value="'.$i['name'].'" type="text">
+							<input class="inline-input" placeholder="Название файла" name="name'.$i['id'].'" value="'.$i['name'].'" type="text"><br>
 							<input id="inp'.$i['id'].'" type="file" name="doc'.$i['id'].'" style="display:none; margin-top: 15px;" />
 							</td>
 							<td style="vertical-align: top; overflow: visible;"><div class="btn-group">

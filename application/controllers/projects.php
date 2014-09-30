@@ -54,6 +54,7 @@ class Projects extends CI_Controller
                     'organization' => $this->input->post('organization'),
                     'phone' => $this->input->post('phone'),
                     'email' => $this->input->post('email'),
+                    'more' => $this->input->post('more'),
                     'hear' => $this->input->post('hear'),
                     'cсoments' => serialize($comment)
                 );
@@ -71,6 +72,7 @@ class Projects extends CI_Controller
                     'organization' => $this->input->post('organization'),
                     'phone' => $this->input->post('phone'),
                     'email' => $this->input->post('email'),
+                    'more' => $this->input->post('more'),
                     'hear' => $this->input->post('hear')
                 );
 
@@ -172,6 +174,7 @@ class Projects extends CI_Controller
                         'organization' => $this->input->post('organization'),
                         'phone' => $this->input->post('phone'),
                         'email' => $this->input->post('email'),
+                        'more' => $this->input->post('more'),
                         'hear' => $this->input->post('hear'),
                         'cсoments' => serialize($comment)
                     );
@@ -189,6 +192,7 @@ class Projects extends CI_Controller
                         'organization' => $this->input->post('organization'),
                         'phone' => $this->input->post('phone'),
                         'email' => $this->input->post('email'),
+                        'more' => $this->input->post('more'),
                         'hear' => $this->input->post('hear')
                     );
 
@@ -302,7 +306,11 @@ class Projects extends CI_Controller
 
             $i['notfill'] = 0;
 
+            $i['stopped'] = 0;
+
             if(!empty($i['worktype']['rabotaszakzakrytdogovordata']['value'])) $i['success'] = 1;
+
+            if(!empty($i['worktype']['rabotaszakpriostanovitdogovordata']['value'])) $i['stopped'] = 1;
 
             if(empty($i['worktype'])) $i['notfill'] = 1;
 
@@ -445,6 +453,8 @@ class Projects extends CI_Controller
 
         $result['prregion'] = array();
 
+        $result['osttasks'] = array();
+
         $tasks = array();
 
         foreach($result['data'] as $i) {
@@ -462,6 +472,8 @@ class Projects extends CI_Controller
             $result['prtasks'] = array_merge ($result['prtasks'], $tasks['prtask']);
 
             $result['prregion'] = array_merge ($result['prregion'], $tasks['prreg']);
+
+            $result['osttasks'] = array_merge ($result['osttasks'], $tasks['osttask']);
         }
 
         //var_dump($result['tasks']);
@@ -615,11 +627,11 @@ class Projects extends CI_Controller
                 foreach($docs as $i) {
 
                     echo '<blockquote><table class="table table-hover" style="margin-bottom: 0px;"><tr><td style="vertical-align: top;">
-							<input class="inline-input" placeholder="Название файла" name="name'.$i['id'].'" value="'.$i['name'].'" type="text">
+							<input class="inline-input" placeholder="Название файла" name="name'.$i['id'].'" value="'.$i['name'].'" type="text"><br>
 							<input id="inp'.$i['id'].'" type="file" name="doc'.$i['id'].'" style="display:none; margin-top: 15px;" />
 							</td>
 							<td style="vertical-align: top; overflow: visible;"><div class="btn-group">
-								<a href="#" class="btn btn-mini" onclick="$(\'#inp'.$i['id'].'\').toggle();" data-toggle="tooltip" data-original-title="Загрузить другой файл" data-placement="left"><i class="icon-edit"></i> Обновить файл</a>
+								<a href="javascript:void(0)" class="btn btn-mini" onclick="$(\'#inp'.$i['id'].'\').toggle();" data-toggle="tooltip" data-original-title="Загрузить другой файл" data-placement="left"><i class="icon-edit"></i> Обновить файл</a>
 								<a href="/uploads/projects/'.$i['file'].'" target="_blank" class="btn btn-mini" data-toggle="tooltip" data-original-title="Скачать файл" data-placement="left"><i class="icon-download-alt"></i> Скачать файл</a>
 							</div></td></tr>
 						</table><small>Загрузил <b>'.$i['author'].'</b> '.date("d.m.Y в H:i", $i['date']).'</small></blockquote>';
@@ -939,7 +951,7 @@ class Projects extends CI_Controller
 
             echo '</div>
               <div class="modal-footer">
-                <textarea class="span5 wysihtml5" rows="5" name="text" id="text" placeholder="Комментарий к проекту" style="float: left; width: 515px; margin-bottom: 15px;"></textarea>
+                <textarea class="span6 wysihtml5" rows="5" name="text" id="text" placeholder="Комментарий к проекту" style="float: left; width: 655px; margin-bottom: 15px;"></textarea>
                 <div class="btn-group">
                   <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>';
 
@@ -1088,6 +1100,7 @@ class Projects extends CI_Controller
                         <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="card" data-tpol="organization" id="organization" name="organization" placeholder="Организация" autocomplete="off" value="'.$res['clnt']['organization'].'">
                         <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="card" data-tpol="phone" id="phone" name="phone" placeholder="Телефон" autocomplete="off" value="'.$res['clnt']['phone'].'">
                         <input class="inline-input autocomp ui-autocomplete-input" type="text" data-tbl="card" data-tpol="email" id="email" name="email" placeholder="Email" autocomplete="off" value="'.$res['clnt']['email'].'">
+                        <textarea class="span6 wysihtml5" rows="5" name="more" id="more" placeholder="Примечание" style="width: 459px;">'.$res['clnt']['more'].'</textarea>
                     </div>
                 </div>';
 
@@ -1107,6 +1120,15 @@ class Projects extends CI_Controller
                        $(this).datepicker({
                             language: 'ru'
                         });
+                    });
+
+                    $('.wysihtml5').wysihtml5({
+                        'font-styles': false,
+                        'emphasis': false,
+                        'lists': false,
+                        'html': false,
+                        'link': false,
+                        'image': false
                     });
 
 				    $('#editform').submit(function() {
@@ -1179,7 +1201,7 @@ class Projects extends CI_Controller
 
     function getProjects() {
 
-        $return = array();
+        $return = array('show' => array(), 'hide' => array());
 
         $key = 0;
 
@@ -1221,9 +1243,11 @@ class Projects extends CI_Controller
 
                     foreach($sr as $ks => $s) {
 
-                        if($ks == $wt && empty($s['value'])) $return[] = $i['id'];
+                        if($ks == $wt && empty($s['value'])) $return['show'][] = $i['id'];
+                        else $return['hide'][] = $i['id'];
                     }
-                }
+
+                } else $return['hide'][] = $i['id'];
 
             } elseif(!empty($key)) {
 
@@ -1231,13 +1255,14 @@ class Projects extends CI_Controller
 
                     if(empty($i['worktype'])) {
 
-                        $return[] = $i['id'];
+                        $return['show'][] = $i['id'];
 
                     } else {
 
                         $sr = unserialize($i['worktype']);
 
-                        if(empty($sr)) $return[] = $i['id'];
+                        if(empty($sr)) $return['show'][] = $i['id'];
+                        else $return['hide'][] = $i['id'];
                     }
 
                 } elseif(strstr($key, 'year')) {
@@ -1250,7 +1275,8 @@ class Projects extends CI_Controller
 
                     if(($thsyear - $year) == 3 && $datest < $year) $datest = $year;
 
-                    if($datest == $year) $return[] = $i['id'];
+                    if($datest == $year) $return['show'][] = $i['id'];
+                    else $return['hide'][] = $i['id'];
 
                 } elseif($key == 'allwork') {
 
@@ -1258,11 +1284,12 @@ class Projects extends CI_Controller
 
                         $sr = unserialize($i['worktype']);
 
-                        if(empty($sr['rabotaszakzakrytdogovordata']['value'])) $return[] = $i['id'];
+                        if(empty($sr['rabotaszakzakrytdogovordata']['value'])) $return['show'][] = $i['id'];
+                        else $return['hide'][] = $i['id'];
 
                     } else {
 
-                        $return[] = $i['id'];
+                        $return['show'][] = $i['id'];
                     }
 
                 } elseif($key == 'allclose') {
@@ -1271,17 +1298,19 @@ class Projects extends CI_Controller
 
                         $sr = unserialize($i['worktype']);
 
-                        if(!empty($sr['rabotaszakzakrytdogovordata']['value'])) $return[] = $i['id'];
-                    }
+                        if(!empty($sr['rabotaszakzakrytdogovordata']['value'])) $return['show'][] = $i['id'];
+                        else $return['hide'][] = $i['id'];
+
+                    } else $return['hide'][] = $i['id'];
 
                 } else {
 
-                    $return[] = $i['id'];
+                    $return['show'][] = $i['id'];
                 }
 
             } else {
 
-                $return[] = $i['id'];
+                $return['show'][] = $i['id'];
             }
 
         }

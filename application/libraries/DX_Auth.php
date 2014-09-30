@@ -722,6 +722,13 @@ class DX_Auth
         return $data;
     }
 
+    public function get_user_by_id($id)
+    {
+        $row = $this->ci->db->get_where('users', array('id' => $id))->row_array();
+
+        return $row;
+    }
+
     // Check if user has $roles privilege
     // If $use_role_name TRUE then $roles is name such as 'admin', 'editor', 'etc'
     // else $roles is role_id such as 0, 1, 2

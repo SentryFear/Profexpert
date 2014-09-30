@@ -2,17 +2,6 @@ $(function() {
 
     $.Notification();
 
-    function get_status()
-    {
-        $.getJSON( "/api/getStatus", function( data ) {
-
-            $.each( data, function( key, val ) {
-
-                $('#ld'+val.id).html(val.text);
-            });
-        });
-    }
-
     $('#upload').on('hide', function (b) {
         //console.log(b.target.attributes.role);
         if(b.target.attributes.role == 'dialog') console.log('ok');
@@ -24,14 +13,6 @@ $(function() {
         //console.log('show');
         if(b.target.attributes.role) $( 'body' ).css( "overflow", "hidden" );
     });
-
-    get_status();
-
-    setInterval(function()
-    {
-        get_status();
-
-    }, 10000);
 
     $("#commentsform").submit(function() {
 
@@ -70,23 +51,7 @@ $(function() {
         return false;
     });
 
-    $('body').on('click','[data-ind]', function(e){
 
-        e.preventDefault();
-
-        var btn = $(this);
-
-        btn.button('loading');
-
-        var href = $(this).attr('href');
-
-        var id = $(this).data("ind");
-
-        $('#ld'+id).html('');
-
-        $('#ld'+id).load(href);
-
-    });
 
     $(".wysihtml5").wysihtml5({
         "font-styles": false,

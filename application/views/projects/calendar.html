@@ -28,7 +28,13 @@
             </div>
             <div class="span2 stat" style="margin-left: 0;">
                 <div class="data">
-                    <span class="number">{{ tasks|length + prtasks|length }}</span> Задач<br>
+                    <span class="number">{{ osttasks|length }}</span> Задач<br>
+                </div>
+                <span class="date">В работе</span>
+            </div>
+            <div class="span2 stat" style="margin-left: 0;">
+                <div class="data">
+                    <span class="number">{{ tasks|length + prtasks|length + osttasks|length }}</span> Задач<br>
                 </div>
                 <span class="date">Всего</span>
             </div>
