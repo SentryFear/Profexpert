@@ -192,7 +192,7 @@ if (!function_exists('req_arr_to_table')) {
                         $i['docs'] = array();
                     }
 
-                    $val = '<a href="/request/add/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl label '.$doclabel.'" data-toggle1="tooltip" data-original-title="Количество загруженых файлов. Нажмите чтобы Добавить или обновить файлы." id="' . $i['id'] . '">[ ' . count($i['docs']) . ' ]</a>';
+                    $val = '<a href="/request/add/' . $i['id'] . '" data-target="#upload" data-toggle="modal" class="upl label '.$doclabel.'" data-toggle1="tooltip" data-original-title="Количество загруженых файлов. Нажмите чтобы Добавить или обновить файлы." id="' . $i['id'] . '">[ <span id="doc' . $i['id'] . '">' . count($i['docs']) . '</span> ]</a>';
 
                 }
 
@@ -205,7 +205,7 @@ if (!function_exists('req_arr_to_table')) {
 
                     if(count($i['more']) > 0) $worklabel = 'label-important';
 
-                    $val = '<a href="/request/comments/' . $i['id'] . '" data-target="#upload" data-type-form="commentsform" data-toggle="modal" class="upl label '.$worklabel.'" data-toggle1="tooltip" data-original-title="Колличество комментариев" id="' . $i['id'] . '">[ ' . count($i['more']) . ' ]</a>';
+                    $val = '<a href="/request/comments/' . $i['id'] . '" data-target="#upload" data-type-form="commentsform" data-toggle="modal" class="upl label '.$worklabel.'" data-toggle1="tooltip" data-original-title="Колличество комментариев" id="' . $i['id'] . '">[ <span id="com' . $i['id'] . '">' . count($i['more']) . '</span> ]</a>';
 
                 }
 
@@ -850,7 +850,7 @@ if (!function_exists('req_arr_to_form')) {
                                 <div class="row-fluid">
                                     <div class="span3">
                                         <b>Основаная информация:</b><br>
-                                         - Адрес: <b>'.$data['city'].', '.$data['region'].', '.$data['street'].', '.$data['building'].', '.$data['buildingAdd'].', '.$data['apartment'].' </b><br>
+                                         - Адрес: <b>'.$data['city'].', '.$data['street'].', д. '.$data['building'].', '.$data['buildingAdd'].', '.$data['apartment'].' </b><br>
                                          - Район: <b>'.$rne.'</b><br>
                                          - Название проекта: <b>'.$data['name'].'</b><br>
                                          - Площадь объекта: <b>'.$data['footage'].'</b>м&sup2;<br><br>

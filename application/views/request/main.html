@@ -201,6 +201,10 @@
                 $.each( data, function( key, val ) {
 
                     $('#ld'+val.id).html(val.text);
+
+                    $('#doc'+val.id).html(val.docs);
+
+                    $('#com'+val.id).html(val.comments);
                 });
             });
         }
@@ -227,7 +231,9 @@
 
             $('#ld'+id).html('');
 
-            $('#ld'+id).load(href);
+            $('#ld'+id).load(href, function() {
+                Alert.show_alert('success', 'Статус успешно изменён');
+            });
 
         });
     </script>

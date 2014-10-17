@@ -38,6 +38,8 @@ class Tasks extends CI_Controller
 
         if($this->input->post('add') && $this->input->post('rid') && $this->input->post('name')) {
 
+            $result = '';
+
             $this->load->library('history');
 
             $this->load->library('notification');
@@ -50,7 +52,7 @@ class Tasks extends CI_Controller
                 'rid' => $this->input->post('rid')
             );
 
-            $this->db->insert('tasks', $instask);
+            $result = ($this->db->insert('tasks', $instask)) ? 'Задача успешно добавлена' : 'Произошла неожиданная ошибка, обратитесь к системному администратору.';
 
             $id = $this->db->insert_id();
 
@@ -62,15 +64,17 @@ class Tasks extends CI_Controller
 
             $this->notification->setNotification('['.$id.'] Новая Задача ['.$own.']', '/tasks/', $id, 'Задача выдана '.$own, '0', $this->input->post('rid'));
             //endtasks
+
+            echo $result;
+
+            return true;
         }
 
         if($this->input->post('comments') && $this->input->post('id')) {
 
+            $result = '';
+
             if($this->input->post('text')) {
-
-                //$this->load->library('history');
-
-                //$this->load->library('notification');
 
                 $id = $this->input->post('id');
 
@@ -95,19 +99,14 @@ class Tasks extends CI_Controller
 
                 $comments[] = array('aid' => $aid, 'rname' => $rname, 'author' => $author, 'text'=> $text, 'date' => time());
 
-                //if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
-
-                //$upd['kp'] = 9;
-
-                //$this->history->setHistory('dt9', $id);
-                //}
-
                 $upd['comments'] = serialize($comments);
 
-                $this->db->update('tasks', $upd, array('id' => $id)) ? $data['success'] = "Заявка успешно отправлена на доработку!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+                $this->db->update('tasks', $upd, array('id' => $id)) ? $result = "Коментарий успешно добавлен." : $result = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
             }
 
-            return 'ok';
+            echo $result;
+
+            return true;
         }
 
         $this->db->where('cid', $this->dx_auth->get_user_id());
@@ -205,8 +204,33 @@ class Tasks extends CI_Controller
                     $this->db->update('tasks', array('status' => 2), array('id' => $id)) ? $this->session->set_flashdata('success', 'Заявка успешно отправлена проектировщикам.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
 
                 }
+
+                if($this->input->is_ajax_request()) {
+
+                    $type = 0;
+
+                    $status = '';
+
+                    $row = $this->db->get_where('tasks', array('id' => $id))->row_array();
+
+                    if($this->dx_auth->get_user_id() == $row['cid']) $type = 2;
+
+                    if($this->dx_auth->get_user_id() == $row['rid']) $type = 1;
+
+                    if($this->dx_auth->get_user_id() == $row['rid'] && $this->dx_auth->get_user_id() == $row['cid']) $type = 3;
+
+                    $status = tasks_get_status(array('id' => $row['id'], 'status' => $row['status'], 'type' => $type));
+
+                    echo $status;
+
+                } else {
+
+                    redirect("/tasks/");
+                }
             }
         }
+
+        return true;
     }
 
     function getStatus() {
@@ -302,6 +326,7 @@ class Tasks extends CI_Controller
             echo "<script>
 				(function($) {
 				$(function() {
+				    $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
 				    $('#commentsform').submit(function() {
                         var str = $(this).serialize();
 
@@ -312,7 +337,8 @@ class Tasks extends CI_Controller
                             success: function(msg) {
 
                                 $('#load').load('/tasks/comments/'+$('#ths').val(), function() {
-                                        $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
+                                    Alert.show_alert('success', msg);
+                                    $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
                                 })
 
 

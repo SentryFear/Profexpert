@@ -85,9 +85,12 @@
                 </div>
                 <span class="date">Всего договоров</span>
             </div>
-            <a href="javascript:void(0);" data-href="?key=unfilled" class="searchget">
-                <div class="span2 stat" style="margin-left: 0; {% if stats.all.notfill > 0 %}background-color: #FFEAE8;{% else %}background-color: #D2FFCA;{% endif %}">
-                    <div class="data">
+            <div class="span2 stat" style="margin-left: 0; {% if stats.all.notfill > 0 %}background-color: #FFEAE8;{% elseif stats.all.stopped > 0 %}background-color: #FAE6CA;{% endif %}">
+                <div class="data">
+                    <a href="javascript:void(0);" data-href="?key=unfilled" class="searchget"><span class="number">{{ stats.all.notfill }}</span> Заполнить</a><br>
+                    <a href="javascript:void(0);" data-href="?key=stopped" class="searchget"><span class="number">{{ stats.all.stopped }}</span> Остановлено</a>
+                        {#
+                        {% if stats.all.notfill > 0 %}background-color: #FFEAE8;{% else %}background-color: #D2FFCA;{% endif %}
                         {% if stats.all.notfill > 0 %}
                             Необходимо<br>
                         <span class="number" style="color: #EE3232;">{{ stats.all.notfill }}</span> заполнить
@@ -95,10 +98,10 @@
                             Необходимо<br>
                             <span class="number" style="color: #68CE24;">0</span> заполнить
                         {% endif %}
-                    </div>
-                    <span class="date">договоров</span>
+                        #}
                 </div>
-            </a>
+                <span class="date">договоров</span>
+            </div>
             <a href="http://bd.domainspb.ru/projects/calendar">
                 <div class="span2 stat" style="margin-left: 0;">
                     <div class="data">
@@ -146,11 +149,11 @@
                     <th width="1%" class="number">№</th>
                     <th width="3%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Работа">[ Р ]</span></th>
                     <th width="5%"><span class="line"></span>Договор</th>
-                    <th width="19%"><span class="line"></span>Адрес</th>
-                    <th width="19%"><span class="line"></span>Заказчик</th>
-                    <th width="8%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Срок окончания доверенности">Срок окончания доверенности</span></th>
-                    <th width="19%"><span class="line"></span><span data-toggle="tooltip" data-original-title="Текущая задача">Текущая задача</span></th>
-                    <th width="19%"><span class="line"></span><span data-toggle="tooltip" data-original-title="Следующая задача">Следующая задача</span></th>
+                    <th width="27%"><span class="line"></span>Адрес</th>
+                    <th width="12%"><span class="line"></span>Заказчик</th>
+                    <th width="5%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Срок окончания доверенности">доверенность</span></th>
+                    <th width="20%"><span class="line"></span><span data-toggle="tooltip" data-original-title="Текущая задача">Текущая задача</span></th>
+                    <th width="20%"><span class="line"></span><span data-toggle="tooltip" data-original-title="Следующая задача">Следующая задача</span></th>
                     <th width="3%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Комментарии">[ К ]</span></th>
                     <th width="3%" style="white-space: nowrap;"><span class="line"></span><span data-toggle="tooltip" data-original-title="Файлы">[ Ф ]</span></th>
                     <th width="1%"><span class="line"></span>Действия</th>
@@ -189,7 +192,7 @@
                             <li><a href="/projects/edit/{{ row.id }}/" data-target="#upload" data-toggle="modal" class="upl" data-toggle1="tooltip" data-original-title="Изменить проект" id="{{ row.id }}"><i class="table-edit"></i></a></li>
                             {#<li><a href="/request/review/309/" target="_blank" data-toggle="tooltip" data-original-title="Печать"><i class="table-settings"></i></a></li>
                             <li><a href="/request/review/309/1/" target="_blank" data-toggle="tooltip" data-original-title="Печать только КП"><i class="table-settings"></i></a></li>#}
-                            <li class="last"><a href="/projects/delete/{{ row.id }}/" onclick="return confirm('Вы уверены что хотите удалить проект?')" data-toggle="tooltip" data-original-title="Удалить"><i class="table-delete"></i></a></li>
+                            <li class="last"><a href="/projects/delete/{{ row.id }}/" id="{{ row.id }}" data-type="del" data-ind="{{ row.id }}" data-loading-text="Удалено" onclick="return confirm('Вы уверены что хотите удалить проект?')" data-toggle="tooltip" data-original-title="Удалить"><i class="table-delete"></i></a></li>
                         </ul>
                     </td>
                 </tr>
@@ -225,21 +228,31 @@
 {% block js %}
     {{ parent() }}
     <script type="text/javascript">
+
         $(function() {
 
-            function strstr( haystack, needle, bool ) {	// Find first occurrence of a string
+            function strstr( haystack, needle, bool ) {
+
+                // Find first occurrence of a string
                 //
                 // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
 
                 var pos = 0;
 
                 pos = haystack.indexOf( needle );
-                if( pos == -1 ){
+
+                if( pos == -1 ) {
+
                     return false;
-                } else{
-                    if( bool ){
+
+                } else {
+
+                    if( bool ) {
+
                         return haystack.substr( 0, pos );
-                    } else{
+
+                    } else {
+
                         return haystack.slice( pos );
                     }
                 }
@@ -277,6 +290,8 @@
 
                         numb++;
                     });
+
+                    Alert.show_alert('success', 'Сортировано');
 
                     return false;
                 });
@@ -323,6 +338,47 @@
                 getIt();
 
                 return false;
+            });
+
+            $('body').on('click','[data-ind]', function(e){
+
+                e.preventDefault();
+
+                var btn = $(this);
+
+                btn.button('loading');
+
+                var href = $(this).attr('href');
+
+                var id = $(this).data("ind");
+
+                var type = $(this).data("type");
+
+                $.getJSON( href, function( data ) {
+
+                    if(data.error !== undefined) {
+
+                        //$('.alert-error').show('slow');
+
+                        //$('.texterr').html(data.error);
+
+                        Alert.show_alert('error', data.error);
+                    }
+
+                    if(data.success !== undefined) {
+
+                        //$('.alert-success').show('slow');
+
+                        Alert.show_alert('success', data.success);
+                    }
+                });
+
+                //$('#t'+id).html('');
+
+                //$('#t'+id).load(href);
+
+                if(type == 'del') $('#p'+id).hide('slow');
+
             });
         });
     </script>

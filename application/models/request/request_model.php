@@ -209,7 +209,7 @@ class request_model extends CI_Model {
      */
     function add_docs() {
 
-        $ok = 0;
+        $result = 0;
 
         $author = $this->dx_auth->get_name();
 
@@ -287,16 +287,17 @@ class request_model extends CI_Model {
 
             $upd['docs'] = serialize($Docs);
 
-            $ok = $this->db->update('request', $upd, array('id' => $id));
+            if($this->db->update('request', $upd, array('id' => $id))) $result = 'Файлы успешно добавлены';
+            else $result = 'Произошла неожиданная ошибка [851], обратитесь к администратору.';
 
         }
 
-        return $ok;
+        return $result;
 	}
 
     function add_comments() {
 
-        $ok = 0;
+        $result = 0;
 
         if($this->input->post('text')) {
 
@@ -333,10 +334,11 @@ class request_model extends CI_Model {
 
             $upd['more'] = serialize($comments);
 
-            $ok = $this->db->update('request', $upd, array('id' => $id)) ? 1 : 0;
+            if($this->db->update('request', $upd, array('id' => $id))) $result = 'Комментарий успешно добавлен';
+            else $result = 'Произошла неожиданная ошибка [852], обратитесь к администратору.';
         }
 
-        return $ok;
+        return $result;
     }
 
     /**
@@ -723,11 +725,13 @@ class request_model extends CI_Model {
 
                     $extra = $alldata;
 
+                    $r['more'] = unserialize($r['more']);
+
                     $extra['id'] = $r['id'];
 
                     $extra['req'] = $r;
 
-                    $json[] = array('id' => $r['id'], 'text' => req_get_status($alldata['status'], $extra));
+                    $json[] = array('id' => $r['id'], 'text' => req_get_status($alldata['status'], $extra), 'comments' => count($r['more']), 'docs' => count($r['docs']));
                 }
 
                 $data['result'] = $json;

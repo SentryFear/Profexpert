@@ -89,12 +89,24 @@ class Request extends CI_Controller
 
             if($this->input->post('upload') && $this->input->post('id')) {
 
-                $this->request_model->add_docs() ?  $data['success'] = "Файлы успешно добавлены!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+                //$this->request_model->add_docs() ?  $data['success'] = "Файлы успешно добавлены!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+
+                $data = $this->request_model->add_docs();
+
+                echo $data;
+
+                return true;
             }
 
             if($this->input->post('comments') && $this->input->post('id')) {
 
-                $this->request_model->add_comments() ? $data['success'] = "Заявка успешно отправлена на доработку!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+                //$this->request_model->add_comments() ? $data['success'] = "Заявка успешно отправлена на доработку!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
+
+                $data = $this->request_model->add_comments();
+
+                echo $data;
+
+                return true;
             }
 
             if($this->input->get('print')) $data['result'] = $this->request_model->get_request(null, 'prnt', $gsort);
@@ -267,6 +279,7 @@ class Request extends CI_Controller
                                         $( '#loading' ).hide();
                                         $( '#alrt' ).show();
                                         $( '#resp' ).html('Файлы успешно добалены');
+                                        Alert.show_alert('success', data);
                                         $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
                                     })
                                 }
@@ -355,6 +368,7 @@ class Request extends CI_Controller
             echo "<script>
 				(function($) {
 				$(function() {
+				    $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
 				    $('#commentsform').submit(function() {
                         var str = $(this).serialize();
 
@@ -365,7 +379,8 @@ class Request extends CI_Controller
                             success: function(msg) {
 
                                 $('#load').load('/request/comments/'+$('#ths').val(), function() {
-                                        $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
+                                    Alert.show_alert('success', msg);
+                                    $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
                                 })
 
 

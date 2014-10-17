@@ -14,7 +14,20 @@ $(function() {
         if(b.target.attributes.role) $( 'body' ).css( "overflow", "hidden" );
     });
 
-    $("#commentsform").submit(function() {
+    /*$('.filter-block').click(function(){
+        //$('.new-alert').slideToggle('slow');
+        show_alert('success', 'Успешно что-то произошло');
+    });*/
+
+    setInterval(function()
+    {
+        $('.alert-error').slideUp('slow');
+
+        $('.alert-success').slideUp('slow');
+
+    }, 15000);
+
+    /*$("#commentsform").submit(function() {
 
         var str = $(this).serialize();
 
@@ -30,7 +43,7 @@ $(function() {
         });
 
         return false;
-    });
+    });*/
 
     $("#workform").submit(function() {
 
@@ -50,8 +63,6 @@ $(function() {
 
         return false;
     });
-
-
 
     $(".wysihtml5").wysihtml5({
         "font-styles": false,

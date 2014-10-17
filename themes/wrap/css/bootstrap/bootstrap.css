@@ -5313,6 +5313,8 @@ input[type="submit"].btn.btn-mini {
   opacity: 0;
   filter: alpha(opacity=0);
   visibility: visible;
+  font-weight: normal;
+  text-transform: none;
 }
 
 .tooltip.in {

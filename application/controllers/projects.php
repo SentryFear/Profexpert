@@ -35,6 +35,7 @@ class Projects extends CI_Controller
 
         $result['error'] = $this->session->flashdata('error');
 
+        //todo добавить проверки, переделать под AJAX и перенести в модель
         if($this->input->post('add')) {
 
             //client
@@ -82,7 +83,6 @@ class Projects extends CI_Controller
             //endclient
 
             //projects
-
             $res = array();
 
             $lastedit = array();
@@ -123,161 +123,59 @@ class Projects extends CI_Controller
             //endprojects
         }
 
+        //Редактирование задач по проекту
         if($this->input->post('workedt')) {
+
+            $data = '';
 
             if($this->input->post('id')) {
 
-                $updwork = array();
+                $data = $this->projects_model->update_work();
 
-                $end = array();
+            } else $data = 'Произошла неожиданная ошибка [954], обратитесь к администратору.';
 
-                $updwork = projects_work_type_pr($this->config->item('worktype'), $updwork);
+            echo $data;
 
-                $id = $this->input->post('id');
-
-                $row = $this->db->get_where('projects', array('id' => $id))->row_array();
-
-                $updlastedit = unserialize($row['lastedit']);
-
-                if(empty($updlastedit)) $updlastedit = array();
-                else $end = end($updlastedit);
-
-                if($updwork != $end['action']) $updlastedit[] = array('author' => $this->dx_auth->get_name(), 'date' => time(), 'action' => $updwork);
-
-                if(count($updlastedit) > 6) unset($updlastedit[1]);
-
-                $updlastedit = array_values($updlastedit);
-
-                $this->db->update('projects', array('worktype' => serialize($updwork), 'lastedit' => serialize($updlastedit)), array('id' => $this->input->post('id')));
-            }
-
-            return 'ok';
+            return true;
         }
 
         if($this->input->post('edit')) {
 
+            $data = '';
+
             if($this->input->post('id')) {
 
-                $cid = 0;
+                $data = $this->projects_model->update_info();
 
-                if($this->input->post('cid')) $cid = $this->input->post('cid');
+            } else $data = 'Произошла неожиданная ошибка [955], обратитесь к администратору.';
 
-                if($cid == 0) {
+            echo $data;
 
-                    $comment[] = array('author' => $this->dx_auth->get_username(), 'text'=> 'Создана карточка клиента', 'date' => time());
-
-                    $insclnt = array(
-                        'cdate' => time(),
-                        'zsurname' => $this->input->post('zsurname'),
-                        'zname' => $this->input->post('zname'),
-                        'zmname' => $this->input->post('zmname'),
-                        'organization' => $this->input->post('organization'),
-                        'phone' => $this->input->post('phone'),
-                        'email' => $this->input->post('email'),
-                        'more' => $this->input->post('more'),
-                        'hear' => $this->input->post('hear'),
-                        'cсoments' => serialize($comment)
-                    );
-
-                    $this->db->insert('card', $insclnt);
-
-                    $cid = $this->db->insert_id();
-
-                } else {
-
-                    $updclnt = array(
-                        'zsurname' => $this->input->post('zsurname'),
-                        'zname' => $this->input->post('zname'),
-                        'zmname' => $this->input->post('zmname'),
-                        'organization' => $this->input->post('organization'),
-                        'phone' => $this->input->post('phone'),
-                        'email' => $this->input->post('email'),
-                        'more' => $this->input->post('more'),
-                        'hear' => $this->input->post('hear')
-                    );
-
-                    $this->db->update('card', $updclnt, array('id' => $cid));
-                }
-
-                $tdd = '';
-
-                if($this->input->post('dogdate')) {
-
-                    $dd = explode('.', $this->input->post('dogdate'));
-
-                    $tdd = mktime(0, 0, 0, $dd[1], $dd[0], $dd[2]);
-                }
-
-                $updproj = array(
-                    'cnumber' => $this->input->post('cnumber'),
-                    'dogdate' => $tdd,
-                    'work' => $this->input->post('work'),
-                    'city' => $this->input->post('city'),
-                    'region' => $this->input->post('region'),
-                    'street' => $this->input->post('street'),
-                    'building' => $this->input->post('building'),
-                    'buildingAdd' => $this->input->post('buildingAdd'),
-                    'apartment' => $this->input->post('apartment'),
-                    'MngCompany' => $this->input->post('MngCompany'),
-                    'cid' => $cid,
-                );
-
-                $this->db->update('projects', $updproj, array('id' => $this->input->post('id')));
-            }
-
-            return 'ok';
+            return true;
         }
 
         if($this->input->post('comments') && $this->input->post('id')) {
 
+            $data = '';
+
             if($this->input->post('text')) {
 
-                //$this->load->library('history');
+                $data = $this->projects_model->add_comment();
 
-                //$this->load->library('notification');
+            } else $data = 'Произошла неожиданная ошибка [956], обратитесь к администратору.';
 
-                $id = $this->input->post('id');
+            echo $data;
 
-                $text = $this->input->post('text');
-
-                $author = $this->dx_auth->get_name();
-
-                $aid = $this->dx_auth->get_user_id();
-
-                $rname = $this->dx_auth->get_role_name();
-
-                $row = $this->db->get_where('projects', array('id' => $id))->row_array();
-
-                //$this->notification->setNotification('Новый комментарий ['.$id.']', '/request/?sort=mAll', $id, 'Новый комментарий к заявке', '0', $row['mid']);
-
-                $comments = unserialize($row['comments']);
-
-                if(empty($comments)) $comments = array();
-
-                $comments[] = array('aid' => $aid, 'rname' => $rname, 'author' => $author, 'text'=> $text, 'date' => time());
-
-                //if($this->dx_auth->get_role_id() == '2' || $this->dx_auth->get_role_id() == '6') {
-
-                    //$upd['kp'] = 9;
-
-                    //$this->history->setHistory('dt9', $id);
-                //}
-
-                $upd['comments'] = serialize($comments);
-
-                $this->db->update('projects', $upd, array('id' => $id)) ? $data['success'] = "Заявка успешно отправлена на доработку!" : $data['error'] = "Произошла неожиданная ошибка, обратитесь к системному администратору.";
-            }
-
-            return 'ok';
+            return true;
         }
 
         if($this->input->post('upload') && $this->input->post('id')) {
 
             $data = $this->projects_model->add_docs();
 
-            //var_dump($data);
+            echo $data;
 
-            return 'ok';
+            return true;
         }
 
         $result['data'] = $this->db->select('*')->from('card')->join('projects', 'projects.cid = card.id', 'RIGHT OUTER')->order_by('dogdate asc, cnumber asc')->get()->result_array();
@@ -288,7 +186,7 @@ class Projects extends CI_Controller
         $zadach = array();
 
         $result['stats'] = array(
-            'all' => array('close' => 0, 'notfill' => 0, 'work' => 0, 'all' => 0, 'tasktoday' => 0, 'tasktomorrow' => 0),
+            'all' => array('close' => 0, 'notfill' => 0, 'work' => 0, 'all' => 0, 'tasktoday' => 0, 'tasktomorrow' => 0, 'stopped' => 0),
             'datest' => array()
         );
 
@@ -397,6 +295,10 @@ class Projects extends CI_Controller
             } elseif(!empty($i['worktype']['rabotaszakzakrytdogovordata']['value'])) {
 
                 $result['stats']['all']['close']++;
+
+            } elseif(!empty($i['worktype']['rabotaszakpriostanovitdogovordata']['value'])) {
+
+                $result['stats']['all']['stopped']++;
 
             } else {
 
@@ -708,6 +610,7 @@ class Projects extends CI_Controller
                                             $( '#loading' ).hide();
                                             $( '#alrt' ).show();
                                             $( '#resp' ).html('Файлы успешно добалены');
+                                            Alert.show_alert('success', data);
                                             $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
                                         })
                                     }
@@ -715,20 +618,6 @@ class Projects extends CI_Controller
                             };
 
                             xhr.send(formData);
-
-                            /*$. ajax ({
-                                type: 'POST',
-                                url: '/request',
-                                data: str,
-                                success: function(msg) {
-
-                                    $('#load').load('/request/add/'+$('#ths').val(), function() {
-                                            $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
-                                    })
-
-
-                                }
-                            });*/
 
                             return false;
                         });
@@ -871,27 +760,26 @@ class Projects extends CI_Controller
               </div></form>';
             echo "<script>
 				(function($) {
-				$(function() {
-				    $('#workform').submit(function() {
-                        var str = $(this).serialize();
+                    $(function() {
 
-                        $. ajax ({
-                            type: 'POST',
-                            url: '/projects',
-                            data: str,
-                            success: function(msg) {
+                        $('#workform').submit(function() {
 
-                                $('#load').load('/projects/work/'+$('#ths').val(), function() {
-                                        //$('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
-                                })
+                            var str = $(this).serialize();
 
+                            $. ajax ({
+                                type: 'POST',
+                                url: '/projects',
+                                data: str,
+                                success: function(msg) {
+                                    $('#load').load('/projects/work/'+$('#ths').val(), function() {
+                                        Alert.show_alert('success', msg);
+                                    })
+                                }
+                            });
 
-                            }
+                            return false;
                         });
-
-                        return false;
-                    });
-				})
+                    })
 				})(jQuery)
 				</script>";
 
@@ -965,6 +853,7 @@ class Projects extends CI_Controller
             echo "<script>
 				(function($) {
 				$(function() {
+				    $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
 				    $('#commentsform').submit(function() {
                         var str = $(this).serialize();
 
@@ -975,7 +864,8 @@ class Projects extends CI_Controller
                             success: function(msg) {
 
                                 $('#load').load('/projects/comments/'+$('#ths').val(), function() {
-                                        $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
+                                    Alert.show_alert('success', msg);
+                                    $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
                                 })
 
 
@@ -1141,6 +1031,7 @@ class Projects extends CI_Controller
                             success: function(msg) {
 
                                 $('#load').load('/projects/edit/'+$('#ths').val(), function() {
+                                        Alert.show_alert('success', msg);
                                         $('#scrl').animate({scrollTop: $('#scrl')[0].scrollHeight});
                                 })
 
@@ -1265,6 +1156,17 @@ class Projects extends CI_Controller
                         else $return['hide'][] = $i['id'];
                     }
 
+                } elseif($key == 'stopped') {
+
+                    if(!empty($i['worktype'])) {
+
+                        $sr = unserialize($i['worktype']);
+
+                        if(!empty($sr['rabotaszakpriostanovitdogovordata']['value'])) $return['show'][] = $i['id'];
+                        else $return['hide'][] = $i['id'];
+
+                    } else $return['hide'][] = $i['id'];
+
                 } elseif(strstr($key, 'year')) {
 
                     $year = preg_replace('#[^0-9]#','',$key);
@@ -1320,13 +1222,16 @@ class Projects extends CI_Controller
 
     function delete()
     {
+        $result = array();
+
         $id = intval($this->uri->segment(3));
 
         if(!empty($id) && $this->dx_auth->check_permissions('delete') == 1) {
 
-            $this->db->delete('projects', array('id' => $id)) ? $this->session->set_flashdata('success', 'Проект успешно удалён.') : $this->session->set_flashdata('error', 'Произошла неожиданная ошибка, обратитесь к системному администратору.');
+            $this->db->delete('projects', array('id' => $id)) ? $result['success'] = 'Проект успешно удалён.' : $result['error'] = 'Произошла неожиданная ошибка, обратитесь к системному администратору.';
         }
 
-        redirect("/projects");
+        //redirect("/projects");
+        echo json_encode($result);
     }
 }

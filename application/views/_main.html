@@ -96,6 +96,14 @@
   <body style="overflow-y: scroll;">
     <!-- navbar -->
     <div class="navbar navbar-inverse">
+        <div class="new-alert navbar-fixed-top success-alert" style="display: none;">
+            <i class="icon-ok-sign"></i>
+            <span class="success-text"></span>
+        </div>
+        <div class="new-alert new-error navbar-fixed-top error-alert" style="display: none;">
+            <i class="icon-remove-sign"></i>
+            <span class="error-text">Произошла неожиданная ошибка, обратитесь к администратору.</span>
+        </div>
         <div class="navbar-inner navbar-fixed-top">
             <button type="button" class="btn btn-navbar visible-phone" id="menu-toggler">
                 <span class="icon-bar"></span>
@@ -233,6 +241,14 @@
     <div class="content">
         <div class="container-fluid">
             <div id="pad-wrapper"><br>
+                <div class="alert alert-success" style="display:none;">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong class="textsuc">{{ success|raw }}</strong>
+                </div>
+                <div class="alert alert-error" style="display:none;">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong class="texterr">{{ error|raw }}</strong>
+                </div>
                 {% if success|length > 0 %}
                   <div class="alert alert-success">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -285,6 +301,7 @@
     <script src="/themes/wrap/js/jquery.flot.js"></script>
     <script src="/themes/wrap/js/jquery.flot.stack.js"></script>
     <script src="/themes/wrap/js/jquery.flot.resize.js"></script>
+    <script src="/themes/wrap/js/alert.js"></script>
     <script src="/themes/wrap/js/theme.js"></script>
     <script src="/themes/wrap/js/jquery.formstyler.min.js"></script>
     <script src="/themes/wrap/js/jquery.tablesort.min.js"></script>
