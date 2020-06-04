@@ -49,9 +49,9 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'frostospb_bd';
-$db['default']['password'] = 'XsDt6Gaydx';
-$db['default']['database'] = 'frostospb_bd';
+$db['default']['username'] = '111';
+$db['default']['password'] = '111';
+$db['default']['database'] = '111';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = 'bd_';
 $db['default']['pconnect'] = TRUE;
